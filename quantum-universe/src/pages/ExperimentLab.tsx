@@ -1,22 +1,22 @@
 import React, { useEffect } from 'react';
-import type { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useQuantumStore } from '../store';
 import { QuantumPanel } from '../components/shared/QuantumPanel';
 import { GateButton } from '../components/shared/GateButton';
 import { ProbabilityBar } from '../components/shared/ProbabilityBar';
 import { MeasurementResult } from '../components/shared/MeasurementResult';
-import type { ExperimentDefinition } from '@types/quantum';
+import { getProbabilities1Q } from '@engine/index';
+import type { StateVector1Q } from '@types/quantum';
 
 export const ExperimentLab: React.FC = () => {
   const {
-    availableExperiments,
+    experiments,
     activeExperimentId,
-    currentStep,
-    isComplete,
-    stateProbabilities,
-    measurementOutcome,
-    setActiveExperiment,
-    nextStep,
+    currentStepIndex,
+    stepStates,
+    measurementResults,
+    selectExperiment,
+    runNextStep,
     resetExperiment
   } = useQuantumStore();
 
@@ -25,7 +25,19 @@ export const ExperimentLab: React.FC = () => {
     return () => resetExperiment();
   }, [resetExperiment]);
 
-  const activeExp = availableExperiments.find(e => e.id === activeExperimentId);
+  const activeExp = experiments.find((e) => e.id === activeExperimentId);
+  const totalSteps = activeExp?.steps.length ?? 0;
+  const isComplete = totalSteps > 0 && currentStepIndex >= totalSteps - 1;
+  const currentStepNum = Math.max(0, currentStepIndex + 1);
+
+  const displayStepIndex = Math.min(Math.max(0, currentStepIndex), totalSteps - 1);
+  const activeStep = activeExp?.steps[displayStepIndex];
+
+  const currentState = stepStates.length > 0 
+    ? stepStates[stepStates.length - 1] 
+    : (activeExp?.initialState as StateVector1Q | undefined);
+  const stateProbabilities = currentState ? getProbabilities1Q(currentState) : { p0: 1, p1: 0 };
+  const latestMeasurement = measurementResults.length > 0 ? measurementResults[measurementResults.length - 1] : null;
 
   return (
     <motion.div
@@ -43,13 +55,13 @@ export const ExperimentLab: React.FC = () => {
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: 'var(--space-8)' }}>
         {/* Left Column: Experiment Selection */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
-          {availableExperiments.map((exp) => (
+          {experiments.map((exp) => (
             <QuantumPanel 
               key={exp.id}
               variant={activeExperimentId === exp.id ? 'highlight' : 'default'}
               className="cursor-pointer transition-all"
               onClick={() => {
-                if (activeExperimentId !== exp.id) setActiveExperiment(exp.id);
+                if (activeExperimentId !== exp.id) selectExperiment(exp.id);
               }}
             >
               <div style={{ padding: 'var(--space-4)' }}>
@@ -67,7 +79,7 @@ export const ExperimentLab: React.FC = () => {
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--space-6)' }}>
                 <h2>{activeExp.title}</h2>
                 <div style={{ fontFamily: 'var(--font-mono)', color: 'var(--color-icicle)' }}>
-                  Step {currentStep + 1} / {activeExp.steps.length}
+                  Step {currentStepNum} / {totalSteps}
                 </div>
               </div>
 
@@ -76,37 +88,39 @@ export const ExperimentLab: React.FC = () => {
                 <motion.div 
                   style={{ height: '100%', background: 'var(--color-icicle)', borderRadius: '2px' }}
                   initial={{ width: 0 }}
-                  animate={{ width: `${((currentStep + 1) / activeExp.steps.length) * 100}%` }}
+                  animate={{ width: `${(currentStepNum / totalSteps) * 100}%` }}
                 />
               </div>
 
               <AnimatePresence mode="wait">
                 <motion.div
-                  key={currentStep}
+                  key={currentStepIndex}
                   initial={{ opacity: 0, x: 20 }}
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: -20 }}
                   transition={{ duration: 0.3 }}
                   style={{ flex: 1, display: 'flex', flexDirection: 'column' }}
                 >
-                  <h3 style={{ marginBottom: 'var(--space-4)' }}>{activeExp.steps[currentStep].title}</h3>
+                  <h3 style={{ marginBottom: 'var(--space-4)' }}>
+                    {activeStep ? activeStep.description : 'Initial State'}
+                  </h3>
                   <p style={{ color: 'var(--color-arctic)', marginBottom: 'var(--space-8)', fontSize: 'var(--text-body-lg)', lineHeight: 1.6 }}>
-                    {activeExp.steps[currentStep].description}
+                    {activeExp.objective}
                   </p>
 
                   <div style={{ display: 'flex', gap: 'var(--space-8)', alignItems: 'center', marginBottom: 'var(--space-8)' }}>
                     <div style={{ flex: 1 }}>
                       <h4 style={{ marginBottom: 'var(--space-4)', color: 'var(--color-polar)' }}>Action</h4>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-4)' }}>
-                        {activeExp.steps[currentStep].gateToApply && (
-                          <GateButton gateId={activeExp.steps[currentStep].gateToApply!} onClick={() => {}} disabled />
+                        {activeStep?.gate && (
+                          <GateButton gateId={activeStep.gate} onClick={() => {}} disabled />
                         )}
-                        {activeExp.steps[currentStep].measure && (
+                        {activeStep?.action === 'measure' && (
                           <div style={{ padding: '8px 16px', background: 'var(--color-solstice)', border: '1px solid var(--color-polar)', borderRadius: '4px', color: 'white' }}>
                             Measure State
                           </div>
                         )}
-                        {(!activeExp.steps[currentStep].gateToApply && !activeExp.steps[currentStep].measure) && (
+                        {(!activeStep?.gate && activeStep?.action !== 'measure') && (
                           <div style={{ color: 'var(--color-arctic)' }}>Initial Preparation</div>
                         )}
                       </div>
@@ -120,9 +134,16 @@ export const ExperimentLab: React.FC = () => {
                     </div>
                   </div>
                   
-                  {isComplete && measurementOutcome && (
+                  {isComplete && latestMeasurement && (
                     <div style={{ display: 'flex', justifyContent: 'center', marginTop: 'auto', marginBottom: 'var(--space-8)' }}>
-                      <MeasurementResult outcome={measurementOutcome} />
+                      <MeasurementResult outcome={latestMeasurement} />
+                    </div>
+                  )}
+
+                  {isComplete && (
+                    <div style={{ padding: 'var(--space-4)', background: 'rgba(74, 155, 127, 0.1)', border: '1px solid var(--color-success)', borderRadius: 'var(--radius-md)', marginBottom: 'var(--space-4)' }}>
+                      <h4 style={{ color: 'var(--color-success)', marginBottom: '4px' }}>Result & Explanation</h4>
+                      <p style={{ color: 'var(--color-arctic)', fontSize: 'var(--text-body-sm)' }}>{activeExp.explanation}</p>
                     </div>
                   )}
                 </motion.div>
@@ -136,7 +157,7 @@ export const ExperimentLab: React.FC = () => {
                   Restart Experiment
                 </button>
                 <button 
-                  onClick={nextStep}
+                  onClick={runNextStep}
                   disabled={isComplete}
                   style={{ 
                     padding: '12px 32px', 

@@ -6,6 +6,7 @@ interface QuantumPanelProps {
   children: React.ReactNode;
   variant?: PanelVariant;
   className?: string;
+  style?: React.CSSProperties;
   onClick?: () => void;
 }
 
@@ -13,14 +14,10 @@ export const QuantumPanel: React.FC<QuantumPanelProps> = ({
   children, 
   variant = 'default', 
   className = '',
+  style,
   onClick
 }) => {
-  let baseStyles = 'rounded-2xl border transition-all duration-300';
-  let variantStyles = '';
-
-  // Instead of Tailwind, we will use raw inline CSS or classes if we add them to global.
-  // Since we don't have Tailwind set up (as per the spec we are using pure CSS with tokens),
-  // we will map these to style objects or specific classes. 
+  // Inline styles using CSS variables defined in tokens.css.
   // For simplicity, we'll use inline styles using CSS variables defined in tokens.css.
   
   const getStyles = (): React.CSSProperties => {
@@ -61,7 +58,7 @@ export const QuantumPanel: React.FC<QuantumPanelProps> = ({
   return (
     <div 
       className={`quantum-panel ${className}`} 
-      style={getStyles()}
+      style={{ ...getStyles(), ...style }}
       onClick={onClick}
     >
       {children}

@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { EducationalSection } from '../components/quantum-universe/EducationalSection';
-import { QuantumPanel } from '../components/shared/QuantumPanel';
 import { DiracNotation } from '../components/shared/DiracNotation';
 import { ProbabilityBar } from '../components/shared/ProbabilityBar';
 import { GateButton } from '../components/shared/GateButton';
-import { MeasurementResult } from '../components/shared/MeasurementResult';
+import { Icon } from '../components/shared/Icon';
 import { applyGate, createZeroState, measureSingle, getProbabilities1Q, applyCNOT, createTwoQubitZeroState, applyGateToQubit, getProbabilities2Q } from '@engine/index';
 import { Link } from 'react-router-dom';
 
@@ -240,7 +239,7 @@ export const QuantumUniverse: React.FC = () => {
 
               <div style={{ display: 'flex', gap: 'var(--space-4)', flexWrap: 'wrap', justifyContent: 'center', marginTop: 'var(--space-4)' }}>
                 {(['X', 'Y', 'Z', 'H'] as const).map(gate => (
-                  <GateButton key={gate} gateId={gate} onClick={(g) => setDemo4State(applyGate(demo4State, g))} />
+                  <GateButton key={gate} gateId={gate} onClick={() => setDemo4State(applyGate(demo4State, gate))} />
                 ))}
               </div>
               <button 

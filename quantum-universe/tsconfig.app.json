@@ -29,6 +29,7 @@
     "exactOptionalPropertyTypes": true,
 
     /* Path Aliases */
+    "ignoreDeprecations": "6.0",
     "baseUrl": ".",
     "paths": {
       "@engine/*": ["src/engine/*"],

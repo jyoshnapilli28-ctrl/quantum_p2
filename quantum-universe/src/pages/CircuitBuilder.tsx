@@ -1,30 +1,47 @@
 import React, { useState } from 'react';
-import type { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useQuantumStore } from '../store';
 import { QuantumPanel } from '../components/shared/QuantumPanel';
 import { GateButton } from '../components/shared/GateButton';
 import { ProbabilityBar } from '../components/shared/ProbabilityBar';
 import type { SingleQubitGateId } from '@types/quantum';
-import { Icon } from '../components/shared/Icon';
+
+const MAX_COLUMNS = 6;
 
 export const CircuitBuilder: React.FC = () => {
   const {
-    wires,
-    maxGatesPerWire,
-    finalProbabilities,
-    addSingleQubitGate,
-    addCNOT,
-    removeQubit,
+    circuitDefinition,
+    executionState,
+    lastResult,
+    addGate,
+    removeGate,
+    runCircuit,
     clear,
-    resetCircuit
+    addQubit,
+    removeQubit
   } = useQuantumStore();
 
   const [selectedGate, setSelectedGate] = useState<SingleQubitGateId | 'CNOT' | null>(null);
   const [cnotControl, setCnotControl] = useState<number | null>(null);
 
   const availableSingleGates: SingleQubitGateId[] = ['H', 'X', 'Y', 'Z', 'S', 'T'];
+  const numQubits = circuitDefinition.qubits;
+  const gates = circuitDefinition.gates;
 
-  const handleSlotClick = (wireIdx: number, posIdx: number) => {
+  const handleSlotClick = (wireIdx: number, colIdx: number) => {
+    // Check if slot has a gate
+    const existingGate = gates.find((g) => {
+      if (g.column !== colIdx) return false;
+      if (typeof g.wire === 'number') return g.wire === wireIdx;
+      if (Array.isArray(g.wire)) return g.wire.includes(wireIdx);
+      return false;
+    });
+
+    if (existingGate) {
+      removeGate(existingGate.id);
+      return;
+    }
+
     if (!selectedGate) return;
 
     if (selectedGate === 'CNOT') {
@@ -32,14 +49,24 @@ export const CircuitBuilder: React.FC = () => {
         setCnotControl(wireIdx);
       } else {
         if (cnotControl !== wireIdx) {
-          addCNOT(cnotControl, wireIdx, posIdx);
+          addGate({
+            id: `cnot-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+            gate: 'CNOT',
+            wire: [cnotControl, wireIdx],
+            column: colIdx
+          });
         }
         setCnotControl(null);
         setSelectedGate(null);
       }
     } else {
-      addSingleQubitGate(selectedGate, wireIdx, posIdx);
-      setSelectedGate(null); // Deselect after placing
+      addGate({
+        id: `gate-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+        gate: selectedGate,
+        wire: wireIdx,
+        column: colIdx
+      });
+      setSelectedGate(null);
     }
   };
 
@@ -53,18 +80,20 @@ export const CircuitBuilder: React.FC = () => {
     >
       <div>
         <h1 style={{ fontSize: 'var(--text-h1)', marginBottom: 'var(--space-2)' }}>Circuit Builder</h1>
-        <p style={{ color: 'var(--color-arctic)' }}>Design your own quantum algorithm. Select a gate, then click on a wire to place it.</p>
+        <p style={{ color: 'var(--color-arctic)' }}>
+          Design your quantum circuit. Select a gate and click on a wire slot to place it. Click placed gates to remove them.
+        </p>
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: '3fr 1fr', gap: 'var(--space-8)' }}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-8)' }}>
           {/* Toolbox */}
           <QuantumPanel>
-            <div style={{ padding: 'var(--space-4) var(--space-6)', display: 'flex', alignItems: 'center', gap: 'var(--space-6)' }}>
+            <div style={{ padding: 'var(--space-4) var(--space-6)', display: 'flex', alignItems: 'center', gap: 'var(--space-6)', flexWrap: 'wrap' }}>
               <h3 style={{ color: 'var(--color-white)', margin: 0 }}>Toolbox</h3>
               <div style={{ width: '1px', height: '24px', background: 'var(--color-solstice)' }} />
-              <div style={{ display: 'flex', gap: 'var(--space-2)' }}>
-                {availableSingleGates.map(gate => (
+              <div style={{ display: 'flex', gap: 'var(--space-2)', flexWrap: 'wrap', alignItems: 'center' }}>
+                {availableSingleGates.map((gate) => (
                   <GateButton 
                     key={gate} 
                     gateId={gate} 
@@ -72,12 +101,12 @@ export const CircuitBuilder: React.FC = () => {
                     selected={selectedGate === gate} 
                   />
                 ))}
-                <div style={{ width: '1px', height: '52px', background: 'var(--color-solstice)', margin: '0 var(--space-2)' }} />
+                <div style={{ width: '1px', height: '40px', background: 'var(--color-solstice)', margin: '0 var(--space-2)' }} />
                 <button
-                  onClick={() => { setSelectedGate('CNOT'); setCnotControl(null); }}
+                  onClick={() => { setSelectedGate(selectedGate === 'CNOT' ? null : 'CNOT'); setCnotControl(null); }}
                   style={{
                     padding: '0 16px',
-                    height: '52px',
+                    height: '44px',
                     borderRadius: 'var(--radius-md)',
                     background: selectedGate === 'CNOT' ? 'var(--gradient-gate-button-hover)' : 'var(--gradient-gate-button)',
                     border: `1px solid ${selectedGate === 'CNOT' ? 'var(--color-icicle)' : 'rgba(56,80,106,0.5)'}`,
@@ -87,7 +116,7 @@ export const CircuitBuilder: React.FC = () => {
                     cursor: 'pointer'
                   }}
                 >
-                  {cnotControl !== null ? 'Select Target' : 'CNOT'}
+                  {cnotControl !== null ? 'Select Target Wire' : 'CNOT'}
                 </button>
               </div>
             </div>
@@ -96,50 +125,55 @@ export const CircuitBuilder: React.FC = () => {
           {/* Circuit Canvas */}
           <QuantumPanel variant="deep" style={{ overflowX: 'auto' }}>
             <div style={{ padding: 'var(--space-8)', minWidth: 'max-content' }}>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '40px', position: 'relative' }}>
-                {wires.map((wire, wIdx) => (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '48px', position: 'relative' }}>
+                {Array.from({ length: numQubits }).map((_, wIdx) => (
                   <div key={wIdx} style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-4)', position: 'relative' }}>
                     {/* Qubit Label */}
-                    <div style={{ width: '40px', textAlign: 'center', fontFamily: 'var(--font-mono)', color: 'var(--color-white)', fontSize: '18px' }}>
-                      |0⟩
+                    <div style={{ width: '48px', textAlign: 'center', fontFamily: 'var(--font-mono)', color: 'var(--color-white)', fontSize: '18px' }}>
+                      q[{wIdx}] |0⟩
                     </div>
                     
                     {/* Wire Line */}
-                    <div style={{ position: 'absolute', left: '56px', right: 0, height: '2px', background: 'var(--color-solstice)', zIndex: 0 }} />
+                    <div style={{ position: 'absolute', left: '68px', right: 0, height: '2px', background: 'var(--color-polar)', zIndex: 0 }} />
 
                     {/* Slots */}
                     <div style={{ display: 'flex', gap: '16px', zIndex: 1, paddingLeft: '16px' }}>
-                      {Array.from({ length: maxGatesPerWire }).map((_, pIdx) => {
-                        const operation = wire.operations.find(op => op.position === pIdx);
+                      {Array.from({ length: MAX_COLUMNS }).map((_, colIdx) => {
+                        const gate = gates.find((g) => {
+                          if (g.column !== colIdx) return false;
+                          if (typeof g.wire === 'number') return g.wire === wIdx;
+                          if (Array.isArray(g.wire)) return g.wire.includes(wIdx);
+                          return false;
+                        });
                         
                         return (
                           <div 
-                            key={pIdx}
-                            onClick={() => handleSlotClick(wIdx, pIdx)}
+                            key={colIdx}
+                            onClick={() => handleSlotClick(wIdx, colIdx)}
                             style={{
                               width: '52px',
                               height: '52px',
-                              background: operation ? 'transparent' : 'rgba(7, 16, 24, 0.5)',
-                              border: operation ? 'none' : '1px dashed var(--color-polar)',
+                              background: gate ? 'var(--color-solstice)' : 'rgba(7, 16, 24, 0.7)',
+                              border: gate ? '1px solid var(--color-icicle)' : '1px dashed var(--color-polar)',
                               borderRadius: 'var(--radius-md)',
                               display: 'flex',
                               alignItems: 'center',
                               justifyContent: 'center',
-                              cursor: selectedGate && !operation ? 'pointer' : 'default',
+                              cursor: 'pointer',
                               position: 'relative'
                             }}
                           >
-                            {operation && operation.type === 'SINGLE' && (
-                              <GateButton gateId={operation.gateId as SingleQubitGateId} onClick={() => {}} />
+                            {gate && typeof gate.wire === 'number' && (
+                              <GateButton gateId={gate.gate} onClick={() => removeGate(gate.id)} />
                             )}
-                            {operation && operation.type === 'CNOT' && (
+                            {gate && Array.isArray(gate.wire) && (
                               <div style={{
                                 width: '32px', height: '32px', borderRadius: '50%', 
-                                background: operation.controlWire === wIdx ? 'var(--color-icicle)' : 'var(--gradient-gate-button)',
+                                background: gate.wire[0] === wIdx ? 'var(--color-icicle)' : 'var(--gradient-gate-button)',
                                 border: '2px solid var(--color-icicle)',
                                 display: 'flex', alignItems: 'center', justifyContent: 'center'
                               }}>
-                                {operation.targetWire === wIdx ? (
+                                {gate.wire[1] === wIdx ? (
                                   <span style={{ color: 'white', fontSize: '24px', lineHeight: '1px' }}>⊕</span>
                                 ) : (
                                   <span style={{ width: '12px', height: '12px', background: 'white', borderRadius: '50%' }} />
@@ -153,25 +187,60 @@ export const CircuitBuilder: React.FC = () => {
                   </div>
                 ))}
 
-                {/* Draw CNOT vertical lines (simplified visual) */}
+                {/* Draw CNOT vertical lines */}
                 <svg style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none', zIndex: 0 }}>
-                  {wires.map((wire, wIdx) => 
-                    wire.operations.filter(op => op.type === 'CNOT' && op.controlWire === wIdx).map((op, i) => {
-                      const x = 56 + 16 + (op.position * (52 + 16)) + 26; // Center of the slot
-                      const y1 = wIdx * (52 + 40) + 26;
-                      const y2 = op.targetWire! * (52 + 40) + 26;
-                      return (
-                        <line key={`${wIdx}-${i}`} x1={x} y1={y1} x2={x} y2={y2} stroke="var(--color-icicle)" strokeWidth="2" />
-                      );
-                    })
-                  )}
+                  {gates.filter((g) => Array.isArray(g.wire)).map((g) => {
+                    const [controlWire, targetWire] = g.wire as [number, number];
+                    const x = 68 + 16 + (g.column * (52 + 16)) + 26;
+                    const y1 = controlWire * (52 + 48) + 26;
+                    const y2 = targetWire * (52 + 48) + 26;
+                    return (
+                      <line key={g.id} x1={x} y1={y1} x2={x} y2={y2} stroke="var(--color-icicle)" strokeWidth="2" />
+                    );
+                  })}
                 </svg>
 
               </div>
             </div>
             
-            <div style={{ padding: 'var(--space-4) var(--space-8)', borderTop: '1px solid var(--color-solstice)', display: 'flex', gap: 'var(--space-4)' }}>
-              <button onClick={clear} style={{ padding: '8px 16px', background: 'transparent', border: '1px solid var(--color-polar)', color: 'white', borderRadius: '4px', cursor: 'pointer' }}>Clear Circuit</button>
+            <div style={{ padding: 'var(--space-4) var(--space-8)', borderTop: '1px solid var(--color-solstice)', display: 'flex', gap: 'var(--space-4)', alignItems: 'center', flexWrap: 'wrap' }}>
+              <button 
+                onClick={runCircuit} 
+                disabled={executionState === 'RUNNING'}
+                style={{ 
+                  padding: '10px 24px', 
+                  background: 'var(--gradient-accent)', 
+                  border: 'none', 
+                  color: 'var(--color-midnight)', 
+                  borderRadius: 'var(--radius-md)', 
+                  fontWeight: 700, 
+                  cursor: executionState === 'RUNNING' ? 'not-allowed' : 'pointer' 
+                }}
+              >
+                {executionState === 'RUNNING' ? 'Simulating...' : 'Run Simulation'}
+              </button>
+              <button 
+                onClick={clear} 
+                style={{ padding: '10px 16px', background: 'transparent', border: '1px solid var(--color-polar)', color: 'white', borderRadius: '4px', cursor: 'pointer' }}
+              >
+                Clear Gates
+              </button>
+              {numQubits < 2 && (
+                <button 
+                  onClick={addQubit} 
+                  style={{ padding: '10px 16px', background: 'transparent', border: '1px solid var(--color-polar)', color: 'white', borderRadius: '4px', cursor: 'pointer' }}
+                >
+                  + Add Qubit
+                </button>
+              )}
+              {numQubits > 1 && (
+                <button 
+                  onClick={removeQubit} 
+                  style={{ padding: '10px 16px', background: 'transparent', border: '1px solid var(--color-polar)', color: 'white', borderRadius: '4px', cursor: 'pointer' }}
+                >
+                  - Remove Qubit
+                </button>
+              )}
             </div>
           </QuantumPanel>
         </div>
@@ -179,13 +248,30 @@ export const CircuitBuilder: React.FC = () => {
         {/* Results Panel */}
         <QuantumPanel className="animate-slide-up" style={{ animationDelay: '100ms' }}>
           <div style={{ padding: 'var(--space-6)' }}>
-            <h3 style={{ marginBottom: 'var(--space-6)' }}>Final State</h3>
+            <h3 style={{ marginBottom: 'var(--space-6)' }}>Circuit Probabilities</h3>
             
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
-              {Object.entries(finalProbabilities).map(([state, prob]) => (
-                <ProbabilityBar key={state} label={`|${state}⟩`} probability={prob} colorBasis={state.split('').filter(c => c==='1').length % 2 === 0 ? '0' : '1'} />
-              ))}
-            </div>
+            {lastResult && lastResult.probabilities ? (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
+                {Object.entries(lastResult.probabilities).map(([state, prob]) => (
+                  <ProbabilityBar 
+                    key={state} 
+                    label={`|${state}⟩`} 
+                    probability={prob} 
+                    colorBasis={state.split('').filter((c) => c === '1').length % 2 === 0 ? '0' : '1'} 
+                  />
+                ))}
+              </div>
+            ) : (
+              <p style={{ color: 'var(--color-arctic)', fontSize: 'var(--text-body-sm)' }}>
+                Place gates on the circuit and click <strong>Run Simulation</strong> to compute quantum state probabilities.
+              </p>
+            )}
+
+            {lastResult?.error && (
+              <p style={{ color: 'var(--color-error)', marginTop: 'var(--space-4)', fontSize: 'var(--text-body-sm)' }}>
+                {lastResult.error}
+              </p>
+            )}
           </div>
         </QuantumPanel>
       </div>

@@ -1,5 +1,5 @@
 import React from 'react';
-import type { motion } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useQuantumStore } from '../store';
 import { QuantumPanel } from '../components/shared/QuantumPanel';
 import { BlochSphere } from '../components/bloch/BlochSphere';
@@ -8,7 +8,7 @@ import { ProbabilityBar } from '../components/shared/ProbabilityBar';
 import { DiracNotation } from '../components/shared/DiracNotation';
 import { MeasurementResult } from '../components/shared/MeasurementResult';
 import type { SingleQubitGateId } from '@types/quantum';
-import { Icon } from '../components/shared/Icon';
+import { getBlochCoordinates } from '@engine/index';
 
 export const GateVisualizer: React.FC = () => {
   const {
@@ -26,7 +26,7 @@ export const GateVisualizer: React.FC = () => {
     setAnimationComplete
   } = useQuantumStore();
 
-  const prevCoords = previousState ? require('@engine/index').getBlochCoordinates(previousState) : null;
+  const prevCoords = previousState ? getBlochCoordinates(previousState) : null;
   const availableGates: SingleQubitGateId[] = ['H', 'X', 'Y', 'Z', 'S', 'T'];
 
   return (

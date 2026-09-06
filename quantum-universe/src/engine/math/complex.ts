@@ -1,4 +1,4 @@
-import type { Complex } from \'@types/quantum\';
+import type { Complex } from '@types/quantum';
 
 /** Create a complex number from real and imaginary parts */
 export function fromReal(re: number): Complex {

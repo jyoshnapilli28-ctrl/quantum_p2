@@ -1,5 +1,5 @@
-import React, { useRef, useState, useEffect } from 'react';
-import type { useFrame } from '@react-three/fiber';
+import React, { useRef, useEffect } from 'react';
+import { useFrame } from '@react-three/fiber';
 import { Html } from '@react-three/drei';
 import * as THREE from 'three';
 import { BlochSphere3D } from './BlochSphere3D';
@@ -25,18 +25,16 @@ export const BlochScene: React.FC<BlochSceneProps> = ({
   isAnimating,
   onAnimationComplete
 }) => {
-  const targetVec = mapCoords(coordinates);
-  const startVec = previousCoordinates ? mapCoords(previousCoordinates) : targetVec.clone();
-  
-  const currentVecRef = useRef(startVec.clone());
-  const progressRef = useRef(0);
   const prefersReducedMotion = useReducedMotion();
+  const currentVecRef = useRef<THREE.Vector3>(mapCoords(coordinates));
+  const progressRef = useRef(1);
 
-  // Reset animation progress when new coordinates are received
+  const targetVec = mapCoords(coordinates);
+  const startVec = previousCoordinates ? mapCoords(previousCoordinates) : targetVec;
+
   useEffect(() => {
     if (isAnimating) {
       if (prefersReducedMotion) {
-        // Snap instantly if reduced motion is preferred
         currentVecRef.current.copy(targetVec);
         onAnimationComplete();
       } else {
@@ -45,7 +43,7 @@ export const BlochScene: React.FC<BlochSceneProps> = ({
     }
   }, [coordinates, isAnimating, prefersReducedMotion]);
 
-  useFrame((state, delta) => {
+  useFrame((_, delta) => {
     if (isAnimating && !prefersReducedMotion) {
       progressRef.current += delta / 0.6; // 600ms duration
       
@@ -57,8 +55,8 @@ export const BlochScene: React.FC<BlochSceneProps> = ({
         const t = progressRef.current;
         const easeT = t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
         
-        // SLERP
-        currentVecRef.current.copy(startVec).slerp(targetVec, easeT);
+        // Spherical interpolation on unit sphere
+        currentVecRef.current.copy(startVec).lerp(targetVec, easeT).normalize();
       }
     }
   });

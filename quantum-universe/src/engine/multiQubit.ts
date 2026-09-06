@@ -1,4 +1,4 @@
-import type { StateVector2Q, SingleQubitGateId } from \'@types/quantum\';
+import type { StateVector2Q, SingleQubitGateId } from '@types/quantum';
 import { applyGate, GATE_MATRICES } from './gates';
 import { fromReal, multiply, add, subtract, magnitude } from './math/complex';
 import { tensorProduct, normalize } from './math/vector';
