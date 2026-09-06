@@ -1,4 +1,4 @@
-@import '../../../public/assets/fonts/fonts.css';
+@import url('/assets/fonts/fonts.css');
 @import './tokens.css';
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }

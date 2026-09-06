@@ -18,7 +18,7 @@ export const NotFound: React.FC = () => {
       }}
     >
       <img 
-        src="/assets/images/illustrations/system/page-not-found.svg" 
+        src="/assets/images/illustrations/system/page-not-found.svg?v=2" 
         alt="404 Not Found"
         style={{ width: '400px', maxWidth: '90%', marginBottom: 'var(--space-8)' }}
       />
