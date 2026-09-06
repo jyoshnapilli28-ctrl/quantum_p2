@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="500" height="300"  fill="none">
+
+    <defs>
+        <!-- Glassmorphism filter -->
+        <filter id="glass" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur stdDeviation="8" result="blur" />
+            <feComposite in="SourceGraphic" in2="blur" operator="over" />
+        </filter>
+        
+        <!-- Subtle Glow -->
+        <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="4" result="blur" />
+            <feMerge>
+                <feMergeNode in="blur" />
+                <feMergeNode in="SourceGraphic" />
+            </feMerge>
+        </filter>
+        
+        <!-- Strong Glow -->
+        <filter id="strong-glow" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="8" result="blur" />
+            <feMerge>
+                <feMergeNode in="blur" />
+                <feMergeNode in="SourceGraphic" />
+            </feMerge>
+        </filter>
+
+        <!-- Linear Gradients -->
+        <linearGradient id="bg-grad-1" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#071018" />
+            <stop offset="100%" stop-color="#0B132B" />
+        </linearGradient>
+        
+        <linearGradient id="surface-grad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#1C2B38" stop-opacity="0.8"/>
+            <stop offset="100%" stop-color="#071018" stop-opacity="0.9"/>
+        </linearGradient>
+
+        <linearGradient id="accent-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#446983" />
+            <stop offset="100%" stop-color="#7991A8" />
+        </linearGradient>
+
+        <radialGradient id="radial-glow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#38506A" stop-opacity="0.3"/>
+            <stop offset="100%" stop-color="#071018" stop-opacity="0"/>
+        </radialGradient>
+        
+        <!-- Grid Pattern -->
+        <pattern id="quantum-grid-pattern" width="40" height="40" patternUnits="userSpaceOnUse">
+            <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1C2B38" stroke-width="1"/>
+            <circle cx="40" cy="40" r="1" fill="#38506A" />
+        </pattern>
+        
+        <!-- Small Grid Pattern -->
+        <pattern id="small-grid" width="20" height="20" patternUnits="userSpaceOnUse">
+            <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#0B132B" stroke-width="0.5"/>
+        </pattern>
+    </defs>
+
+
+
+    <text x="40" y="105" font-family="'Inter', sans-serif" font-size="16" fill="#FFFFFF">q₀</text>
+    <path d="M 70 100 L 400 100" fill="none" stroke="#38506A" stroke-width="2"/>
+    
+    <text x="40" y="205" font-family="'Inter', sans-serif" font-size="16" fill="#FFFFFF">q₁</text>
+    <path d="M 70 200 L 400 200" fill="none" stroke="#38506A" stroke-width="2"/>
+
+    <rect x="120" y="75" width="50" height="50" rx="4" fill="#1C2B38" stroke="#446983"/>
+    <text x="145" y="106" font-family="'Inter', sans-serif" font-size="18" fill="#FFFFFF" text-anchor="middle">H</text>
+
+    <!-- CNOT -->
+    <circle cx="250" cy="100" r="6" fill="#446983"/>
+    <path d="M 250 100 L 250 200" fill="none" stroke="#446983" stroke-width="2"/>
+    <circle cx="250" cy="200" r="15" fill="none" stroke="#446983" stroke-width="2"/>
+    <path d="M 235 200 L 265 200 M 250 185 L 250 215" stroke="#446983" stroke-width="2"/>
+
+    <!-- Measurements -->
+    <rect x="350" y="80" width="40" height="40" rx="4" fill="#1C2B38" stroke="#38506A"/>
+    <text x="370" y="106" font-family="'Inter', sans-serif" font-size="14" fill="#FFFFFF" text-anchor="middle">M</text>
+    
+    <rect x="350" y="180" width="40" height="40" rx="4" fill="#1C2B38" stroke="#38506A"/>
+    <text x="370" y="206" font-family="'Inter', sans-serif" font-size="14" fill="#FFFFFF" text-anchor="middle">M</text>
+    
+</svg>

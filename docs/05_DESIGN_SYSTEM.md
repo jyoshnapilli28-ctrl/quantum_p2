@@ -514,3 +514,281 @@ All tokens are defined in `src/styles/tokens.css` and imported into `src/styles/
 ```
 
 **Rule:** Never use raw hex values inside component CSS files. Always reference tokens.
+
+---
+
+## 11. Icon System
+
+All icons are SVG. All icons follow the approved color system. No random or external colors are used.
+
+### 11.1 Icon Color Hierarchy
+
+| State | Color Token | Hex | Use |
+|-------|------------|-----|-----|
+| Normal | `--color-arctic` | `#7991A8` | Default resting state |
+| Hover | `--color-white` | `#FFFFFF` | Mouse/touch hover |
+| Active | `--color-icicle` | `#446983` | Currently active/selected page |
+| Selected | `--color-white` + icicle glow | `#FFFFFF` | Item is selected |
+| Disabled | `--color-polar` | `#38506A` | Non-interactive state |
+| Background | `--color-solstice` | `#1C2B38` | Icon tile/button background |
+
+Apply these transitions in CSS:
+```css
+.icon { color: var(--color-arctic); transition: color 150ms ease; }
+.icon:hover { color: var(--color-white); }
+.icon.active { color: var(--color-icicle); }
+.icon:disabled, .icon[aria-disabled="true"] { color: var(--color-polar); pointer-events: none; }
+```
+
+### 11.2 Icon Sizes
+
+| Token | Size | Usage |
+|-------|------|-------|
+| `--icon-xs` | 14px | Inline within text |
+| `--icon-sm` | 16px | Compact controls |
+| `--icon-md` | 20px | Standard controls (default) |
+| `--icon-lg` | 24px | Primary actions |
+| `--icon-xl` | 32px | Feature icons, section headers |
+| `--icon-2xl` | 48px | Gate tiles |
+
+### 11.3 Icon Categories and Files
+
+All icon files are located in `assets/icons/`. Each category is a subfolder.
+
+---
+
+#### `assets/icons/navigation/`
+
+Used in the navigation bar and page routing.
+
+| File | Icon | Default Color |
+|------|------|--------------|
+| `home.svg` | House outline | `#7991A8` |
+| `menu.svg` | Hamburger (3 lines) | `#7991A8` |
+| `arrow-right.svg` | Right arrow | `#7991A8` |
+| `arrow-left.svg` | Left arrow | `#7991A8` |
+| `chevron-down.svg` | Downward chevron | `#7991A8` |
+| `chevron-right.svg` | Rightward chevron | `#7991A8` |
+| `external-link.svg` | Arrow out of box | `#7991A8` |
+| `info.svg` | Circle with i | `#7991A8` |
+| `help-circle.svg` | Circle with ? | `#7991A8` |
+
+Hover state: `#FFFFFF` | Active state: `#446983`
+
+---
+
+#### `assets/icons/quantum/`
+
+Used across all pages for quantum concept representation.
+
+| File | Icon | Default Color |
+|------|------|--------------|
+| `bit.svg` | Binary 0\|1 rectangle | `#446983` |
+| `qubit.svg` | Orbital sphere with nucleus | `#446983` |
+| `atom.svg` | Atom with three elliptical orbits | `#446983` |
+| `superposition.svg` | Overlapping sine waves | `#446983` |
+| `measurement.svg` | Meter/gauge dial | `#446983` |
+| `entanglement.svg` | Two linked circles | `#446983` |
+| `quantum-circuit.svg` | Wire + gate + controlled gate | `#446983` |
+| `quantum-wave.svg` | Continuous sine wave | `#446983` |
+| `quantum-math.svg` | |ψ⟩ = α|0⟩+β|1⟩ text tile | `#446983` |
+| `network.svg` | Triangle network nodes | `#7991A8` |
+| `nodes.svg` | 4-corner connected nodes | `#7991A8` |
+| `link.svg` | Chain link (entanglement) | `#446983` |
+| `connection.svg` | Two circles with dashed line | `#446983` |
+| `two-qubits.svg` | Two orbital spheres | `#446983` |
+| `correlation.svg` | Diagonal connected circles | `#446983` |
+| `infinity.svg` | ∞ symbol | `#446983` |
+| `pulse.svg` | Heartbeat / quantum pulse line | `#446983` |
+
+Important: Use `#FFFFFF` for active entanglement states. Use `#7991A8` for secondary indicators.
+
+---
+
+#### `assets/icons/gates/`
+
+Quantum gate tile icons. Consistent 48×48px design.
+
+**Gate tile anatomy:**
+```
+┌──────────────────────────────┐
+│  Background:  #1C2B38        │
+│  Border:      #38506A 1.5px  │
+│  Corner radius: 6px          │
+│  Symbol:      #FFFFFF bold   │
+└──────────────────────────────┘
+```
+
+| File | Gate | Symbol | Notes |
+|------|------|--------|-------|
+| `gate-H.svg` | Hadamard | **H** | White bold monospace |
+| `gate-X.svg` | Pauli-X | **X** | White bold monospace |
+| `gate-Y.svg` | Pauli-Y | **Y** | White bold monospace |
+| `gate-Z.svg` | Pauli-Z | **Z** | White bold monospace |
+| `gate-S.svg` | Phase S | **S** | White bold monospace |
+| `gate-T.svg` | T gate | **T** | White bold monospace |
+| `gate-CNOT.svg` | Controlled-NOT | ●─⊕ | Control dot + target circle |
+| `gate-SWAP.svg` | SWAP | × | Two crossing lines |
+
+Gate tile hover: border color → `#446983`, background → slightly lighter.  
+Gate tile selected: border → `#446983` with glow `box-shadow: 0 0 8px rgba(68,105,131,0.6)`.
+
+---
+
+#### `assets/icons/experiments/`
+
+Used in the Experiment Lab page.
+
+| File | Icon | Default Color |
+|------|------|--------------|
+| `flask.svg` | Laboratory flask | `#446983` |
+| `experiment.svg` | Flask with bubbles | `#446983` |
+| `play.svg` | Filled play triangle | `#446983` |
+| `reset.svg` | Circular reset arrow | `#446983` |
+| `check.svg` | Checkmark | `#4A9B7F` (success) |
+| `target.svg` | Concentric circles target | `#446983` |
+| `steps.svg` | Staircase steps | `#446983` |
+| `history.svg` | Clock with reset arrow | `#7991A8` |
+| `result.svg` | Bar chart | `#446983` |
+| `random.svg` | Shuffle arrows | `#446983` |
+
+Active state: `#FFFFFF` | Secondary: `#7991A8`
+
+---
+
+#### `assets/icons/circuit/`
+
+Used in the Circuit Builder page.
+
+| File | Icon | Default Color |
+|------|------|--------------|
+| `add.svg` | Plus | `#7991A8` |
+| `remove.svg` | Minus | `#7991A8` |
+| `trash.svg` | Trash can | `#7991A8` |
+| `copy.svg` | Copy rectangles | `#7991A8` |
+| `download.svg` | Down arrow to line | `#7991A8` |
+| `upload.svg` | Up arrow from line | `#7991A8` |
+| `drag.svg` | 6-dot drag handle | `#7991A8` |
+| `move.svg` | 4-directional cross | `#7991A8` |
+| `lock.svg` | Padlock closed | `#446983` |
+| `unlock.svg` | Padlock open | `#7991A8` |
+| `add-qubit.svg` | Wire + plus | `#7991A8` |
+| `delete-qubit.svg` | Wire + × | `#7991A8` |
+
+Hover: `#FFFFFF` | Active: `#446983`
+
+---
+
+#### `assets/icons/visualization/`
+
+Used in the Bloch sphere controls and visualization panels.
+
+| File | Icon | Default Color |
+|------|------|--------------|
+| `chart.svg` | Bar chart | `#7991A8` |
+| `probability.svg` | Ascending bars | `#7991A8` |
+| `activity.svg` | Heartbeat/pulse line | `#7991A8` |
+| `rotate-3d.svg` | Rotating arrows | `#7991A8` |
+| `zoom-in.svg` | Magnifier + plus | `#7991A8` |
+| `zoom-out.svg` | Magnifier + minus | `#7991A8` |
+| `fullscreen.svg` | Expand corners | `#7991A8` |
+| `minimize.svg` | Collapse corners | `#7991A8` |
+| `compass.svg` | Compass rose | `#7991A8` |
+| `crosshair.svg` | Crosshair circle | `#7991A8` |
+| `layers.svg` | Stacked layers | `#7991A8` |
+| `state-vector.svg` | Arrow on sphere | `#7991A8` |
+
+Bloch sphere camera controls primarily use `#7991A8`. Active camera mode: `#FFFFFF`.
+
+---
+
+#### `assets/icons/ui/`
+
+General purpose UI icons used across all pages.
+
+| File | Icon | Default Color |
+|------|------|--------------|
+| `search.svg` | Magnifier | `#7991A8` |
+| `settings.svg` | Gear | `#7991A8` |
+| `close.svg` | × | `#7991A8` |
+| `plus.svg` | + | `#7991A8` |
+| `minus.svg` | − | `#7991A8` |
+| `play.svg` | ▶ filled | `#446983` |
+| `pause.svg` | ‖ filled | `#7991A8` |
+| `refresh.svg` | Circular arrows | `#7991A8` |
+| `edit.svg` | Pencil | `#7991A8` |
+| `warning.svg` | Triangle ! | `#8A7A4A` |
+| `error.svg` | Circle ! | `#8A4A4A` |
+| `more-horizontal.svg` | ⋯ | `#7991A8` |
+| `more-vertical.svg` | ⋮ | `#7991A8` |
+| `eye.svg` | Open eye | `#7991A8` |
+| `eye-off.svg` | Crossed eye | `#7991A8` |
+
+### 11.4 Quantum State Notation Display
+
+Quantum state labels are rendered as **text/math elements**, not as image icons.
+
+| State | Display | Color |
+|-------|---------|-------|
+| Ground state | \|0⟩ | `#FFFFFF` |
+| Excited state | \|1⟩ | `#FFFFFF` |
+| Plus state | \|+⟩ | `#FFFFFF` |
+| Minus state | \|−⟩ | `#FFFFFF` |
+| General state | \|ψ⟩ | `#FFFFFF` |
+| Supporting labels | "State:", "Probability:" | `#7991A8` |
+
+Font for state notation: `'JetBrains Mono', monospace` at appropriate size.
+
+### 11.5 SVG Conventions
+
+All project SVG icons must follow these conventions:
+
+```
+viewBox:           "0 0 24 24" (standard) or "0 0 48 48" (gate tiles)
+width/height:      Set in SVG to default size; override via CSS
+stroke-width:      1.5px (standard icons)
+stroke-linecap:    round
+stroke-linejoin:   round
+fill:              none (unless icon uses filled shapes)
+Default stroke:    #7991A8 or #446983 per category
+```
+
+Never use `fill="currentColor"` without confirming the parent element sets the correct CSS `color` value.
+
+---
+
+## 12. Asset Directory Structure
+
+```
+assets/
+│
+├── references/               ← Design reference images (do not use in final app)
+│   ├── color-palette.jpeg    ← Official color palette visual reference
+│   └── bloch-sphere-reference.jpeg  ← Bloch sphere visual direction reference
+│
+├── fonts/                    ← Self-hosted web fonts (woff2 format)
+│   ├── fonts.css             ← @font-face declarations
+│   ├── inter-300.woff2       ← Inter Light
+│   ├── inter-400.woff2       ← Inter Regular
+│   ├── inter-500.woff2       ← Inter Medium
+│   ├── inter-600.woff2       ← Inter SemiBold
+│   ├── inter-700.woff2       ← Inter Bold
+│   ├── jetbrains-mono-400.woff2  ← JetBrains Mono Regular
+│   └── jetbrains-mono-500.woff2  ← JetBrains Mono Medium
+│
+├── icons/                    ← SVG icon library
+│   ├── navigation/           ← Nav bar icons (home, menu, arrows, chevrons)
+│   ├── quantum/              ← Quantum concept icons (qubit, entanglement, etc.)
+│   ├── gates/                ← Gate tile icons (H, X, Y, Z, S, T, CNOT, SWAP)
+│   ├── experiments/          ← Experiment Lab icons (flask, play, reset, etc.)
+│   ├── circuit/              ← Circuit Builder icons (add, trash, drag, etc.)
+│   ├── visualization/        ← Bloch sphere and chart icons
+│   └── ui/                   ← General purpose UI icons
+│
+├── images/                   ← Static raster images for the application
+│
+└── 3d/                       ← 3D model files or GLTF assets (if needed)
+```
+
+**Important:** The files in `assets/references/` are visual direction references only. They must never be displayed directly in the application UI as quantum visualizations. The Bloch sphere must always be rendered dynamically using Three.js/WebGL.
+

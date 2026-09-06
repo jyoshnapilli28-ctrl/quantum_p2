@@ -390,21 +390,103 @@ Phase 13: Final QA & Release
 
 ---
 
-## 16. Phase Summary Table
+## 16. Phase Summary Table (18 Phases — Master Specification)
 
-| Phase | Focus | Duration | Depends On |
-|-------|-------|---------|-----------|
-| 1 | Foundation | 3–5d | — |
-| 2 | Educational page | 5–7d | 1 |
-| 3 | Single-qubit engine | 3–5d | 1 |
-| 4 | Gate Visualizer | 7–10d | 3 |
-| 5 | Experiment Lab | 5–7d | 3 |
-| 6 | Two-qubit engine | 3–4d | 3 |
-| 7 | Entanglement Simulator | 4–6d | 6 |
-| 8 | Circuit Builder | 8–12d | 6 |
-| 9 | Animations + 3D polish | 4–6d | 4–8 |
-| 10 | Responsive | 3–5d | 1–9 |
-| 11 | Accessibility | 3–4d | 10 |
-| 12 | Performance | 2–3d | 11 |
-| 13 | Final QA | 2–3d | 12 |
-| **Total** | | **56–83 days** | |
+| Phase | Name | Duration | Depends On |
+|-------|------|---------|-----------|
+| 1 | Project Foundation | 3–5d | — |
+| 2 | Design System | 2–3d | 1 |
+| 3 | Quantum Mathematics | 2–3d | 1 |
+| 4 | Quantum Engine (single-qubit) | 3–5d | 3 |
+| 5 | Quantum Universe (Page 1) | 5–7d | 2, 4 |
+| 6 | Gate Visualizer (Page 2) | 7–10d | 4 |
+| 7 | Bloch Sphere (3D) | 4–6d | 6 |
+| 8 | Experiment Lab (Page 3) | 5–7d | 4 |
+| 9 | Multi-Qubit Engine | 3–4d | 4 |
+| 10 | Entanglement Simulator (Page 4) | 4–6d | 9 |
+| 11 | Circuit Builder (Page 5) | 8–12d | 9 |
+| 12 | Visualization Polish | 3–4d | 7, 10, 11 |
+| 13 | Animation Polish | 2–3d | 5–11 |
+| 14 | Responsive Optimization | 3–5d | 5–11 |
+| 15 | Accessibility | 3–4d | 14 |
+| 16 | Performance Optimization | 2–3d | 15 |
+| 17 | Testing and QA | 3–5d | 16 |
+| 18 | Final Polish | 2–3d | 17 |
+| **Total** | | **68–101 days** | |
+
+---
+
+## 17. Phases 12–18 Detail
+
+### Phase 12 — Visualization Polish
+
+- [ ] Bloch sphere lighting, material, and glow reviewed against reference image
+- [ ] Entanglement arc marching-ants animation polished
+- [ ] Probability bar animations smooth and correct
+- [ ] State vector arrow tip glow (point light at sphere surface)
+- [ ] All circuit gate visuals match `05_DESIGN_SYSTEM.md` gate tiles
+- [ ] Entanglement connection arc renders correctly on mobile (vertical)
+
+### Phase 13 — Animation Polish
+
+- [ ] All animation durations match `20_ANIMATION_SYSTEM.md`
+- [ ] All easing curves match spec
+- [ ] Gate application Bloch sphere SLERP smooth at 60fps
+- [ ] Page transitions animate correctly (fade in/out)
+- [ ] Experiment step progress animation (progress line draw)
+- [ ] Circuit gate placement spring animation
+- [ ] `prefers-reduced-motion` disables or simplifies all animations
+
+### Phase 14 — Responsive Optimization
+
+- [ ] 375px (mobile S): all content usable
+- [ ] 768px (tablet): layout correct
+- [ ] 1024px (laptop): layout correct
+- [ ] 1440px (desktop): maximum layout correct
+- [ ] Bloch sphere responsive sizing
+- [ ] Circuit builder tap-to-place on mobile verified
+- [ ] Gate panel horizontal scroll on mobile
+- [ ] All touch targets ≥ 48px
+
+### Phase 15 — Accessibility
+
+- [ ] ARIA labels on all interactive elements
+- [ ] `#quantum-announcer` live region wired to state changes
+- [ ] Full keyboard navigation through all 5 pages
+- [ ] `:focus-visible` visible on all focusable elements
+- [ ] NVDA + Chrome screen reader test
+- [ ] Color contrast WCAG AA verified on all text pairs
+- [ ] `prefers-reduced-motion` media query in CSS
+- [ ] axe DevTools: 0 critical issues on all 5 pages
+
+### Phase 16 — Performance Optimization
+
+- [ ] Lighthouse ≥ 90 on all 5 pages (desktop + mobile simulation)
+- [ ] Initial bundle < 200 KB gzipped
+- [ ] Three.js chunk loaded only on `/gate-visualizer`
+- [ ] Bloch sphere: frame time < 16.6ms during animation
+- [ ] Quantum calculations < 5ms for 10k shots
+- [ ] `frameloop="demand"` verified on R3F Canvas
+
+### Phase 17 — Testing and QA
+
+- [ ] All engine unit tests pass
+- [ ] Gate matrix values verified for all 8 gates
+- [ ] Bell state (50%/50%) distribution test passes
+- [ ] Bloch sphere coordinates verified for |0⟩, |1⟩, |+⟩, |−⟩, |i⟩
+- [ ] Circuit execution verified for Bell state circuit
+- [ ] Reset verified on all 5 pages
+- [ ] Full manual QA from `25_TESTING_QA.md`
+- [ ] Cross-browser: Chrome, Firefox, Safari, Edge
+- [ ] Cross-device: desktop, tablet, iPhone, Android
+
+### Phase 18 — Final Polish
+
+- [ ] Visual review against `05_DESIGN_SYSTEM.md`
+- [ ] All colors match approved palette (no stray values)
+- [ ] All icons match `05_DESIGN_SYSTEM.md` Section 11 color rules
+- [ ] No console errors or warnings in production build
+- [ ] `npm run build` completes without TypeScript errors
+- [ ] Final bundle report reviewed
+- [ ] All 27 documentation files consistent with implementation
+

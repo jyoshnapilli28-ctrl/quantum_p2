@@ -1,0 +1,101 @@
+{
+  "_comment": "Bloch sphere gate-state presets for the Three.js Quantum Gate Visualizer. The StateVector node's default orientation is +Z (|0>). Applying a gate = setting the StateVector node quaternion to the matching preset quaternion (or composing rotations). Common gate->state examples: H on |0> -> |+> (Preset_plus); X on |0> -> |1> (Preset_ket1); Z on |+> -> |-> (Preset_minus); S and T are phase rotations about the Z axis.",
+  "state_vector_default_orientation": [
+    0.0,
+    0.0,
+    1.0
+  ],
+  "default_state_ket": "|0>",
+  "presets": [
+    {
+      "name": "Preset_ket0",
+      "ket": "|0>",
+      "bloch_vector": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "quaternion": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    },
+    {
+      "name": "Preset_ket1",
+      "ket": "|1>",
+      "bloch_vector": [
+        0.0,
+        0.0,
+        -1.0
+      ],
+      "quaternion": [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "name": "Preset_plus",
+      "ket": "|+>",
+      "bloch_vector": [
+        1.0,
+        0.0,
+        0.0
+      ],
+      "quaternion": [
+        0.0,
+        0.7071067811865475,
+        0.0,
+        0.7071067811865476
+      ]
+    },
+    {
+      "name": "Preset_minus",
+      "ket": "|->",
+      "bloch_vector": [
+        -1.0,
+        0.0,
+        0.0
+      ],
+      "quaternion": [
+        0.0,
+        -0.7071067811865475,
+        0.0,
+        0.7071067811865476
+      ]
+    },
+    {
+      "name": "Preset_iplus",
+      "ket": "|+i>",
+      "bloch_vector": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "quaternion": [
+        -0.7071067811865475,
+        0.0,
+        0.0,
+        0.7071067811865476
+      ]
+    },
+    {
+      "name": "Preset_iminus",
+      "ket": "|-i>",
+      "bloch_vector": [
+        0.0,
+        -1.0,
+        0.0
+      ],
+      "quaternion": [
+        0.7071067811865475,
+        0.0,
+        -0.0,
+        0.7071067811865476
+      ]
+    }
+  ]
+}
