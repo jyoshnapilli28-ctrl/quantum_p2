@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import type { motion, AnimatePresence } from 'framer-motion';
 import { useQuantumStore } from '../store';
 import { QuantumPanel } from '../components/shared/QuantumPanel';
 import { GateButton } from '../components/shared/GateButton';
 import { ProbabilityBar } from '../components/shared/ProbabilityBar';
-import { SingleQubitGateId } from '@types/quantum';
+import type { SingleQubitGateId } from '@types/quantum';
 import { Icon } from '../components/shared/Icon';
 
 export const CircuitBuilder: React.FC = () => {

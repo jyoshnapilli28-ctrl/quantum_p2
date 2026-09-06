@@ -1,5 +1,5 @@
 import React from 'react';
-import { GateId } from '@types/quantum';
+import type { GateId } from \'@types/quantum\';
 import { motion } from 'framer-motion';
 
 interface GateButtonProps {

@@ -1,5 +1,5 @@
-import { StateCreator } from 'zustand';
-import { StateVector2Q, Probabilities2Q, MeasurementOutcome2Q } from '@types/quantum';
+import type { StateCreator } from 'zustand';
+import type { StateVector2Q, Probabilities2Q, MeasurementOutcome2Q } from '@types/quantum';
 import { createTwoQubitZeroState, applyGateToQubit, applyCNOT, measureTwoQubit, getProbabilities2Q, isEntangled } from '@engine/index';
 
 export type WorkflowStep = 'START' | 'H_APPLIED' | 'CNOT_APPLIED' | 'MEASURED';

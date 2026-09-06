@@ -1,5 +1,5 @@
-import { StateCreator } from 'zustand';
-import { StateVector1Q, StateVector2Q, ExperimentDefinition, ExperimentStep } from '@types/quantum';
+import type { StateCreator } from 'zustand';
+import type { StateVector1Q, StateVector2Q, ExperimentDefinition, ExperimentStep } from '@types/quantum';
 import { createZeroState, createTwoQubitZeroState, applyGate, measureSingle, getProbabilities1Q, getProbabilities2Q } from '@engine/index';
 
 // We define the 5 experiments based on the specification

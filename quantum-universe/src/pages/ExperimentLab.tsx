@@ -1,11 +1,11 @@
 import React, { useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import type { motion, AnimatePresence } from 'framer-motion';
 import { useQuantumStore } from '../store';
 import { QuantumPanel } from '../components/shared/QuantumPanel';
 import { GateButton } from '../components/shared/GateButton';
 import { ProbabilityBar } from '../components/shared/ProbabilityBar';
 import { MeasurementResult } from '../components/shared/MeasurementResult';
-import { ExperimentDefinition } from '@types/quantum';
+import type { ExperimentDefinition } from '@types/quantum';
 
 export const ExperimentLab: React.FC = () => {
   const {

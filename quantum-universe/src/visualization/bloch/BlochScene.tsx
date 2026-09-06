@@ -1,10 +1,10 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { useFrame } from '@react-three/fiber';
+import type { useFrame } from '@react-three/fiber';
 import { Html } from '@react-three/drei';
 import * as THREE from 'three';
 import { BlochSphere3D } from './BlochSphere3D';
 import { StateVector } from './StateVector';
-import { BlochCoordinates } from '@types/quantum';
+import type { BlochCoordinates } from '@types/quantum';
 import { useReducedMotion } from '../../hooks/useReducedMotion';
 
 interface BlochSceneProps {

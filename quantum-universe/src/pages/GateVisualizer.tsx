@@ -1,5 +1,5 @@
 import React from 'react';
-import { motion } from 'framer-motion';
+import type { motion } from 'framer-motion';
 import { useQuantumStore } from '../store';
 import { QuantumPanel } from '../components/shared/QuantumPanel';
 import { BlochSphere } from '../components/bloch/BlochSphere';
@@ -7,7 +7,7 @@ import { GateButton } from '../components/shared/GateButton';
 import { ProbabilityBar } from '../components/shared/ProbabilityBar';
 import { DiracNotation } from '../components/shared/DiracNotation';
 import { MeasurementResult } from '../components/shared/MeasurementResult';
-import { SingleQubitGateId } from '@types/quantum';
+import type { SingleQubitGateId } from '@types/quantum';
 import { Icon } from '../components/shared/Icon';
 
 export const GateVisualizer: React.FC = () => {

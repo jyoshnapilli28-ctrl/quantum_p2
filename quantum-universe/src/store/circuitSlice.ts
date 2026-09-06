@@ -1,5 +1,5 @@
-import { StateCreator } from 'zustand';
-import { CircuitDefinition, GatePlacement, CircuitResult, GateId } from '@types/quantum';
+import type { StateCreator } from 'zustand';
+import type { CircuitDefinition, GatePlacement, CircuitResult, GateId } from '@types/quantum';
 import { executeCircuit } from '@engine/index';
 
 export type ExecutionState = 'IDLE' | 'RUNNING' | 'COMPLETED' | 'ERROR';
