@@ -2,7 +2,7 @@ import React, { Suspense } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
 import { BlochScene } from '@viz/bloch/BlochScene';
-import type { BlochCoordinates } from '@types/quantum';
+import type { BlochCoordinates } from '@quantum-types/quantum';
 
 interface BlochSphereProps {
   coordinates: BlochCoordinates;

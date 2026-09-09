@@ -4,7 +4,7 @@ import { Html } from '@react-three/drei';
 import * as THREE from 'three';
 import { BlochSphere3D } from './BlochSphere3D';
 import { StateVector } from './StateVector';
-import type { BlochCoordinates } from '@types/quantum';
+import type { BlochCoordinates } from '@quantum-types/quantum';
 import { useReducedMotion } from '../../hooks/useReducedMotion';
 import { animationConfig } from '../../animations/animationConfig';
 

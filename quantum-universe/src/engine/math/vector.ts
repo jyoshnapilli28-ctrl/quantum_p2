@@ -1,4 +1,4 @@
-import type { Complex } from '@types/quantum';
+import type { Complex } from '@quantum-types/quantum';
 import * as C from './complex';
 
 /**

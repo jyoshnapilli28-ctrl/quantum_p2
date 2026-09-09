@@ -6,7 +6,7 @@ import { GateButton } from '../components/shared/GateButton';
 import { ProbabilityBar } from '../components/shared/ProbabilityBar';
 import { DiracNotation } from '../components/shared/DiracNotation';
 import { MeasurementResult } from '../components/shared/MeasurementResult';
-import type { SingleQubitGateId } from '@types/quantum';
+import type { SingleQubitGateId } from '@quantum-types/quantum';
 import { getBlochCoordinates } from '@engine/index';
 
 export const GateVisualizer: React.FC = () => {

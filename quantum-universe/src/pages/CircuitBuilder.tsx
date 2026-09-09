@@ -4,7 +4,7 @@ import { QuantumPanel } from '../components/shared/QuantumPanel';
 import { GateButton } from '../components/shared/GateButton';
 import { ProbabilityBar } from '../components/shared/ProbabilityBar';
 import { animationConfig } from '../animations/animationConfig';
-import type { SingleQubitGateId } from '@types/quantum';
+import type { SingleQubitGateId } from '@quantum-types/quantum';
 
 const MAX_COLUMNS = 6;
 

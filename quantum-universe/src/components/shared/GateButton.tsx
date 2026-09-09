@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import type { GateId } from '@types/quantum';
+import type { GateId } from '@quantum-types/quantum';
 import { motion } from 'framer-motion';
 import { animationConfig } from '../../animations/animationConfig';
 import { useReducedMotion } from '../../hooks/useReducedMotion';

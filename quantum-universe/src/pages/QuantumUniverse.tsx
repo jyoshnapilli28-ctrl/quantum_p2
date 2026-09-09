@@ -7,6 +7,7 @@ import { GateButton } from '../components/shared/GateButton';
 import { Icon } from '../components/shared/Icon';
 import { applyGate, createZeroState, measureSingle, getProbabilities1Q, applyCNOT, createTwoQubitZeroState, applyGateToQubit, getProbabilities2Q } from '@engine/index';
 import { Link } from 'react-router-dom';
+import { getAssetUrl } from '../utils/assetPath';
 
 export const QuantumUniverse: React.FC = () => {
   // Demo 1 State (Classical Bit vs Qubit)
@@ -91,7 +92,7 @@ export const QuantumUniverse: React.FC = () => {
         {/* Section 1: Bits vs Qubits */}
         <EducationalSection
           title="1. Classical Bits vs. Qubits"
-          illustrationSrc="/assets/images/illustrations/quantum-universe/bit-vs-qubit.svg"
+          illustrationSrc={getAssetUrl('assets/images/illustrations/quantum-universe/bit-vs-qubit.svg')}
           description={
             <>
               <p style={{ marginBottom: '0.75rem' }}>Classical computers store information in bits: binary units evaluating strictly to 0 or 1.</p>
@@ -140,7 +141,7 @@ export const QuantumUniverse: React.FC = () => {
         {/* Section 2: Superposition */}
         <EducationalSection
           title="2. Quantum Superposition"
-          illustrationSrc="/assets/images/illustrations/quantum-universe/superposition.svg"
+          illustrationSrc={getAssetUrl('assets/images/illustrations/quantum-universe/superposition.svg')}
           reversed
           description={
             <>
@@ -181,7 +182,7 @@ export const QuantumUniverse: React.FC = () => {
         {/* Section 3: Measurement */}
         <EducationalSection
           title="3. The Measurement Postulate"
-          illustrationSrc="/assets/images/illustrations/quantum-universe/measurement.svg"
+          illustrationSrc={getAssetUrl('assets/images/illustrations/quantum-universe/measurement.svg')}
           description={
             <>
               <p style={{ marginBottom: '0.75rem' }}>According to the Born rule, observing a qubit irreversibly collapses its probability wave into an eigenstate |0⟩ or |1⟩ with probability |α|² and |β|² respectively.</p>
@@ -242,7 +243,7 @@ export const QuantumUniverse: React.FC = () => {
         {/* Section 4: Quantum Gates */}
         <EducationalSection
           title="4. Quantum Logic Gates"
-          illustrationSrc="/assets/images/illustrations/quantum-universe/quantum-gates.svg"
+          illustrationSrc={getAssetUrl('assets/images/illustrations/quantum-universe/quantum-gates.svg')}
           reversed
           description={
             <>
@@ -283,7 +284,7 @@ export const QuantumUniverse: React.FC = () => {
         {/* Section 5: Entanglement */}
         <EducationalSection
           title="5. Quantum Entanglement"
-          illustrationSrc="/assets/images/illustrations/quantum-universe/entanglement.svg"
+          illustrationSrc={getAssetUrl('assets/images/illustrations/quantum-universe/entanglement.svg')}
           description={
             <>
               <p style={{ marginBottom: '0.75rem' }}>When two qubits become entangled, their joint state cannot be factored independently: |ψ⟩ ≠ |q₀⟩ ⊗ |q₁⟩.</p>
@@ -359,7 +360,7 @@ export const QuantumUniverse: React.FC = () => {
         {/* Section 6: Circuits */}
         <EducationalSection
           title="6. Quantum Circuit Execution"
-          illustrationSrc="/assets/images/illustrations/quantum-universe/quantum-circuit.svg"
+          illustrationSrc={getAssetUrl('assets/images/illustrations/quantum-universe/quantum-circuit.svg')}
           reversed
           description={
             <>
@@ -370,7 +371,7 @@ export const QuantumUniverse: React.FC = () => {
           interactiveDemo={
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'var(--space-4)' }}>
                <img 
-                 src="/assets/images/illustrations/circuit-builder/circuit-builder.svg" 
+                 src={getAssetUrl('assets/images/illustrations/circuit-builder/circuit-builder.svg')} 
                  alt="Circuit Canvas" 
                  style={{ width: '100%', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-default, #D4BBFF)' }} 
                />

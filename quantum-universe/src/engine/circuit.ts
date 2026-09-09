@@ -1,4 +1,4 @@
-import type { CircuitDefinition, CircuitResult, StateVector2Q } from '@types/quantum';
+import type { CircuitDefinition, CircuitResult, StateVector2Q } from '@quantum-types/quantum';
 import { createZeroState, createTwoQubitZeroState } from './qubit';
 import { applyGate } from './gates';
 import { applyGateToQubit, applyCNOT, applySWAP } from './multiQubit';

@@ -6,7 +6,7 @@ import { GateButton } from '../components/shared/GateButton';
 import { ProbabilityBar } from '../components/shared/ProbabilityBar';
 import { MeasurementResult } from '../components/shared/MeasurementResult';
 import { getProbabilities1Q } from '@engine/index';
-import type { StateVector1Q } from '@types/quantum';
+import type { StateVector1Q } from '@quantum-types/quantum';
 
 export const ExperimentLab: React.FC = () => {
   const {

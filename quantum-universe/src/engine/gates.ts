@@ -1,4 +1,4 @@
-import type { StateVector1Q, SingleQubitGateId, Matrix2x2 } from '@types/quantum';
+import type { StateVector1Q, SingleQubitGateId, Matrix2x2 } from '@quantum-types/quantum';
 import { fromReal, fromImaginary } from './math/complex';
 import { applyMatrix2x2 } from './math/matrix';
 import { normalize } from './math/vector';

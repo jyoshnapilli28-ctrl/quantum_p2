@@ -1,4 +1,5 @@
 import React from 'react';
+import { getAssetUrl } from '../../utils/assetPath';
 
 interface QynxLoadingProps {
   message?: string;
@@ -30,7 +31,7 @@ export const QynxLoading: React.FC<QynxLoadingProps> = ({
         }}
       >
         <img
-          src="/assets/images/branding/qynx-icon.png"
+          src={getAssetUrl('assets/images/branding/qynx-icon.png')}
           alt="QYNX"
           style={{
             width: `${size}px`,

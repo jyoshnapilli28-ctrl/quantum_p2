@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { NavLink, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import { getAssetUrl } from '../../utils/assetPath';
 
 export const Navigation: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -41,7 +42,7 @@ export const Navigation: React.FC = () => {
         }}
       >
         <img
-          src="/assets/images/branding/qynx-icon.png"
+          src={getAssetUrl('assets/images/branding/qynx-icon.png')}
           alt="QYNX"
           style={{
             width: '28px',

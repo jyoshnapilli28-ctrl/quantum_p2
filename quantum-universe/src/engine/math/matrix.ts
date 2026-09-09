@@ -1,4 +1,4 @@
-import type { Complex, Matrix2x2, StateVector1Q } from '@types/quantum';
+import type { Complex, Matrix2x2, StateVector1Q } from '@quantum-types/quantum';
 import * as C from './complex';
 
 /**

@@ -1,5 +1,5 @@
 import type { StateCreator } from 'zustand';
-import type { StateVector1Q, GateId, GateHistoryEntry, Probabilities1Q, BlochCoordinates } from '@types/quantum';
+import type { StateVector1Q, GateId, GateHistoryEntry, Probabilities1Q, BlochCoordinates } from '@quantum-types/quantum';
 import { createZeroState, applyGate, getProbabilities1Q, getBlochCoordinates, getStateName, measureSingle } from '@engine/index';
 
 export interface GateVisualizerState {

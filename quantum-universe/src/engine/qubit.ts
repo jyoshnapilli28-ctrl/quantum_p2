@@ -1,4 +1,4 @@
-import type { StateVector1Q, StateVector2Q } from '@types/quantum';
+import type { StateVector1Q, StateVector2Q } from '@quantum-types/quantum';
 import { fromReal } from './math/complex';
 
 const ONE = fromReal(1);

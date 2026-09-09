@@ -6,7 +6,7 @@ import type {
   BlochCoordinates,
   MeasurementOutcome1Q,
   MeasurementOutcome2Q
-} from '@types/quantum';
+} from '@quantum-types/quantum';
 import { magnitudeSquared, multiply, conjugate } from './math/complex';
 import { createZeroState, createOneState, createTwoQubitZeroState } from './qubit';
 

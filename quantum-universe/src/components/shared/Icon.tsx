@@ -1,4 +1,5 @@
 import React from 'react';
+import { getAssetUrl } from '../../utils/assetPath';
 
 interface IconProps {
   category: 'core' | 'gates' | 'hardware' | 'math' | 'physics' | 'states' | 'ui' | 'quantum' | 'circuit' | 'experiments' | 'navigation' | 'visualization';
@@ -16,25 +17,31 @@ export const Icon: React.FC<IconProps> = ({
   alt = '' 
 }) => {
   const [hasError, setHasError] = React.useState(false);
-  const [srcPath, setSrcPath] = React.useState(`/assets/icons/${category}/${name}.svg`);
+  const [srcPath, setSrcPath] = React.useState(() => getAssetUrl(`assets/icons/${category}/${name}.svg`));
 
   // Reset error/path when props change
   React.useEffect(() => {
     setHasError(false);
-    setSrcPath(`/assets/icons/${category}/${name}.svg`);
+    setSrcPath(getAssetUrl(`assets/icons/${category}/${name}.svg`));
   }, [category, name]);
 
   const handleError = () => {
-    // If it failed on a non-quantum category, try quantum category first
-    if (category !== 'quantum' && srcPath !== `/assets/icons/quantum/${name}.svg`) {
-      setSrcPath(`/assets/icons/quantum/${name}.svg`);
+    const quantumPath = getAssetUrl(`assets/icons/quantum/${name}.svg`);
+    const corePath = getAssetUrl(`assets/icons/core/${name}.svg`);
+
+    // Multi-tiered search: if requested category isn't quantum, try quantum
+    if (srcPath !== quantumPath) {
+      setSrcPath(quantumPath);
+    } else if (srcPath !== corePath) {
+      // If quantum failed, try core category
+      setSrcPath(corePath);
     } else {
       setHasError(true);
     }
   };
 
   if (hasError) {
-    // Intentional QYNX fallback component — no broken browser icon
+    // Secondary safety fallback — retains UI stability without breaking
     return (
       <div
         className={`icon-fallback ${className}`}

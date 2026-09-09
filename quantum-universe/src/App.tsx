@@ -30,6 +30,14 @@ const RootLayout = () => {
   );
 };
 
+const getRouterOpts = () => {
+  const base = import.meta.env.BASE_URL;
+  if (base && base !== './' && base !== '.') {
+    return { basename: base.replace(/\/+$/, '') };
+  }
+  return undefined;
+};
+
 const router = createBrowserRouter([
   {
     path: '/',
@@ -62,7 +70,7 @@ const router = createBrowserRouter([
       }
     ]
   }
-]);
+], getRouterOpts());
 
 function App() {
   return <RouterProvider router={router} />;
