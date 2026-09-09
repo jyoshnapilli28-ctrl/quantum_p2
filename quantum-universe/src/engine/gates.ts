@@ -28,7 +28,7 @@ export const GATE_MATRICES: Record<SingleQubitGateId, Matrix2x2> = {
   ],
   'T': [
     [fromReal(1), fromReal(0)],
-    [fromReal(INV_SQRT2), fromImaginary(INV_SQRT2)] // e^(i*pi/4) = cos(pi/4) + i*sin(pi/4) = 1/sqrt(2) + i/sqrt(2)
+    [fromReal(0), { re: INV_SQRT2, im: INV_SQRT2 }] // e^(i*pi/4) = cos(pi/4) + i*sin(pi/4) = 1/sqrt(2) + i/sqrt(2)
   ]
 };
 

@@ -2,18 +2,18 @@
   "name": "QYNX — Quantum Computing Simulation",
   "short_name": "QYNX",
   "description": "An interactive educational quantum computing simulation platform.",
-  "start_url": "./",
+  "start_url": "/",
   "display": "standalone",
   "background_color": "#F6F2FF",
   "theme_color": "#F6F2FF",
   "icons": [
     {
-      "src": "./favicon.png",
+      "src": "/favicon.png",
       "sizes": "64x64 32x32 24x24 16x16",
       "type": "image/png"
     },
     {
-      "src": "./apple-touch-icon.png",
+      "src": "/apple-touch-icon.png",
       "type": "image/png",
       "sizes": "180x180"
     }

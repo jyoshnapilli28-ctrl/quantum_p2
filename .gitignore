@@ -1,0 +1,33 @@
+# Dependencies
+node_modules
+quantum-universe/node_modules
+
+# Production builds
+dist
+quantum-universe/dist
+dist-ssr
+quantum-universe/dist-ssr
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# IDE / Editor files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?

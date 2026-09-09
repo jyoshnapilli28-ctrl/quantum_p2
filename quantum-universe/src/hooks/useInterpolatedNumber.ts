@@ -12,19 +12,18 @@ export function useInterpolatedNumber(
 ): number {
   const prefersReduced = useReducedMotion();
   const [currentValue, setCurrentValue] = useState(targetValue);
+  const currentValRef = useRef(targetValue);
   const animRef = useRef<number | null>(null);
-  const startValRef = useRef(targetValue);
   const startTimeRef = useRef<number | null>(null);
 
   useEffect(() => {
     if (prefersReduced) {
       setCurrentValue(targetValue);
-      startValRef.current = targetValue;
+      currentValRef.current = targetValue;
       return;
     }
 
-    const startVal = currentValue;
-    startValRef.current = startVal;
+    const startVal = currentValRef.current;
     startTimeRef.current = null;
 
     const animate = (timestamp: number) => {
@@ -36,13 +35,14 @@ export function useInterpolatedNumber(
       const easeProgress = 1 - Math.pow(1 - progress, 3);
       const nextVal = startVal + (targetValue - startVal) * easeProgress;
 
+      currentValRef.current = nextVal;
       setCurrentValue(nextVal);
 
       if (progress < 1) {
         animRef.current = requestAnimationFrame(animate);
       } else {
+        currentValRef.current = targetValue;
         setCurrentValue(targetValue);
-        startValRef.current = targetValue;
       }
     };
 

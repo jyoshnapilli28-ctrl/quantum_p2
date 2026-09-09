@@ -1,0 +1,12 @@
+{
+  "name": "quantum-p2",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "npm --prefix quantum-universe run dev",
+    "build": "npm --prefix quantum-universe run build",
+    "preview": "npm --prefix quantum-universe run preview",
+    "lint": "npm --prefix quantum-universe run lint"
+  }
+}

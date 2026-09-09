@@ -3,7 +3,9 @@ import { useReducedMotion } from '../../hooks/useReducedMotion';
 
 export const CustomCursor: React.FC = () => {
   const prefersReduced = useReducedMotion();
-  const [isTouchDevice, setIsTouchDevice] = useState(false);
+  const [isTouchDevice] = useState(() => 
+    typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches
+  );
   const [isVisible, setIsVisible] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
 
@@ -16,11 +18,7 @@ export const CustomCursor: React.FC = () => {
   const ringRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Check if device uses touch/coarse pointer
-    if (window.matchMedia('(pointer: coarse)').matches) {
-      setIsTouchDevice(true);
-      return;
-    }
+    if (isTouchDevice) return;
 
     const handleMouseMove = (e: MouseEvent) => {
       mousePos.current = { x: e.clientX, y: e.clientY };
@@ -83,7 +81,7 @@ export const CustomCursor: React.FC = () => {
       document.removeEventListener('mouseenter', handleMouseEnter);
       cancelAnimationFrame(rafId);
     };
-  }, [isVisible, prefersReduced]);
+  }, [isTouchDevice, isVisible, prefersReduced]);
 
   if (isTouchDevice || prefersReduced) {
     return null;

@@ -1,26 +1,22 @@
-import React from 'react';
+import React, { forwardRef } from 'react';
 import * as THREE from 'three';
 
 interface StateVectorProps {
-  x: number;
-  y: number;
-  z: number;
+  initialPosition?: THREE.Vector3;
 }
 
-export const StateVector: React.FC<StateVectorProps> = ({ x, y, z }) => {
-  const targetPosition = new THREE.Vector3(x, y, z);
+export const StateVector = forwardRef<THREE.Group, StateVectorProps>(({ initialPosition }, ref) => {
   const quaternion = new THREE.Quaternion();
-  
-  if (targetPosition.lengthSq() > 0.001) {
-    targetPosition.normalize();
-    quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), targetPosition);
+  if (initialPosition && initialPosition.lengthSq() > 0.001) {
+    const normPos = initialPosition.clone().normalize();
+    quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), normPos);
   }
 
   const shaftLength = 0.84;
   const tipLength = 0.16;
-  
+
   return (
-    <group quaternion={quaternion}>
+    <group ref={ref} quaternion={quaternion}>
       {/* State Vector Shaft: QYNX Purple 60 */}
       <mesh position={[0, shaftLength / 2, 0]}>
         <cylinderGeometry args={[0.02, 0.02, shaftLength, 24]} />
@@ -40,4 +36,6 @@ export const StateVector: React.FC<StateVectorProps> = ({ x, y, z }) => {
       </mesh>
     </group>
   );
-};
+});
+
+StateVector.displayName = 'StateVector';

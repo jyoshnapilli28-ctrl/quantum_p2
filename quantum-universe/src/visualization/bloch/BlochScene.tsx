@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useMemo } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { Html } from '@react-three/drei';
 import * as THREE from 'three';
@@ -19,6 +19,7 @@ interface BlochSceneProps {
 // QM: Z is vertical (|0> up, |1> down), X is front, Y is lateral
 // Three.js: Y is up (+Y = +Z_qm), X is lateral, Z is front
 const mapCoords = (coords: BlochCoordinates) => new THREE.Vector3(coords.x, coords.z, coords.y);
+const UP = new THREE.Vector3(0, 1, 0);
 
 export const BlochScene: React.FC<BlochSceneProps> = ({
   coordinates,
@@ -27,30 +28,39 @@ export const BlochScene: React.FC<BlochSceneProps> = ({
   onAnimationComplete
 }) => {
   const prefersReducedMotion = useReducedMotion();
+  const vectorGroupRef = useRef<THREE.Group>(null);
   const currentVecRef = useRef<THREE.Vector3>(mapCoords(coordinates));
   const progressRef = useRef(1);
 
-  const targetVec = mapCoords(coordinates);
-  const startVec = previousCoordinates ? mapCoords(previousCoordinates) : targetVec;
+  const targetVec = useMemo(() => mapCoords(coordinates), [coordinates]);
+  const startVec = useMemo(() => previousCoordinates ? mapCoords(previousCoordinates) : targetVec, [previousCoordinates, targetVec]);
   const durationSec = animationConfig.durations.blochTransition / 1000;
 
   useEffect(() => {
     if (isAnimating) {
       if (prefersReducedMotion) {
         currentVecRef.current.copy(targetVec);
+        if (vectorGroupRef.current) {
+          vectorGroupRef.current.quaternion.setFromUnitVectors(UP, targetVec);
+        }
         onAnimationComplete();
       } else {
         progressRef.current = 0;
       }
+    } else if (vectorGroupRef.current) {
+      vectorGroupRef.current.quaternion.setFromUnitVectors(UP, targetVec);
     }
-  }, [coordinates, isAnimating, prefersReducedMotion]);
+  }, [coordinates, isAnimating, prefersReducedMotion, targetVec, onAnimationComplete]);
 
   useFrame((_, delta) => {
+    if (!vectorGroupRef.current) return;
+
     if (isAnimating && !prefersReducedMotion) {
       progressRef.current += delta / durationSec;
       
       if (progressRef.current >= 1) {
         currentVecRef.current.copy(targetVec);
+        vectorGroupRef.current.quaternion.setFromUnitVectors(UP, targetVec);
         onAnimationComplete();
       } else {
         // Smooth S-curve easing: 3*t^2 - 2*t^3 (smoothstep)
@@ -59,6 +69,7 @@ export const BlochScene: React.FC<BlochSceneProps> = ({
         
         // Spherical interpolation on unit sphere
         currentVecRef.current.copy(startVec).lerp(targetVec, easeT).normalize();
+        vectorGroupRef.current.quaternion.setFromUnitVectors(UP, currentVecRef.current);
       }
     }
   });
@@ -68,9 +79,8 @@ export const BlochScene: React.FC<BlochSceneProps> = ({
       <BlochSphere3D />
       
       <StateVector 
-        x={currentVecRef.current.x} 
-        y={currentVecRef.current.y} 
-        z={currentVecRef.current.z} 
+        ref={vectorGroupRef}
+        initialPosition={targetVec}
       />
 
       {/* State Labels (Z axis - North/South poles) */}
