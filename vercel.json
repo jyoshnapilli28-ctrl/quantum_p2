@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/",
+      "destination": "/quantum-universe/index.html"
+    }
+  ]
+}
