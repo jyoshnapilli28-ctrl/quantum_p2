@@ -4,38 +4,37 @@ import { Sphere, Line, Torus } from '@react-three/drei';
 export const BlochSphere3D: React.FC = () => {
   return (
     <group>
-      {/* Main Glass Sphere */}
-      <Sphere args={[1.0, 64, 64]}>
-        <meshPhysicalMaterial
-          color="#0B132B" // Deep Navy
+      {/* Main Transparent Sphere */}
+      <Sphere args={[1.0, 48, 48]}>
+        <meshStandardMaterial
+          color="#D4BBFF"
           transparent
-          opacity={0.35}
-          roughness={0.05}
-          transmission={0.5}
-          thickness={0.5}
+          opacity={0.2}
+          roughness={0.4}
+          metalness={0.05}
         />
       </Sphere>
 
       {/* Meridians (Great Circles) */}
-      <Torus args={[1.0, 0.005, 16, 100]} rotation={[Math.PI / 2, 0, 0]}>
-        <meshBasicMaterial color="#38506A" transparent opacity={0.4} /> {/* Polar */}
+      <Torus args={[1.0, 0.004, 16, 80]} rotation={[Math.PI / 2, 0, 0]}>
+        <meshBasicMaterial color="#BE95FF" transparent opacity={0.5} />
       </Torus>
-      <Torus args={[1.0, 0.005, 16, 100]} rotation={[0, Math.PI / 2, 0]}>
-        <meshBasicMaterial color="#38506A" transparent opacity={0.4} />
+      <Torus args={[1.0, 0.004, 16, 80]} rotation={[0, Math.PI / 2, 0]}>
+        <meshBasicMaterial color="#BE95FF" transparent opacity={0.5} />
       </Torus>
-      <Torus args={[1.0, 0.005, 16, 100]} rotation={[0, 0, Math.PI / 2]}>
-        <meshBasicMaterial color="#38506A" transparent opacity={0.4} />
+      <Torus args={[1.0, 0.004, 16, 80]} rotation={[0, 0, Math.PI / 2]}>
+        <meshBasicMaterial color="#BE95FF" transparent opacity={0.5} />
       </Torus>
 
       {/* Axes */}
-      {/* Z-Axis (Up/Down) - Arctic #7991A8 */}
-      <Line points={[[0, -1.2, 0], [0, 1.2, 0]]} color="#7991A8" lineWidth={1} />
+      {/* Z-Axis (Vertical |0⟩ and |1⟩) */}
+      <Line points={[[0, -1.2, 0], [0, 1.2, 0]]} color="#31135E" lineWidth={2} />
       
-      {/* X-Axis - Icicle #446983 (Dimmer) */}
-      <Line points={[[-1.2, 0, 0], [1.2, 0, 0]]} color="#446983" lineWidth={1} transparent opacity={0.6} />
+      {/* X-Axis */}
+      <Line points={[[-1.2, 0, 0], [1.2, 0, 0]]} color="#6929C4" lineWidth={1.5} transparent opacity={0.7} />
       
-      {/* Y-Axis (Depth) - Icicle */}
-      <Line points={[[0, 0, -1.2], [0, 0, 1.2]]} color="#446983" lineWidth={1} transparent opacity={0.6} />
+      {/* Y-Axis */}
+      <Line points={[[0, 0, -1.2], [0, 0, 1.2]]} color="#8A3FFC" lineWidth={1.5} transparent opacity={0.7} />
     </group>
   );
 };

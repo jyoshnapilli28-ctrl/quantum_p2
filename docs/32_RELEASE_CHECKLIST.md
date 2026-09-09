@@ -1,69 +1,59 @@
-# 32. RELEASE CHECKLIST
+# 32. RELEASE CHECKLIST — QYNX
 
-This checklist must be fully verified prior to the 1.0 production release of Quantum Universe.
+This checklist must be fully verified and signed off prior to the production release of **QYNX**.
 
-## 1. Documentation
-- [ ] All 32 documentation files are reviewed and finalized.
-- [ ] No placeholder text exists in any specification.
+---
 
-## 2. Assets
-- [ ] 3D Bloch Sphere GLTF is compressed and loads without errors.
-- [ ] `gate-state-presets.json` maps correctly to the Bloch Sphere coordinates.
-- [ ] All 83 SVG icons are implemented and optimized.
-- [ ] All 32 SVG illustrations and backgrounds are implemented.
-- [ ] Fallback raster favicons (`favicon.ico`, `apple-touch-icon.png`) are generated and linked.
-- [ ] `site.webmanifest` is present and valid.
+## 1. Documentation & Architecture Integrity
+- [ ] All core documentation specifications (01 through 27) and supporting files (28 through 32, coding guide) are synchronized and finalized.
+- [ ] Zero deprecated names (e.g., "Quantum Experiment Lab" replaced with "Quantum Expo Lab", application brand certified as "QYNX").
+- [ ] Zero legacy color tokens (`#071018`, `#0B132B`, `#1C2B38`, `#38506A`, `#446983`, `#7991A8`, `#3A506B`) in any active stylesheet or component specification.
 
-## 3. Quantum Correctness
-- [ ] Single-qubit matrices (X, Y, Z, H, S, T) pass mathematical validation against `31_QUANTUM_VALIDATION_CASES.md`.
-- [ ] Multi-qubit tensor products generate correct state vectors.
-- [ ] CNOT and SWAP gates modify multi-qubit states correctly.
-- [ ] Entanglement correctly correlates measurement outcomes.
-- [ ] Probability amplitudes always normalize to exactly 1.0 (within epsilon tolerance).
+## 2. Brand Identity & Visual Design System
+- [ ] QYNX Wordmark in `Syne` / `Cabinet Grotesk` with high-contrast `#8A3FFC` dot renders cleanly.
+- [ ] Official 10-step QYNX Purple Scale (`#F6F2FF` to `#1C0F30`) is strictly enforced; mathematical notation and state kets use pure White `#FFFFFF`.
+- [ ] Surface containment: Restrained, credible UI panels; zero muddy multi-layer glassmorphism blur or distracting neon glow.
+- [ ] Zero unprompted ambient particle canvases or looping background noise generators.
 
-## 4. UI / UX
-- [ ] The exact 7-color palette is strictly enforced across all components.
-- [ ] No unauthorized colors, gradients, or shadows are used.
-- [ ] Gate buttons clearly indicate their active, hover, and disabled states.
-- [ ] The custom cursor remains precise and does not interfere with click targets.
+## 3. Diagram Visibility Standard Compliance
+- [ ] 3-second comprehension rule verified across all 9 Page 1 educational diagrams.
+- [ ] Circuit grid wire stroke width $\ge 2\text{px}$ with high-contrast color (`#491D8B` / `#8A3FFC`).
+- [ ] Bloch sphere state vector shaft thickness $\ge 0.04$ units (arrow head clearly distinguished).
+- [ ] Text contrast $\ge 4.5:1$ against adjacent container backgrounds across all views.
 
-## 5. Animation
-- [ ] Custom cursor expands correctly on interactive elements.
-- [ ] Page transitions fade and move upward smoothly without flickering.
-- [ ] Bloch Sphere state vector interpolates (SLERPs) smoothly between states instead of teleporting.
-- [ ] Probability bars animate their width/scaleX efficiently.
+## 4. Quantum Engine & Mathematical Rigor
+- [ ] 100% unit test coverage on `src/engine/math/` with floating-point tolerance $\varepsilon = 10^{-10}$.
+- [ ] Single-qubit operators ($X, Y, Z, H, S, T$) verify against `31_QUANTUM_VALIDATION_CASES.md`.
+- [ ] Multi-qubit tensor products, CNOT, and SWAP verified against 4-dimensional basis $\{|00\rangle, |01\rangle, |10\rangle, |11\rangle\}$.
+- [ ] All 4 canonical Bell states ($|\Phi^+\rangle, |\Phi^-\rangle, |\Psi^+\rangle, |\Psi^-\rangle$) synthesize accurately.
+- [ ] Correlated measurement verification passes: measuring Qubit A on Bell state instantaneously projects Qubit B with $100\%$ conditional probability.
+- [ ] Born rule probabilities strictly normalize: $\sum_i P(i) = 1.0000000000$.
 
-## 6. Responsiveness
-- [ ] Application scales correctly down to 320px mobile viewports.
-- [ ] The 3D Bloch Sphere remains interactive and centered on mobile devices.
-- [ ] The Quantum Circuit builder allows scrolling/panning if wires exceed screen width.
+## 5. Page-by-Page Feature Verification
+- [ ] **Page 1: QUANTUM UNIVERSE** — 9 educational topics render cleanly with interactive widgets.
+- [ ] **Page 2: QUANTUM GATE VISUALIZER** — 3D Bloch sphere renders with SLERP transition; probability bars update in real time; measurement collapses state and disables gates.
+- [ ] **Page 3: QUANTUM EXPO LAB** — Superposition and Bit-Flip protocols sequence smoothly; 1000-shot histogram displays with scientific disclaimer.
+- [ ] **Page 4: QUANTUM ENTANGLEMENT SIMULATOR** — Twin-qubit workspace displays without physical wires; Bell state synthesis and correlated collapse work reliably.
+- [ ] **Page 5: QUANTUM CIRCUIT BUILDER** — 3-qubit $\times$ 8-step matrix functions via desktop drag-and-drop and mobile tap-to-place; validation engine catches invalid CNOT configurations.
 
-## 7. Accessibility
-- [ ] `prefers-reduced-motion` successfully disables the custom cursor delay, particle drift, and layout animations.
-- [ ] High contrast text against dark backgrounds passes WCAG AA standards.
-- [ ] Interactive elements (especially gates and circuit cells) are keyboard navigable (Tab focus).
-- [ ] ARIA labels are applied to canvas elements and SVG icons.
+## 6. Accessibility (WCAG 2.1 AA)
+- [ ] `#qynx-live-announcer` live region announces state mutations to assistive tech.
+- [ ] Keyboard navigation: full Tab traversal, Enter/Space activation, Esc dismisses overlays.
+- [ ] Arrow-key grid navigation operational in Circuit Builder.
+- [ ] Visible focus indicators (`:focus-visible`): 2px solid `#BE95FF` with 2px offset.
+- [ ] `prefers-reduced-motion` media query instantly snaps vectors without transition delay.
+- [ ] axe DevTools audit reports 0 critical and 0 serious violations across all routes.
 
-## 8. Performance
-- [ ] React strictly prevents unnecessary re-renders of the 3D Canvas.
-- [ ] Lighthouse Performance score is >90.
-- [ ] No memory leaks exist during prolonged 3D manipulation.
+## 7. Performance & Engineering Hygiene
+- [ ] Lighthouse score $\ge 90$ across Performance, Accessibility, Best Practices, and SEO.
+- [ ] Initial bundle $< 200\text{KB}$ gzipped; Three.js code chunk isolated to `/gate-visualizer`.
+- [ ] 3D Canvas uses `frameloop="demand"` and disposes geometry/material buffers on unmount.
+- [ ] 10,000-shot measurement sampling executes in $< 5\text{ms}$.
+- [ ] Zero memory leaks during prolonged 3D manipulation or repeated circuit execution.
 
-## 9. Error States
-- [ ] Attempting an invalid circuit operation gracefully alerts the user without crashing the engine.
-- [ ] Global Error Boundary catches React exceptions and displays a polished "State Collapsed" UI.
-- [ ] `404 Not Found` route correctly displays the error SVG and allows navigation home.
-
-## 10. Browser Compatibility & PWA
-- [ ] Tested successfully on latest Chrome, Firefox, and Safari (macOS & iOS).
-- [ ] PWA installation prompt works; app opens in `standalone` mode successfully.
-
-## 11. SEO & Metadata
-- [ ] Dynamic `<title>` tags update per page.
-- [ ] Accurate Open Graph `<meta>` tags (title, description, image) are present.
-- [ ] `sitemap.xml` includes all 5 primary application routes.
-
-## 12. Deployment & Security
-- [ ] Deployed on the production environment with HTTPS forced.
-- [ ] Static assets are cached aggressively via content hashes.
-- [ ] `console.log` and React/Zustand devtools are stripped from the production bundle.
+## 8. Deployment & Release Build
+- [ ] `npm run build` succeeds cleanly with zero TypeScript errors or ESLint warnings.
+- [ ] Preview bundle (`npm run preview`) tested across Chrome, Firefox, Safari, and Edge.
+- [ ] Mobile responsive audit verified at 375px, 768px, and 1440px.
+- [ ] PWA web manifest (`site.webmanifest`) verified with `#1C0F30` theme color.
+- [ ] Console logging and devtools stripped from production bundle.

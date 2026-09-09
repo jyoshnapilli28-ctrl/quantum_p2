@@ -1,246 +1,161 @@
-# FUTURE EXPANSION — SPECIFICATION
+# QYNX — FUTURE EXPANSION SPECIFICATION
 
 ---
 
 ## 1. Purpose
 
-This document specifies potential features and enhancements that are **out of scope for the initial launch** but are explicitly planned for. Architectural decisions documented here (and in earlier files) were made with these expansions in mind.
+This document outlines architectural roadmaps and candidate features that are **explicitly out of scope for the MVP launch** of QYNX, but have informed the current modular system design. 
 
-All expansion items are categorized by priority:
-- **Near-term:** Feasible after the initial release stabilizes (1–3 months post-launch).
-- **Mid-term:** Requiring more significant architecture work (3–12 months).
-- **Long-term:** Exploratory / research-quality features (12+ months).
+The QYNX core architecture (zero-dependency math engine, Zustand state store, and decoupled visualization layer) ensures that these future extensions can be integrated incrementally without refactoring the foundational single- and multi-qubit simulation pipelines.
+
+Expansion initiatives are categorized across three chronological horizons:
+- **Near-Term (1–3 months post-MVP):** Parametrized gates, additional Quantum Expo Lab protocols, URL circuit serialization.
+- **Mid-Term (3–12 months post-MVP):** Quantum noise models (density matrix channels), state trajectory curves, algorithm explorer.
+- **Long-Term (12+ months post-MVP):** Hardware execution via IBM Quantum / Qiskit, collaborative real-time circuit builder, quantum error correction protocols.
 
 ---
 
 ## 2. Near-Term Expansions
 
-### 2.1 Additional Gate Types
+### 2.1 Parametrized Single-Qubit Rotations & Extended Gates
 
-**Current launch gates:** H, X, Y, Z, S, T, CNOT, SWAP.
+**Current Launch Gates:** $X, Y, Z, H, S, T, \text{CNOT}, \text{SWAP}$.
 
-**Planned additions:**
+**Planned Additions:**
 
-| Gate | Symbol | Description |
-|------|--------|-------------|
-| Pauli-X† | X = X (self-adjoint) | Already included |
-| Rx(θ) | Rₓ | Arbitrary X rotation |
-| Ry(θ) | Rᵧ | Arbitrary Y rotation |
-| Rz(θ) | R_z | Arbitrary Z rotation |
-| Phase(φ) | P(φ) | General phase gate |
-| S† | S† | S dagger (π/2 phase subtraction) |
-| T† | T† | T dagger (π/8 phase subtraction) |
-| Toffoli | CCX | Three-qubit controlled-controlled-X |
-| Fredkin | CSWAP | Three-qubit controlled-SWAP |
+| Gate | Symbol | Unitary Definition / Description |
+|------|--------|----------------------------------|
+| $R_x(\theta)$ | $R_x$ | $\cos(\theta/2)I - i\sin(\theta/2)X$ (arbitrary $X$-axis rotation) |
+| $R_y(\theta)$ | $R_y$ | $\cos(\theta/2)I - i\sin(\theta/2)Y$ (arbitrary $Y$-axis rotation) |
+| $R_z(\theta)$ | $R_z$ | $\cos(\theta/2)I - i\sin(\theta/2)Z$ (arbitrary $Z$-axis rotation) |
+| Phase($\phi$) | $P(\phi)$ | $\begin{pmatrix} 1 & 0 \\ 0 & e^{i\phi} \end{pmatrix}$ (arbitrary relative phase shift) |
+| $S^\dagger$ | $S^\dagger$ | Phase subtraction ($-\pi/2$ around $Z$) |
+| $T^\dagger$ | $T^\dagger$ | Phase subtraction ($-\pi/4$ around $Z$) |
+| Toffoli (CCX) | CCX | 3-qubit controlled-controlled-NOT |
+| Fredkin (CSWAP) | CSWAP | 3-qubit controlled-SWAP |
 
-**Architecture note:** The engine is designed to accept parametrized gates:
+**Engine Extension Pattern:**
 ```typescript
-// Future extension to GATE_MATRICES:
-function getRxMatrix(theta: number): Matrix2x2 {
+// Parameterized gate kernel extension in src/engine/gates/rotation.ts:
+export function getRxMatrix(theta: number): Matrix2x2 {
+  const half = theta / 2
   return [
-    [{ re: Math.cos(theta/2), im: 0 }, { re: 0, im: -Math.sin(theta/2) }],
-    [{ re: 0, im: -Math.sin(theta/2) }, { re: Math.cos(theta/2), im: 0 }],
+    [{ re: Math.cos(half), im: 0 }, { re: 0, im: -Math.sin(half) }],
+    [{ re: 0, im: -Math.sin(half) }, { re: Math.cos(half), im: 0 }],
   ]
 }
 ```
 
-The `applyGate` function signature can be extended to accept an optional `params` argument.
+### 2.2 Additional Quantum Expo Lab Protocols
 
-**UI addition:** A rotation angle slider for Rx, Ry, Rz gates.
+The Quantum Expo Lab protocol sequencer is designed as a data-driven configuration list (`ExpoProtocolDefinition[]`). Future protocols can be registered without UI code changes:
 
-### 2.2 Additional Experiments (Experiment Lab)
+| Protocol Name | Target Concept | Steps / Gates |
+|---------------|----------------|---------------|
+| **Deutsch Algorithm** | Quantum function evaluation advantage | $|01\rangle \to H^{\otimes 2} \to U_f \to H \otimes I \to$ Measure |
+| **Quantum Teleportation** | State transfer via entanglement & classical bits | Bell pair creation, Bell basis measurement, conditional Pauli corrections |
+| **Grover Iteration (2-Qubit)** | Amplitude amplification oracle | Equal superposition $\to$ Phase oracle $\to$ Diffusion operator |
+| **Bernstein-Vazirani** | Single-query hidden bit string discovery | $H^{\otimes n} \to U_s \to H^{\otimes n} \to$ Deterministic measurement |
+| **Quantum Fourier Transform (QFT)** | Phase estimation foundation | Controlled phase rotations + Hadamard cascade |
 
-| Experiment | Description |
-|-----------|-------------|
-| Grover's Oracle (2-qubit) | Demonstrate amplitude amplification on 2 qubits |
-| Quantum Teleportation | Classical communication + entanglement for state transfer |
-| Deutsch's Algorithm | Quantum vs classical function evaluation |
-| Bernstein-Vazirani | Hidden string finding with quantum advantage |
-| QFT (2-qubit) | Quantum Fourier Transform demonstration |
+### 2.3 URL-Encoded Circuit Sharing
 
-Each experiment is an `ExperimentDefinition` object — adding them requires no architecture changes.
-
-### 2.3 Additional Bell States
-
-The Entanglement Simulator currently only creates Φ+ (the standard Bell state). Expand to all four Bell states:
-
-| Bell State | Formula |
-|-----------|---------|
-| Φ+ | (|00⟩ + |11⟩)/√2 |
-| Φ− | (|00⟩ − |11⟩)/√2 |
-| Ψ+ | (|01⟩ + |10⟩)/√2 |
-| Ψ− | (|01⟩ − |10⟩)/√2 |
-
-A selector in the Entanglement Simulator allows choosing which Bell state to create.
-
-### 2.4 Circuit Sharing
-
-Allow users to share circuits via URL:
+Enable instant, backend-free circuit sharing via URL hash/query parameter:
 
 ```
-/circuit-builder?circuit=base64encodedCircuit
+https://qynx.app/circuit-builder?circuit=eJzT09PPL0pVSMvMy0xRMDQ2MzcwMjY1MDUwNjKzMAQAOWAG8A==
 ```
 
-The circuit definition (JSON) is serialized and URL-encoded as a base64 string. When the URL is loaded, the circuit is deserialized and loaded into the editor.
-
-**Security:** Only circuit structure is encoded (no user data). The URL can be copied and shared. No server-side storage needed.
+- **Serialization:** Circuit JSON schema is compressed via `pako` (zlib/deflate) and encoded into URL-safe base64.
+- **Privacy & Safety:** Client-side only; no user accounts or persistent server storage required. Strict schema validation guards against malformed payloads.
 
 ---
 
 ## 3. Mid-Term Expansions
 
-### 3.1 Noise Models
+### 3.1 Open Quantum Systems & Environmental Noise Simulation
 
-Real quantum computers are subject to decoherence and gate errors. Add a noise model to the simulator:
+Physical NISQ hardware suffers from decoherence and gate infidelities. Adding realistic noise enables students to observe quantum state degradation:
 
 ```typescript
-interface NoiseModel {
-  gateError: number;      // Probability of a depolarizing error per gate (e.g., 0.001)
-  measurementError: number; // Probability of a bit-flip on measurement
-  decoherenceTime: number;  // T1 in gate steps (amplitude damping)
+export interface QuantumNoiseModel {
+  depolarizingProbability: number // Probability of random X/Y/Z error per gate
+  amplitudeDampingGamma: number   // Energy dissipation (T1 decay towards |0⟩)
+  phaseDampingLambda: number       // Phase randomization without energy loss (T2 dephasing)
+  readoutErrorRate: number        // Classical bit-flip probability during measurement
 }
 ```
 
-With noise enabled:
-- Each gate application has a small probability of applying a random error operation (depolarizing channel).
-- Measurement has a small probability of returning the wrong outcome.
-- Long circuits show increased error with increasing depth.
+*Architectural Impact:* Pure state vectors $|\psi\rangle \in \mathbb{C}^N$ are replaced by density operators $\rho \in \mathbb{C}^{N \times N}$ ($\rho = \sum_i p_i |\psi_i\rangle\langle\psi_i|$), simulated using Kraus operators:
+$$\rho_{k+1} = \sum_m E_m \rho_k E_m^\dagger$$
 
-**UI addition:** A "Noise Level" slider in the Circuit Builder and Experiment Lab (off / low / medium / high presets).
+### 3.2 Bloch Sphere State Trajectories
 
-**Architecture note:** The engine's `applyGate` function returns a pure state. Noise requires density matrix representation (`ρ = |ψ⟩⟨ψ|`). This is a significant engine extension (4×4 density matrices for 2 qubits, scaling exponentially). Implement behind a feature flag.
+Render continuous trace lines on the 3D Bloch sphere illustrating the trajectory traced by the state vector across sequential gate applications:
+- **Recent Vectors:** High-contrast white (`#FFFFFF`) path.
+- **Historical Trail:** Gradient fade to QYNX Purple 40 (`#BE95FF`) and Purple 80 (`#491D8B`), dissipating after 5 steps.
+- **Rendering:** Three.js `Line2` mesh or particle ribbon on the unit sphere surface.
 
-### 3.2 3-Qubit and 4-Qubit Support Everywhere
+### 3.3 Interactive Quantum Algorithm Explorer
 
-The circuit builder already supports up to 4 qubits. This expansion brings full 4-qubit support to the Experiment Lab and adds GHZ state demonstrations.
-
-**Engine readiness:** The `applyGateToWire` function with N-qubit Kronecker product is already designed to extend to N qubits. This is primarily a UI and store expansion.
-
-### 3.3 Bloch Sphere Trajectory Visualization
-
-Show the path the state vector traced on the Bloch sphere over the last N gate operations.
-
-```
-State trajectory:
-  A fading arc drawn on the sphere surface showing the history of state positions.
-  Recent positions: high opacity (white)
-  Old positions: low opacity (Arctic, fades to invisible after 5 states)
-```
-
-**Implementation:** Store the last 10 `BlochCoordinates` values in the store. Render as a `Line2` arc on the sphere surface in `BlochScene.ts`.
-
-### 3.4 Quantum Algorithm Library
-
-A new top-level page or section with explanations and visual demonstrations of full quantum algorithms:
-
-| Algorithm | Status |
-|-----------|--------|
-| Deutsch-Jozsa | Visualize oracle function evaluation |
-| Bernstein-Vazirani | Visualize hidden bit string |
-| Simon's Algorithm | Visualize period finding |
-| Grover's Search | Visualize amplitude amplification |
-| Shor's Algorithm (simplified) | Visualize modular exponentiation concept |
-
-Each algorithm entry:
-- Explains what the algorithm does (educational text).
-- Shows the quantum circuit (using the existing `CircuitDiagram` component).
-- Demonstrates the speedup (comparison with classical complexity).
-- Links to the Circuit Builder with the algorithm pre-loaded.
-
-**Architecture note:** This is a new page (`/algorithms`) and does not require engine changes. Circuits are static `CircuitDefinition` objects.
+A dedicated educational portal breaking down complete algorithms into step-by-step interactive stages with real-time complexity comparisons:
+- Classical runtime $\mathcal{O}(N)$ vs. Quantum runtime $\mathcal{O}(\sqrt{N})$ interactive visual graphs.
+- Direct "Open in QYNX Circuit Builder" button pre-populating the full circuit matrix.
 
 ---
 
 ## 4. Long-Term Expansions
 
-### 4.1 Multiplayer Mode — Collaborative Circuit Builder
+### 4.1 Real Quantum Hardware Execution (IBM Quantum / Qiskit)
 
-Allow two users to collaboratively build a circuit in real-time using WebSockets.
+Allow advanced users to dispatch QYNX circuits to physical superconducting transmon processors:
+1. Export circuit to standard **OpenQASM 2.0 / 3.0**:
+   ```qasm
+   OPENQASM 2.0;
+   include "qelib1.inc";
+   qreg q[2];
+   creg c[2];
+   h q[0];
+   cx q[0], q[1];
+   measure q -> c;
+   ```
+2. Proxy through an authenticated cloud worker to IBM Quantum API.
+3. Overlay noisy physical device execution histograms side-by-side with QYNX theoretical Born rule distributions.
 
-**Technology:** WebSocket server (Node.js + ws), circuit state broadcast to all connected peers.
+### 4.2 Real-Time Collaborative Circuit Canvas
 
-**Architecture note:** The circuit definition is the shared state. All operations (addGate, removeGate, setQubits) are sent as messages. The server broadcasts to all peers. Each client applies the operation optimistically and reconciles if needed.
+Multiplayer circuit authoring powered by WebSockets / WebRTC:
+- Shared state synchronization via CRDTs (Conflict-Free Replicated Data Types, e.g., Yjs).
+- Collaborative cursor tracking showing colleague edits on the 8-step circuit grid.
 
-### 4.2 Tutorial Mode with Guided Hints
+### 4.3 Quantum Error Correction (QEC) Interactive Playground
 
-A step-by-step tutorial mode that overlays contextual hints on the existing pages.
-
-**Implementation:** A `TutorialContext` that tracks the user's progress through a tutorial sequence. Popover/tooltip overlays appear on specific UI elements (e.g., "Click the H gate to create superposition →").
-
-### 4.3 IBM Quantum / Qiskit Runtime Integration
-
-Allow users to run their circuits on **real quantum hardware** via the IBM Quantum API.
-
-**Workflow:**
-1. User builds circuit in the Circuit Builder.
-2. User authenticates with an IBM Quantum account.
-3. Circuit is translated to Qiskit Python code or OpenQASM 2.0.
-4. Circuit is submitted to IBM Quantum's queue.
-5. Results are displayed in the application alongside the simulation results.
-6. User can compare the simulated (ideal) results with the real hardware results.
-
-**Architecture note:** Requires a backend server (or serverless function) to hold the IBM Quantum API key securely. The frontend communicates with this proxy server. The circuit `CircuitDefinition` can be converted to OpenQASM 2.0.
-
-```typescript
-// Future: src/engine/export/openqasm.ts
-function circuitToOpenQASM(circuit: CircuitDefinition): string {
-  let qasm = 'OPENQASM 2.0;\ninclude "qelib1.inc";\n'
-  qasm += `qreg q[${circuit.qubits}];\n`
-  qasm += `creg c[${circuit.qubits}];\n`
-  // ... convert gates to QASM
-  return qasm
-}
-```
-
-### 4.4 Quantum Error Correction Demo
-
-Demonstrate the 3-qubit bit-flip code and 3-qubit phase-flip code as an educational page.
-
-Shows:
-- How a qubit error is introduced.
-- How syndrome measurement detects the error.
-- How the correction gate restores the original state.
+Interactive demonstrations of quantum code syndrome extraction:
+- 3-Qubit Bit-Flip Code ($|0\rangle_L = |000\rangle, |1\rangle_L = |111\rangle$).
+- 3-Qubit Phase-Flip Code using Hadamard basis transformation.
+- Surface Code planar lattice visualization for error syndrome decoding.
 
 ---
 
-## 5. Architecture Readiness
+## 5. Architectural Readiness Matrix
 
-The current architecture already accommodates:
-
-| Feature | How It's Ready |
-|---------|---------------|
-| More gates | `GATE_MATRICES` is an extensible constant; `GateId` type is extensible |
-| Parametrized gates | `applyGate` signature can accept `params` argument |
-| More qubits | N-qubit Kronecker product designed in `12_MULTI_QUBIT_SYSTEM.md` |
-| More experiments | `ExperimentDefinition` is a data structure, easily added to |
-| Circuit sharing | `CircuitDefinition` is JSON-serializable |
-| Noise models | Separate engine layer, isolated from pure state operations |
-| OpenQASM export | `CircuitDefinition` contains all information needed for conversion |
+| Feature | Engine Preparedness | Store Preparedness | UI Preparedness |
+|---------|---------------------|--------------------|-----------------|
+| Parametrized Gates ($R_x, R_y, R_z$) | High (Matrix functions support arbitrary $\theta$) | High (Action accepts numeric payload) | Medium (Requires slider UI component) |
+| Extended Expo Protocols | Complete (Data-driven array structure) | Complete (Generic protocol runner) | Complete (Generic step sequencer UI) |
+| URL Circuit Sharing | Complete (Circuit schema JSON-serializable) | Complete (`loadCircuit` action) | Low (Needs URL param parser hook) |
+| Noise Models | Low (Requires density matrix refactor) | Medium (Noise toggles in UI store) | Medium (Noise slider controls) |
+| OpenQASM Export | High (Direct string transformation module) | Complete (Circuit definition readable) | Low (Modal with copy-to-clipboard) |
+| Real Hardware API | Low (Requires backend proxy / API key vault) | Low (Async job queue management) | Medium (Job status notification panel) |
 
 ---
 
-## 6. What This Application Is NOT
+## 6. What QYNX Is Explicitly NOT
 
-To prevent scope creep, the following are explicitly excluded from all phases:
+To safeguard product focus, technical excellence, and browser performance, the following are strictly excluded from QYNX:
 
-| Feature | Reason for Exclusion |
-|---------|---------------------|
-| Real quantum hardware execution (launch) | Requires backend infrastructure |
-| Multi-user accounts / authentication | Out of scope for an educational demo |
-| Persistent cloud storage of circuits | Out of scope; use URL sharing instead |
-| Continuous variable (CV) quantum mechanics | Different mathematical framework |
-| More than 8 qubits (ever) | State vector grows as 2^N; 256 amplitudes at 8 qubits, ~16 KB. At 30 qubits: 1B amplitudes, not browser-feasible |
-| Classical circuit simulator | Off-topic |
-| Quantum machine learning | Post-long-term scope |
-
----
-
-## 7. Contact and Contributions
-
-This specification is the canonical reference for building the Quantum Universe application.
-
-To propose new features:
-1. Identify which expansion category it falls into (near/mid/long-term).
-2. Verify it does not conflict with the architectural rules in `03_PROJECT_ARCHITECTURE.md`.
-3. Draft a brief spec update for the relevant documentation file.
-4. Confirm that the engine layer changes required are isolated (no changes to existing functions, only additions).
+1. **Not a Heavy Industrial Quantum Compiler:** QYNX does not perform topological quantum routing, hardware transpilation, or pulse-level microwave scheduling.
+2. **Not a High-Qubit State Simulator:** State vector dimension scales as $2^N$. QYNX caps simulation at 3–4 qubits in browser memory. It will never simulate 30+ qubits (which requires petabytes of supercomputing RAM).
+3. **Not a Cryptographic Breaking Tool:** QYNX does not execute 4096-bit RSA factorization; Shor's algorithm demonstrations are strictly conceptual on tiny toy integers (e.g., factoring 15).
+4. **Not a Classical Circuit Simulator:** QYNX does not model classical logic gates (AND, OR, NAND) or transistor physics.
+5. **Not a Dark-Pattern Commercial Tool:** No intrusive telemetry, no mandatory cloud logins for basic simulation, and no artificial paywalls for educational access.

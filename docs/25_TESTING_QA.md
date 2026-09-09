@@ -1,369 +1,474 @@
-# TESTING & QA — SPECIFICATION
+# QYNX — TESTING & QA SPECIFICATION
 
 ---
 
 ## 1. Testing Philosophy
 
-- **Engine tests are mandatory.** The quantum engine contains the mathematical logic that the entire application depends on. Every engine function must have unit tests before it is used in any page.
-- **Tests must be deterministic.** Seed `Math.random` for measurement tests to produce reproducible results.
-- **UI tests focus on interaction.** Test that UI actions trigger the correct state changes, not the visual output.
-- **No test should import Three.js.** Bloch sphere tests are integration/visual tests only.
+The QYNX testing strategy is anchored in scientific rigor, mathematical determinism, and accessible, human-designed UI verification:
+
+- **Mathematical Engine Tests Are Mandatory:** The core quantum engine (`src/engine/`) houses the mathematical foundation for state vectors, complex arithmetic, unitary matrix transformations, tensor products, and projective measurement. Every engine function must have 100% mathematical unit test coverage before UI integration.
+- **Deterministic Simulation:** Tests must be strictly deterministic. Multi-shot measurement tests either mock or seed `Math.random` to produce reproducible results, or perform rigorous statistical tests over large sample sizes ($N \ge 10{,}000$) within established standard error bounds ($3\sigma$).
+- **UI Tests Focus on User Flows and State Invariants:** UI component tests assert that user actions (gate clicks, drag-and-drop, mobile tap-to-place, step sequencing) produce exact state updates and trigger appropriate accessible announcements without visual breakage.
+- **Diagram Legibility & Contrast Auditing:** Tests verify that all SVG diagrams, probability bars, Bloch sphere projections, and circuit grids comply with the **QYNX Diagram Visibility Standard** and WCAG AA contrast thresholds against the QYNX Purple Scale.
+- **Zero Three.js Dependency in Engine Tests:** Quantum engine tests are completely isolated pure TypeScript functions. Three.js/R3F visual rendering tests are segregated into integration tests or manual visual QA checklists.
 
 ---
 
 ## 2. Testing Stack
 
-| Tool | Purpose |
-|------|---------|
-| **Vitest** | Unit test runner (replaces Jest, Vite-native) |
-| **@testing-library/react** | React component interaction tests |
-| **@testing-library/jest-dom** | DOM assertion matchers |
-| **@testing-library/user-event** | Simulated user interactions |
+| Tool | Purpose | Version / Notes |
+|------|---------|-----------------|
+| **Vitest** | Fast, Vite-native unit test runner | Replaces Jest; direct ESM and TypeScript support |
+| **@testing-library/react** | React component interaction testing | User-centric DOM testing |
+| **@testing-library/jest-dom** | Semantic DOM assertion matchers | `toBeInTheDocument()`, `toBeDisabled()`, etc. |
+| **@testing-library/user-event** | Realistic browser event dispatch | Dispatches hover, click, drag, keyboard events |
+| **axe-core / vitest-axe** | Automated accessibility auditing | Enforces WCAG 2.1 AA compliance across all views |
 
 ---
 
 ## 3. Quantum Engine Unit Tests
 
-### 3.1 Test File Structure
+### 3.1 Test Directory Structure
 
 ```
 src/engine/__tests__/
-├── complex.test.ts
-├── matrix.test.ts
-├── vector.test.ts
-├── qubit.test.ts
-├── gates.test.ts
-├── measurement.test.ts
-├── multiQubit.test.ts
-└── circuit.test.ts
+├── complex.test.ts          # Complex arithmetic, conjugate, magnitude, phase
+├── matrix.test.ts           # 2x2, 4x4 matrix multiplication, Hermiticity, unitarity
+├── vector.test.ts           # Inner product, normalization, tensor products
+├── qubit.test.ts            # StateVector1Q initialization, Bloch coordinate mapping
+├── gates.test.ts            # X, Y, Z, H, S, T, CNOT, SWAP unitary verification
+├── measurement.test.ts      # Born rule probabilities, state collapse, multi-shot sampling
+├── multiQubit.test.ts       # 2-qubit states, Bell state synthesis, entanglement detection
+└── circuit.test.ts          # Multi-wire circuit execution, validation, step simulation
 ```
 
-### 3.2 Complex Number Tests (`complex.test.ts`)
+### 3.2 Complex Arithmetic Tests (`complex.test.ts`)
 
-```
-add({ re:1, im:2 }, { re:3, im:4 }) → { re:4, im:6 }
-multiply({ re:1, im:1 }, { re:1, im:1 }) → { re:0, im:2 } (i² = -1)
-conjugate({ re:3, im:-2 }) → { re:3, im:2 }
-magnitude({ re:3, im:4 }) → 5
-magnitudeSquared({ re:3, im:4 }) → 25
-multiply(I, I) → { re:-1, im:0 }  (i² = -1)
-```
+Floating-point equality tolerance $\varepsilon = 10^{-10}$.
 
-### 3.3 Gate Application Tests (`gates.test.ts`)
+```typescript
+import { add, multiply, conjugate, magnitude, magnitudeSquared, phase, Complex } from '../math/complex'
 
-All tests must pass with tolerance ε = 1e-10 for floating-point comparison.
+describe('Complex Arithmetic', () => {
+  const I: Complex = { re: 0, im: 1 }
 
-```
-applyGate([{re:1,im:0},{re:0,im:0}], 'X') 
-  → [{re:0,im:0},{re:1,im:0}]   (|0⟩ → |1⟩)
+  it('adds complex numbers correctly', () => {
+    expect(add({ re: 1, im: 2 }, { re: 3, im: 4 })).toEqual({ re: 4, im: 6 })
+  })
 
-applyGate([{re:0,im:0},{re:1,im:0}], 'X')
-  → [{re:1,im:0},{re:0,im:0}]   (|1⟩ → |0⟩)
+  it('multiplies complex numbers correctly', () => {
+    // (1 + i)(1 + i) = 1 + 2i - 1 = 2i
+    expect(multiply({ re: 1, im: 1 }, { re: 1, im: 1 })).toEqual({ re: 0, im: 2 })
+    // i² = -1
+    expect(multiply(I, I)).toEqual({ re: -1, im: 0 })
+  })
 
-applyGate([{re:1,im:0},{re:0,im:0}], 'H')
-  → [{re:INV_SQRT2,im:0},{re:INV_SQRT2,im:0}]   (|0⟩ → |+⟩)
+  it('computes complex conjugate', () => {
+    expect(conjugate({ re: 3, im: -2 })).toEqual({ re: 3, im: 2 })
+    expect(conjugate({ re: 0, im: 1 })).toEqual({ re: 0, im: -1 })
+  })
 
-applyGate([{re:INV_SQRT2,im:0},{re:INV_SQRT2,im:0}], 'H')
-  → [{re:1,im:0},{re:0,im:0}]   (|+⟩ → |0⟩, H is self-inverse)
+  it('computes magnitude and magnitude squared', () => {
+    expect(magnitude({ re: 3, im: 4 })).toBeCloseTo(5, 10)
+    expect(magnitudeSquared({ re: 3, im: 4 })).toBeCloseTo(25, 10)
+  })
 
-applyGate([{re:1,im:0},{re:0,im:0}], 'Z')
-  → [{re:1,im:0},{re:0,im:0}]   (Z|0⟩ = |0⟩, phase is global)
-
-applyGate([{re:0,im:0},{re:1,im:0}], 'Z')
-  → [{re:0,im:0},{re:-1,im:0}]  (Z|1⟩ = -|1⟩)
-
-applyGate([{re:1,im:0},{re:0,im:0}], 'S')
-  → [{re:1,im:0},{re:0,im:0}]   (S|0⟩ = |0⟩)
-
-applyGate([{re:0,im:0},{re:1,im:0}], 'S')
-  → [{re:0,im:0},{re:0,im:1}]   (S|1⟩ = i|1⟩)
-
-applyGate([|0⟩], 'Y') → [|0⟩ × 0, |1⟩ × i]  (Y|0⟩ = i|1⟩)
-applyGate([|1⟩], 'Y') → [|0⟩ × (-i)]          (Y|1⟩ = -i|0⟩)
-
-// Self-inverse tests
-applyGate(applyGate(state, 'X'), 'X') ≈ state   (X² = I)
-applyGate(applyGate(state, 'H'), 'H') ≈ state   (H² = I)
-applyGate(applyGate(state, 'Z'), 'Z') ≈ state   (Z² = I)
-
-// Normalization after gate
-let result = applyGate(anyState, 'H')
-|result[0]|² + |result[1]|² ≈ 1   (always normalized)
+  it('computes phase angle', () => {
+    expect(phase({ re: 1, im: 0 })).toBeCloseTo(0, 10)
+    expect(phase({ re: 0, im: 1 })).toBeCloseTo(Math.PI / 2, 10)
+    expect(phase({ re: -1, im: 0 })).toBeCloseTo(Math.PI, 10)
+  })
+})
 ```
 
-### 3.4 Probability Tests (`measurement.test.ts`)
+### 3.3 Gate Application & Unitary Tests (`gates.test.ts`)
 
+Tests verify all 8 standard QYNX gates: $X, Y, Z, H, S, T, \text{CNOT}, \text{SWAP}$.
+
+```typescript
+import { applyGate, GATES } from '../gates'
+import { createZeroState } from '../qubit'
+
+const INV_SQRT2 = 1 / Math.SQRT2
+
+describe('Single Qubit Gates', () => {
+  // Pauli-X (Bit flip)
+  it('applies Pauli-X gate (|0⟩ -> |1⟩, |1⟩ -> |0⟩)', () => {
+    const s0 = createZeroState() // [1, 0]
+    const s1 = applyGate(s0, 'X')
+    expect(s1[0].re).toBeCloseTo(0, 10)
+    expect(s1[1].re).toBeCloseTo(1, 10)
+
+    const s0Returned = applyGate(s1, 'X')
+    expect(s0Returned[0].re).toBeCloseTo(1, 10)
+    expect(s0Returned[1].re).toBeCloseTo(0, 10)
+  })
+
+  // Pauli-Y (Bit + phase flip)
+  it('applies Pauli-Y gate (Y|0⟩ = i|1⟩, Y|1⟩ = -i|0⟩)', () => {
+    const s0 = createZeroState()
+    const s1 = applyGate(s0, 'Y')
+    expect(s1[0].re).toBeCloseTo(0, 10)
+    expect(s1[0].im).toBeCloseTo(0, 10)
+    expect(s1[1].re).toBeCloseTo(0, 10)
+    expect(s1[1].im).toBeCloseTo(1, 10) // i|1⟩
+
+    const s2 = applyGate(s1, 'Y')
+    // Y(i|1⟩) = i(-i|0⟩) = |0⟩
+    expect(s2[0].re).toBeCloseTo(1, 10)
+    expect(s2[0].im).toBeCloseTo(0, 10)
+  })
+
+  // Pauli-Z (Phase flip)
+  it('applies Pauli-Z gate (Z|0⟩ = |0⟩, Z|1⟩ = -|1⟩)', () => {
+    const s0 = createZeroState()
+    const sZ0 = applyGate(s0, 'Z')
+    expect(sZ0[0].re).toBeCloseTo(1, 10)
+    expect(sZ0[1].re).toBeCloseTo(0, 10)
+
+    const s1 = applyGate(s0, 'X')
+    const sZ1 = applyGate(s1, 'Z')
+    expect(sZ1[0].re).toBeCloseTo(0, 10)
+    expect(sZ1[1].re).toBeCloseTo(-1, 10) // -|1⟩
+  })
+
+  // Hadamard
+  it('applies Hadamard gate (|0⟩ -> |+⟩, |+⟩ -> |0⟩)', () => {
+    const s0 = createZeroState()
+    const sPlus = applyGate(s0, 'H')
+    expect(sPlus[0].re).toBeCloseTo(INV_SQRT2, 10)
+    expect(sPlus[1].re).toBeCloseTo(INV_SQRT2, 10)
+
+    const sBack = applyGate(sPlus, 'H')
+    expect(sBack[0].re).toBeCloseTo(1, 10)
+    expect(sBack[1].re).toBeCloseTo(0, 10)
+  })
+
+  // Phase Gate S
+  it('applies S gate (S|0⟩ = |0⟩, S|1⟩ = i|1⟩, S² = Z)', () => {
+    const s1 = applyGate(createZeroState(), 'X')
+    const sPhase = applyGate(s1, 'S')
+    expect(sPhase[1].re).toBeCloseTo(0, 10)
+    expect(sPhase[1].im).toBeCloseTo(1, 10) // i|1⟩
+
+    const sDouble = applyGate(sPhase, 'S')
+    expect(sDouble[1].re).toBeCloseTo(-1, 10) // -|1⟩ (equivalent to Z)
+  })
+
+  // T Gate (π/8 gate)
+  it('applies T gate (T|1⟩ = e^(iπ/4)|1⟩, T² = S)', () => {
+    const s1 = applyGate(createZeroState(), 'X')
+    const sT = applyGate(s1, 'T')
+    expect(sT[1].re).toBeCloseTo(INV_SQRT2, 10)
+    expect(sT[1].im).toBeCloseTo(INV_SQRT2, 10)
+
+    const sTSquared = applyGate(sT, 'T')
+    expect(sTSquared[1].re).toBeCloseTo(0, 10)
+    expect(sTSquared[1].im).toBeCloseTo(1, 10) // i|1⟩ (equivalent to S)
+  })
+
+  // Unitary Involutions (X² = I, Y² = I, Z² = I, H² = I)
+  it('verifies self-inverse involutions', () => {
+    const state = applyGate(createZeroState(), 'H')
+    for (const gate of ['X', 'Y', 'Z', 'H'] as const) {
+      const twice = applyGate(applyGate(state, gate), gate)
+      expect(twice[0].re).toBeCloseTo(state[0].re, 8)
+      expect(twice[0].im).toBeCloseTo(state[0].im, 8)
+      expect(twice[1].re).toBeCloseTo(state[1].re, 8)
+      expect(twice[1].im).toBeCloseTo(state[1].im, 8)
+    }
+  })
+})
 ```
-getProbabilities1Q([{re:1,im:0},{re:0,im:0}]) → { p0:1, p1:0 }
-getProbabilities1Q([{re:0,im:0},{re:1,im:0}]) → { p0:0, p1:1 }
-getProbabilities1Q([{re:INV_SQRT2,im:0},{re:INV_SQRT2,im:0}]) → { p0:0.5, p1:0.5 }
-getProbabilities1Q(state).p0 + getProbabilities1Q(state).p1 ≈ 1  (always sums to 1)
+
+### 3.4 Multi-Qubit & Bell State Tests (`multiQubit.test.ts`)
+
+Tests verify Kronecker expansion, CNOT, SWAP, and the generation of all four canonical Bell states:
+
+```typescript
+import {
+  createTwoQubitZeroState,
+  applyGateToQubit,
+  applyCNOT,
+  applySWAP,
+  getProbabilities2Q,
+  isEntangled
+} from '../multiQubit'
+
+describe('Multi-Qubit System & Bell States', () => {
+  it('generates |Φ⁺⟩ Bell state: 1/√2 (|00⟩ + |11⟩)', () => {
+    let s = createTwoQubitZeroState() // |00⟩
+    s = applyGateToQubit(s, 'H', 0)    // (|00⟩ + |10⟩)/√2
+    s = applyCNOT(s, 0, 1)             // (|00⟩ + |11⟩)/√2
+
+    const probs = getProbabilities2Q(s)
+    expect(probs.p00).toBeCloseTo(0.5, 10)
+    expect(probs.p11).toBeCloseTo(0.5, 10)
+    expect(probs.p01).toBeCloseTo(0.0, 10)
+    expect(probs.p10).toBeCloseTo(0.0, 10)
+    expect(isEntangled(s)).toBe(true)
+  })
+
+  it('generates |Φ⁻⟩ Bell state: 1/√2 (|00⟩ - |11⟩)', () => {
+    let s = createTwoQubitZeroState()
+    s = applyGateToQubit(s, 'X', 0)
+    s = applyGateToQubit(s, 'H', 0)
+    s = applyCNOT(s, 0, 1)
+
+    const probs = getProbabilities2Q(s)
+    expect(probs.p00).toBeCloseTo(0.5, 10)
+    expect(probs.p11).toBeCloseTo(0.5, 10)
+    expect(isEntangled(s)).toBe(true)
+  })
+
+  it('generates |Ψ⁺⟩ Bell state: 1/√2 (|01⟩ + |10⟩)', () => {
+    let s = createTwoQubitZeroState()
+    s = applyGateToQubit(s, 'X', 1)
+    s = applyGateToQubit(s, 'H', 0)
+    s = applyCNOT(s, 0, 1)
+
+    const probs = getProbabilities2Q(s)
+    expect(probs.p01).toBeCloseTo(0.5, 10)
+    expect(probs.p10).toBeCloseTo(0.5, 10)
+    expect(probs.p00).toBeCloseTo(0.0, 10)
+    expect(probs.p11).toBeCloseTo(0.0, 10)
+    expect(isEntangled(s)).toBe(true)
+  })
+
+  it('generates |Ψ⁻⟩ Bell state: 1/√2 (|01⟩ - |10⟩)', () => {
+    let s = createTwoQubitZeroState()
+    s = applyGateToQubit(s, 'X', 0)
+    s = applyGateToQubit(s, 'X', 1)
+    s = applyGateToQubit(s, 'H', 0)
+    s = applyCNOT(s, 0, 1)
+
+    const probs = getProbabilities2Q(s)
+    expect(probs.p01).toBeCloseTo(0.5, 10)
+    expect(probs.p10).toBeCloseTo(0.5, 10)
+    expect(isEntangled(s)).toBe(true)
+  })
+
+  it('correctly executes SWAP gate', () => {
+    let s = createTwoQubitZeroState()
+    s = applyGateToQubit(s, 'X', 0) // |10⟩
+    s = applySWAP(s, 0, 1)          // |01⟩
+
+    const probs = getProbabilities2Q(s)
+    expect(probs.p01).toBeCloseTo(1.0, 10)
+    expect(probs.p10).toBeCloseTo(0.0, 10)
+  })
+})
 ```
 
-### 3.5 Measurement Distribution Test
+### 3.5 Bloch Sphere Mapping Tests (`qubit.test.ts`)
 
-```
-// Seed Math.random for deterministic test
-// OR use a statistical test with many shots:
+```typescript
+import { getBlochCoordinates, createZeroState, applyGate } from '../qubit'
 
-const state = applyGate(createZeroState(), 'H')  // |+⟩
-const results = measureMultiShot(state, 10000)
+describe('Bloch Sphere Coordinate Conversion', () => {
+  it('maps standard eigenstates to unit sphere Cartesian coordinates', () => {
+    const s0 = createZeroState()
+    expect(getBlochCoordinates(s0)).toEqual({ x: 0, y: 0, z: 1 })
 
-// Statistical test: within 3% of expected
-expect(results['0'] / 10000).toBeCloseTo(0.5, 1)  // ±0.5% tolerance
-expect(results['1'] / 10000).toBeCloseTo(0.5, 1)
-```
+    const s1 = applyGate(s0, 'X')
+    expect(getBlochCoordinates(s1)).toEqual({ x: 0, y: 0, z: -1 })
 
-### 3.6 Bloch Coordinates Tests
+    const sPlus = applyGate(s0, 'H')
+    const coordsPlus = getBlochCoordinates(sPlus)
+    expect(coordsPlus.x).toBeCloseTo(1, 8)
+    expect(coordsPlus.y).toBeCloseTo(0, 8)
+    expect(coordsPlus.z).toBeCloseTo(0, 8)
 
-```
-getBlochCoordinates(|0⟩) → { x:0, y:0, z:1 }
-getBlochCoordinates(|1⟩) → { x:0, y:0, z:-1 }
-getBlochCoordinates(|+⟩) → { x:1, y:0, z:0 }
-getBlochCoordinates(|-⟩) → { x:-1, y:0, z:0 }
-getBlochCoordinates(|i⟩) → { x:0, y:1, z:0 }
+    const sMinus = applyGate(s1, 'H')
+    const coordsMinus = getBlochCoordinates(sMinus)
+    expect(coordsMinus.x).toBeCloseTo(-1, 8)
+    expect(coordsMinus.y).toBeCloseTo(0, 8)
+    expect(coordsMinus.z).toBeCloseTo(0, 8)
+  })
 
-// Unit sphere check
-let coords = getBlochCoordinates(anyNormalizedState)
-x² + y² + z² ≈ 1   (within ε=1e-6)
-```
-
-### 3.7 Multi-Qubit Tests
-
-```
-tensorProduct(|0⟩, |0⟩) → [1, 0, 0, 0]   (|00⟩)
-tensorProduct(|1⟩, |0⟩) → [0, 0, 1, 0]   (|10⟩)
-
-applyCNOT([0,0,1,0] as StateVector2Q, 0, 1)
-  → [0,0,0,1]  (|10⟩ → |11⟩)
-
-applyCNOT([1,0,0,0] as StateVector2Q, 0, 1)
-  → [1,0,0,0]  (|00⟩ → |00⟩, control=0 so no flip)
-
-// Bell state creation
-let twoQ = createTwoQubitZeroState()              // |00⟩
-twoQ = applyGateToQubit(twoQ, 'H', 0)             // (|00⟩+|10⟩)/√2
-twoQ = applyCNOT(twoQ, 0, 1)                      // (|00⟩+|11⟩)/√2
-let probs = getProbabilities2Q(twoQ)
-probs.p00 ≈ 0.5
-probs.p11 ≈ 0.5
-probs.p01 ≈ 0
-probs.p10 ≈ 0
-
-isEntangled(twoQ) → true
-isEntangled(createTwoQubitZeroState()) → false
-```
-
-### 3.8 Circuit Execution Tests
-
-```
-// Bell state circuit
-const circuit = {
-  qubits: 2,
-  gates: [
-    { id: '1', type: 'H', wire: 0, column: 0 },
-    { id: '2', type: 'CNOT', wire: [0, 1], column: 1 }
-  ],
-  shots: 1000
-}
-const result = executeCircuit(circuit)
-result.probabilities['00'] ≈ 0.5
-result.probabilities['11'] ≈ 0.5
-result.probabilities['01'] ≈ 0
-result.probabilities['10'] ≈ 0
-result.error === undefined
-
-// Empty circuit
-const emptyCircuit = { qubits: 2, gates: [] }
-const emptyResult = executeCircuit(emptyCircuit)
-emptyResult.probabilities['00'] ≈ 1.0  (stays in |00⟩)
-
-// Invalid circuit: CNOT same wire
-const invalidCircuit = {
-  qubits: 2,
-  gates: [{ id: '1', type: 'CNOT', wire: [0, 0], column: 0 }]
-}
-const invalidResult = executeCircuit(invalidCircuit)
-invalidResult.error !== undefined
+  it('preserves unit radius x² + y² + z² = 1 for any pure state', () => {
+    let s = createZeroState()
+    s = applyGate(s, 'H')
+    s = applyGate(s, 'T')
+    s = applyGate(s, 'X')
+    const { x, y, z } = getBlochCoordinates(s)
+    expect(x * x + y * y + z * z).toBeCloseTo(1.0, 8)
+  })
+})
 ```
 
 ---
 
-## 4. Component Tests
+## 4. Diagram Visibility & Contrast QA
 
-### 4.1 Gate Button
+To prevent illegible UI designs, automated and manual checks enforce the **QYNX Diagram Visibility Standard**:
 
-```
-Test: renders with correct label
-Test: calls applyGate with correct gateId on click
-Test: shows as disabled when isMeasured=true
-Test: does not call applyGate when disabled
-Test: shows tooltip on hover (check tooltip content)
-Test: keyboard (Enter key) triggers same as click
-```
-
-### 4.2 Probability Bar
-
-```
-Test: renders label, bar, and percentage correctly
-Test: percentage matches probability * 100
-Test: bar width style = probability * 100 + '%'
-Test: handles probability=0 (0.0% displayed)
-Test: handles probability=1 (100.0% displayed)
-```
-
-### 4.3 Measure Button
-
-```
-Test: calls store.measure() on click
-Test: shows as disabled after measurement
-Test: is re-enabled after reset
-```
-
-### 4.4 Reset Button (each page)
-
-```
-Test: calls reset() action on click
-Test: store state returns to initial values after reset
-```
-
-### 4.5 Circuit Grid (Page 5)
-
-```
-Test: gate appears in correct cell after placement
-Test: gate is removed on × click
-Test: validation error appears for invalid CNOT placement
-Test: Run Circuit button is disabled when circuit has errors
-Test: results appear after successful circuit execution
-```
+| Test Target | Rule / Constraint | Verification Method | Pass Criteria |
+|-------------|-------------------|---------------------|---------------|
+| Circuit Grid Wires | Stroke $\ge 2\text{px}$, `#491D8B` or `#8A3FFC` | Automated CSS / SVG attribute test | `stroke-width >= 2`, contrast $\ge 3:1$ against `#1C0F30` |
+| Bloch State Vector | Stroke $\ge 3\text{px}$, arrow head distinct | Visual inspection & WebGL mesh spec | Shaft thickness $\ge 0.04$ units, head radius $\ge 0.09$ units |
+| Text Notation & Labels | Bra-ket labels $\ge 14\text{px}$, `#FFFFFF` | axe-core + CSS style assertion | Contrast ratio $\ge 4.5:1$ against adjacent container |
+| Probability Bars | Bar height $\ge 8\text{px}$, fill `#8A3FFC` | DOM inspector test | Visible percentage label in White `#FFFFFF` |
+| Tap Targets | Gate cards, buttons, grid cells $\ge 48\times 48\text{px}$ | `@testing-library/react` bounding box | `width >= 48 && height >= 48` on mobile viewports |
 
 ---
 
-## 5. Integration Tests
+## 5. UI Component & Flow Integration Tests
 
-### 5.1 Gate Visualizer Flow
+### 5.1 Quantum Gate Visualizer Flow (`src/pages/GateVisualizer/__tests__/flow.test.tsx`)
 
+```typescript
+describe('Quantum Gate Visualizer Integration Flow', () => {
+  it('executes H -> X -> Measure -> Reset sequence with correct UI state', async () => {
+    render(<GateVisualizer />)
+
+    // Initial state: |0⟩, 100% / 0%
+    expect(screen.getByTestId('state-ket-label')).toHaveTextContent('|0⟩')
+    expect(screen.getByTestId('prob-0-pct')).toHaveTextContent('100.0%')
+    expect(screen.getByTestId('prob-1-pct')).toHaveTextContent('0.0%')
+
+    // Apply H
+    const hBtn = screen.getByRole('button', { name: /hadamard/i })
+    await userEvent.click(hBtn)
+    expect(screen.getByTestId('state-ket-label')).toHaveTextContent('|+⟩')
+    expect(screen.getByTestId('prob-0-pct')).toHaveTextContent('50.0%')
+    expect(screen.getByTestId('prob-1-pct')).toHaveTextContent('50.0%')
+
+    // Apply X
+    const xBtn = screen.getByRole('button', { name: /pauli-x/i })
+    await userEvent.click(xBtn)
+    expect(screen.getByTestId('state-ket-label')).toHaveTextContent('|-⟩')
+
+    // Measure
+    const measureBtn = screen.getByRole('button', { name: /measure/i })
+    await userEvent.click(measureBtn)
+
+    // Verify collapse to |0⟩ or |1⟩
+    const finalLabel = screen.getByTestId('state-ket-label').textContent
+    expect(['|0⟩', '|1⟩']).toContain(finalLabel)
+    expect(hBtn).toBeDisabled()
+    expect(xBtn).toBeDisabled()
+
+    // Reset
+    const resetBtn = screen.getByRole('button', { name: /reset state/i })
+    await userEvent.click(resetBtn)
+    expect(screen.getByTestId('state-ket-label')).toHaveTextContent('|0⟩')
+    expect(hBtn).toBeEnabled()
+  })
+})
 ```
-1. Load GateVisualizer page
-2. Assert initial state: |0⟩, p0=100%, p1=0%
-3. Click H gate button
-4. Assert: state updates to |+⟩, p0=50%, p1=50%
-5. Click X gate button
-6. Assert: state updates to |-⟩, p0=50%, p1=50%
-7. Click Measure button
-8. Assert: state is either |0⟩ or |1⟩ (collapsed)
-9. Assert: gate buttons disabled
-10. Click Reset
-11. Assert: state is |0⟩, gate buttons enabled
-```
 
-### 5.2 Experiment Lab Flow
+### 5.2 Quantum Expo Lab Flow (`src/pages/ExpoLab/__tests__/expoFlow.test.tsx`)
 
-```
-1. Load ExperimentLab page
-2. Select "Superposition" experiment
-3. Assert: initial state |0⟩ displayed
-4. Click "Run Next Step"
-5. Assert: H gate applied, state = |+⟩
-6. Click "Run Next Step"
-7. Assert: measurement result shown
-8. Assert: result is either |0⟩ or |1⟩
-9. Click Reset
-10. Assert: back to step 1, initial state |0⟩
+```typescript
+describe('Quantum Expo Lab Step Sequencer', () => {
+  it('steps through Superposition Protocol and records multi-shot measurement', async () => {
+    render(<ExpoLab />)
+
+    // Select Superposition experiment
+    const expSelect = screen.getByRole('button', { name: /superposition protocol/i })
+    await userEvent.click(expSelect)
+
+    // Step 0: State is |0⟩
+    expect(screen.getByTestId('expo-current-step')).toHaveTextContent('Step 0')
+
+    // Step 1: Apply H gate
+    await userEvent.click(screen.getByRole('button', { name: /run next step/i }))
+    expect(screen.getByTestId('expo-current-step')).toHaveTextContent('Step 1')
+    expect(screen.getByTestId('expo-state-display')).toHaveTextContent('|+⟩')
+
+    // Step 2: Multi-shot sampling (1000 shots)
+    await userEvent.click(screen.getByRole('button', { name: /run next step/i }))
+    expect(screen.getByTestId('expo-histogram')).toBeInTheDocument()
+    expect(screen.getByTestId('shot-count-0')).toHaveTextContent(/^[4-5]\d{2}$/) // ~500
+    expect(screen.getByTestId('shot-count-1')).toHaveTextContent(/^[4-5]\d{2}$/) // ~500
+  })
+})
 ```
 
 ---
 
 ## 6. Manual QA Checklist
 
-Run before every release:
+### 6.1 Brand Identity & Layout Verification
+- [ ] Header wordmark displays **QYNX** in `Cabinet Grotesk` or `Syne` with `#8A3FFC` dot.
+- [ ] Navigation tabs 01–05 are numbered and labeled with exact names:
+  - `01. Quantum Universe`
+  - `02. Gate Visualizer`
+  - `03. Quantum Expo Lab`
+  - `04. Entanglement Simulator`
+  - `05. Circuit Builder`
+- [ ] No legacy blue tokens (`#071018`, `#0B132B`, `#1C2B38`, `#38506A`, `#446983`, `#7991A8`, `#3A506B`) appear anywhere in DOM or computed styles.
+- [ ] Dark canvas uses strict QYNX Purple Scale (`#1C0F30` background, `#31135E` cards, `#491D8B` borders).
+- [ ] High-contrast mathematical text and state kets use pure White `#FFFFFF`.
 
-### Navigation
-- [ ] All 5 pages accessible from navigation bar
-- [ ] Active page indicated correctly in nav
-- [ ] Mobile hamburger menu opens/closes
-- [ ] All nav links navigate correctly
-- [ ] Page transitions animate (fade in/out)
+### 6.2 Quantum Gate Visualizer (Page 2)
+- [ ] 3D Bloch sphere renders with clear equator and meridian circles (visible without squinting).
+- [ ] Arrow shaft thickness is $\ge 3\text{px}$, arrow head clearly distinguished.
+- [ ] Drag-to-rotate camera functions smoothly without hitching.
+- [ ] Gate applications trigger SLERP animation along the geodesic surface.
+- [ ] Probability bars smoothly interpolate to exact Born probabilities.
+- [ ] Measurement disables gates and shows projective collapse notification.
+- [ ] Live announcer alerts assistive technology: *"State measured: collapsed to ket 0"*.
 
-### Gate Visualizer
-- [ ] Bloch sphere renders (3D, not flat)
-- [ ] All 6 gate buttons apply correct transformations
-- [ ] Bloch sphere vector moves when gate applied
-- [ ] Probability bars update correctly
-- [ ] State label updates correctly
-- [ ] Measurement collapses state
-- [ ] Gate buttons disabled after measurement
-- [ ] Reset restores |0⟩
-- [ ] Gate history shows correct sequence
-- [ ] Camera rotation works (drag)
-- [ ] Tooltips appear on hover
+### 6.3 Quantum Expo Lab (Page 3)
+- [ ] Superposition and Bit-Flip experiments are accessible via protocol selector.
+- [ ] Step-by-step sequencer updates the visual circuit line and state readout concurrently.
+- [ ] Multi-shot histograms render clear bars in `#8A3FFC` with white labels.
+- [ ] Clear scientific disclaimer banner displays on measurement results.
 
-### Experiment Lab
-- [ ] All 5 experiments selectable
-- [ ] Step progress indicator works
-- [ ] Run Next Step executes correctly
-- [ ] Run All executes all steps with delay
-- [ ] Multi-shot measurement shows histogram
-- [ ] Shot count stepper works (1, 10, 100, 1000)
-- [ ] Reset clears step and state
+### 6.4 Quantum Entanglement Simulator (Page 4)
+- [ ] Qubit A and Qubit B displayed in clean card containers without physical wires/cables.
+- [ ] Applying H on A then CNOT creates Bell state $|\Phi^+\rangle$.
+- [ ] Entangled badge lights up with `#BE95FF` pulse.
+- [ ] Measuring Qubit A immediately updates Qubit B's correlated outcome.
+- [ ] Non-classical correlation explanation card renders with readable math notation.
 
-### Entanglement Simulator
-- [ ] H on Qubit A updates state correctly
-- [ ] CNOT creates Bell state
-- [ ] Entanglement indicator appears after CNOT
-- [ ] Visual arc connects qubits when entangled
-- [ ] Measurement shows only |00⟩ or |11⟩ (never |01⟩ or |10⟩)
-- [ ] Reset clears all state
+### 6.5 Quantum Circuit Builder (Page 5)
+- [ ] Desktop drag-and-drop from gate palette onto 3-qubit $\times$ 8-step matrix functions reliably.
+- [ ] Mobile alternative: tapping a gate selects it, tapping a grid slot places it without dragging.
+- [ ] Invalid multi-wire operations (e.g., CNOT control and target on same wire) display 3-part diagnostic error.
+- [ ] Run Circuit simulates state evolution and renders measurement outcome probabilities.
+- [ ] Step-by-step scrubber allows scrubbing through intermediate column state vectors.
 
-### Circuit Builder
-- [ ] Drag-and-drop gate placement (desktop)
-- [ ] Tap-to-place (mobile)
-- [ ] Gate removal (× button)
-- [ ] CNOT placed correctly (control + target)
-- [ ] Invalid CNOT shows error
-- [ ] Run Circuit executes
-- [ ] Results histogram shows
-- [ ] Clear removes all gates
-- [ ] Undo (Ctrl+Z) removes last gate
-
-### Accessibility
-- [ ] Full keyboard navigation through all pages
-- [ ] Focus indicators visible on all interactive elements
-- [ ] Screen reader announces state changes (test with NVDA or VoiceOver)
-- [ ] Reduced motion: all animations simplified/removed
-- [ ] 200% zoom: no content overflow
-
-### Performance
-- [ ] Lighthouse score ≥ 90 (performance) on desktop
-- [ ] Lighthouse score ≥ 90 (performance) on mobile simulation
-- [ ] No jank during Bloch sphere animation
-
-### Responsive
-- [ ] Mobile S (375px): all content visible and usable
-- [ ] Tablet (768px): layout correct
-- [ ] Desktop (1440px): maximum layout correct
+### 6.6 Accessibility & Performance Audits
+- [ ] Lighthouse Performance score $\ge 90$ on desktop and mobile.
+- [ ] Lighthouse Accessibility score = 100.
+- [ ] All interactive elements pass WCAG 2.1 AA color contrast ($\ge 4.5:1$ text, $\ge 3:1$ graphics).
+- [ ] Keyboard navigation: Tab traversal, Enter/Space activation, Esc dismisses modals.
+- [ ] Screen reader announcer `#qynx-live-announcer` triggers on every quantum state mutation.
+- [ ] `prefers-reduced-motion` suppresses SLERP transitions and pulses.
 
 ---
 
-## 7. Running Tests
+## 7. Test Execution Commands
 
 ```bash
-# Run all unit tests
+# Run full engine and component test suite
 npm run test
 
-# Run tests in watch mode (during development)
+# Run tests in watch mode during development
 npm run test:watch
 
-# Run tests with coverage
+# Generate comprehensive test coverage report
 npm run test:coverage
 
-# Build and run Lighthouse audit
+# Run automated axe accessibility audit
+npm run test:a11y
+
+# Production build and Lighthouse preview audit
 npm run build
 npm run preview
-npx lighthouse http://localhost:4173 --output html --output-path ./lighthouse-report.html
+npx lighthouse http://localhost:4173 --output html --output-path ./artifacts/lighthouse-report.html
 ```
 
-Coverage targets (for quantum engine modules):
-- `src/engine/`: > 90% line coverage
-- `src/store/`: > 70% line coverage
-- `src/components/shared/`: > 60% line coverage
+### Coverage Thresholds (Strict Engine Requirements)
+
+| Code Area | Statements | Branches | Functions | Lines |
+|-----------|------------|----------|-----------|-------|
+| `src/engine/math/` | 100% | 98% | 100% | 100% |
+| `src/engine/gates/` | 100% | 95% | 100% | 100% |
+| `src/engine/qubit/` | 100% | 95% | 100% | 100% |
+| `src/engine/circuit/` | 95% | 90% | 95% | 95% |
+| `src/store/` | 90% | 85% | 90% | 90% |
+| `src/components/shared/` | 85% | 80% | 85% | 85% |

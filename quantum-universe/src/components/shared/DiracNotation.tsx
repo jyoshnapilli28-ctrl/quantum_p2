@@ -27,7 +27,7 @@ export const DiracNotation: React.FC<DiracNotationProps> = ({
       className={`dirac-notation ${className}`}
       style={{
         fontFamily: 'var(--font-mono)',
-        color: 'var(--color-white)',
+        color: 'var(--text-primary, #181126)',
         fontSize: getFontSize(),
         fontWeight: 600,
         display: 'inline-block',

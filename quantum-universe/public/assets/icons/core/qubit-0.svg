@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48" fill="none">
+  <!-- Outer Bloch Shell -->
+  <circle cx="24" cy="24" r="18" stroke="#6929C4" stroke-width="1.75" />
+  <!-- Equator Guide -->
+  <ellipse cx="24" cy="24" rx="18" ry="6" stroke="#A56EFF" stroke-width="1" stroke-dasharray="2.5 2.5" opacity="0.7" />
+  <!-- Vertical Z-Axis -->
+  <line x1="24" y1="4" x2="24" y2="44" stroke="#491D8B" stroke-width="1.2" />
+  <!-- State Vector Arrow pointing UP to |0⟩ -->
+  <line x1="24" y1="24" x2="24" y2="9" stroke="#8A3FFC" stroke-width="2.5" stroke-linecap="round" />
+  <!-- North Pole |0⟩ State Indicator Node -->
+  <circle cx="24" cy="8" r="4.5" fill="#8A3FFC" stroke="#181126" stroke-width="1.5" />
+  <!-- Origin Anchor -->
+  <circle cx="24" cy="24" r="2" fill="#6929C4" />
+  <!-- Basis Label |0⟩ -->
+  <text x="24" y="4" font-family="'JetBrains Mono', monospace" font-size="8" font-weight="700" fill="#181126" text-anchor="middle">|0⟩</text>
+</svg>

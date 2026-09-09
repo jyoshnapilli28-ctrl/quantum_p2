@@ -25,26 +25,26 @@ export const EducationalSection: React.FC<EducationalSectionProps> = ({
       style={{
         display: 'grid',
         gridTemplateColumns: '1fr 1fr',
-        gap: 'var(--space-12)',
-        marginBottom: 'var(--space-20)',
+        gap: 'var(--space-10, 40px)',
+        marginBottom: 'var(--space-12, 48px)',
         alignItems: 'center',
-        opacity: 0, // Hidden until revealed
-        transform: 'translateY(20px)',
-        transition: 'opacity 0.8s ease-out, transform 0.8s ease-out',
+        opacity: 0,
+        transform: 'translateY(16px)',
+        transition: 'opacity 0.4s ease-out, transform 0.4s ease-out',
       }}
       className="scroll-reveal-container"
     >
       <div style={{ order: reversed ? 2 : 1 }}>
-        <h2 style={{ marginBottom: 'var(--space-6)', fontSize: 'var(--text-h2)' }}>
+        <h2 style={{ marginBottom: 'var(--space-4)', fontSize: 'var(--text-h2)', color: 'var(--text-primary, #181126)' }}>
           {title}
         </h2>
         
-        <div style={{ fontSize: 'var(--text-body-lg)', color: 'var(--color-arctic)', marginBottom: 'var(--space-8)' }}>
+        <div style={{ fontSize: 'var(--text-body)', color: 'var(--text-secondary, #4D3E6B)', marginBottom: 'var(--space-6)', lineHeight: 1.6 }}>
           {description}
         </div>
 
-        <QuantumPanel variant="deep" className="p-6">
-          <div style={{ padding: 'var(--space-6)' }}>
+        <QuantumPanel variant="deep">
+          <div style={{ padding: 'var(--space-5)' }}>
             {interactiveDemo}
           </div>
         </QuantumPanel>
@@ -54,11 +54,10 @@ export const EducationalSection: React.FC<EducationalSectionProps> = ({
         <img 
           src={illustrationSrc} 
           alt={title} 
-          style={{ width: '100%', maxWidth: '400px', filter: 'drop-shadow(var(--shadow-visualization))' }}
+          style={{ width: '100%', maxWidth: '380px', display: 'block' }}
         />
       </div>
 
-      {/* Internal style for the scroll reveal class */}
       <style>{`
         .scroll-reveal-container.revealed {
           opacity: 1 !important;
@@ -67,9 +66,10 @@ export const EducationalSection: React.FC<EducationalSectionProps> = ({
         @media (max-width: 768px) {
           .scroll-reveal-container {
             grid-template-columns: 1fr !important;
+            gap: var(--space-6) !important;
           }
           .scroll-reveal-container > div:nth-child(2) {
-            order: -1 !important; /* Image always on top on mobile */
+            order: -1 !important;
           }
         }
       `}</style>

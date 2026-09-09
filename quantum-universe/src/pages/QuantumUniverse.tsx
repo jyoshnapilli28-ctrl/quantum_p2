@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { EducationalSection } from '../components/quantum-universe/EducationalSection';
 import { DiracNotation } from '../components/shared/DiracNotation';
 import { ProbabilityBar } from '../components/shared/ProbabilityBar';
@@ -27,8 +27,9 @@ export const QuantumUniverse: React.FC = () => {
     setDemo2State(collapsedState);
   };
 
-  // Demo 3 State (Measurement Slider)
+  // Demo 3 State (Measurement Slider & Simulated Collapse)
   const [demo3AlphaSq, setDemo3AlphaSq] = useState(0.85);
+  const [demo3Collapsed, setDemo3Collapsed] = useState<string | null>(null);
 
   // Demo 4 State (Gates)
   const [demo4State, setDemo4State] = useState(createZeroState());
@@ -50,87 +51,86 @@ export const QuantumUniverse: React.FC = () => {
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      className="page-container"
-    >
-      {/* Hero Section */}
-      <div style={{ textAlign: 'center', margin: '15vh 0 20vh 0', position: 'relative', zIndex: 10 }}>
-        <h1 className="animate-slide-up" style={{ fontSize: 'var(--text-display)', marginBottom: 'var(--space-6)', letterSpacing: '-1px' }}>
-          Welcome to the <span style={{ color: 'var(--color-icicle)' }}>Quantum Universe</span>
+    <div className="page-container" style={{ maxWidth: '1120px', margin: '0 auto', padding: '0 var(--space-6)' }}>
+      {/* Human-Designed Compact Hero Section */}
+      <div style={{ textAlign: 'center', margin: '40px auto 48px auto', maxWidth: '780px' }}>
+        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '4px 12px', background: 'var(--color-white, #FFFFFF)', border: '1px solid var(--border-default, #D4BBFF)', borderRadius: 'var(--radius-full)', marginBottom: 'var(--space-3)' }}>
+          <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--color-purple-60, #8A3FFC)' }} />
+          <span style={{ fontSize: 'var(--text-label)', color: 'var(--text-secondary, #4D3E6B)', fontWeight: 600, letterSpacing: '0.5px', textTransform: 'uppercase' }}>
+            Quantum Computing Educational Platform
+          </span>
+        </div>
+
+        <h1 className="animate-slide-up" style={{ fontSize: 'var(--text-display)', marginBottom: 'var(--space-3)', color: 'var(--text-primary, #181126)', letterSpacing: '-0.5px' }}>
+          Explore the Quantum Universe
         </h1>
-        <p className="animate-slide-up" style={{ animationDelay: '100ms', fontSize: 'var(--text-h3)', color: 'var(--color-arctic)', maxWidth: '700px', margin: '0 auto var(--space-12) auto', fontWeight: 400 }}>
-          An interactive laboratory to explore the counter-intuitive and powerful principles of quantum computing.
+
+        <p className="animate-slide-up" style={{ fontSize: 'var(--text-body-lg)', color: 'var(--text-secondary, #4D3E6B)', maxWidth: '640px', margin: '0 auto var(--space-6) auto', fontWeight: 400, lineHeight: 1.5 }}>
+          An interactive laboratory to learn the foundations of quantum information science, unitary state transformations, and quantum circuit mechanics.
         </p>
         
-        <div className="animate-slide-up" style={{ animationDelay: '200ms', display: 'flex', gap: 'var(--space-6)', justifyContent: 'center' }}>
-          <Link to="/gate-visualizer" style={{
-            padding: 'var(--space-4) var(--space-8)',
-            background: 'var(--gradient-gate-button)',
-            border: '1px solid var(--color-icicle)',
-            borderRadius: 'var(--radius-lg)',
-            color: 'var(--color-white)',
-            fontWeight: 600,
-            textDecoration: 'none',
-            transition: 'all 0.3s ease',
-            boxShadow: '0 0 20px rgba(68, 105, 131, 0.4)'
-          }}>
-            Enter the Lab
+        <div className="animate-slide-up" style={{ display: 'flex', gap: 'var(--space-4)', justifyContent: 'center', flexWrap: 'wrap' }}>
+          <Link
+            to="/gate-visualizer"
+            className="qynx-btn"
+            style={{ padding: '10px 22px' }}
+          >
+            Launch Gate Visualizer →
           </Link>
-          <a href="#learn" style={{
-            padding: 'var(--space-4) var(--space-8)',
-            background: 'transparent',
-            border: '1px solid var(--color-polar)',
-            borderRadius: 'var(--radius-lg)',
-            color: 'var(--color-white)',
-            fontWeight: 600,
-            textDecoration: 'none',
-            transition: 'all 0.3s ease',
-          }}>
-            Learn the Basics
+          <a
+            href="#learn"
+            className="qynx-btn qynx-btn-secondary"
+            style={{ padding: '10px 22px' }}
+          >
+            Learn Core Concepts
           </a>
         </div>
       </div>
 
-      <div id="learn">
+      <div id="learn" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-8)' }}>
         {/* Section 1: Bits vs Qubits */}
         <EducationalSection
           title="1. Classical Bits vs. Qubits"
-          illustrationSrc="/assets/images/illustrations/quantum-universe/sec1-qubit.svg"
+          illustrationSrc="/assets/images/illustrations/quantum-universe/bit-vs-qubit.svg"
           description={
             <>
-              <p style={{ marginBottom: '1rem' }}>Classical computers use bits, which must be exactly 0 or exactly 1. There is no in-between.</p>
-              <p>Quantum computers use qubits. A qubit can exist in a state of 0, 1, or any probabilistic combination of both simultaneously.</p>
+              <p style={{ marginBottom: '0.75rem' }}>Classical computers store information in bits: binary units evaluating strictly to 0 or 1.</p>
+              <p>Quantum computers utilize <strong>qubits</strong>. A qubit exists as a normalized vector |ψ⟩ = α|0⟩ + β|1⟩ in a two-dimensional complex Hilbert space, spanning a continuum of superposition states until measurement.</p>
             </>
           }
           interactiveDemo={
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-6)' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-5)' }}>
               <div>
-                <h4 style={{ marginBottom: 'var(--space-4)', color: 'var(--color-white)' }}>Classical Bit</h4>
+                <h4 style={{ marginBottom: 'var(--space-2)', color: 'var(--text-primary, #181126)', fontSize: 'var(--text-body-sm)' }}>Classical Bit</h4>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-4)' }}>
                   <button 
+                    className="qynx-btn qynx-btn-secondary"
                     onClick={() => setIsBitOne(!isBitOne)}
-                    style={{ padding: '8px 16px', background: 'var(--color-polar)', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
+                    style={{ padding: '6px 14px', fontSize: 'var(--text-body-sm)' }}
                   >
-                    Toggle Bit
+                    Toggle Bit State
                   </button>
-                  <span style={{ fontFamily: 'var(--font-mono)', fontSize: '24px', color: 'white' }}>
+                  <motion.span 
+                    key={isBitOne ? '1' : '0'}
+                    initial={{ scale: 0.9, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    style={{ fontFamily: 'var(--font-mono)', fontSize: '20px', color: 'var(--text-primary, #181126)', fontWeight: 700 }}
+                  >
                     {isBitOne ? '1' : '0'}
-                  </span>
+                  </motion.span>
                 </div>
               </div>
-              <div style={{ borderTop: '1px solid var(--color-solstice)', paddingTop: 'var(--space-6)' }}>
-                <h4 style={{ marginBottom: 'var(--space-4)', color: 'var(--color-white)' }}>Quantum Bit (Qubit)</h4>
+
+              <div style={{ borderTop: '1px solid var(--border-default, #D4BBFF)', paddingTop: 'var(--space-4)' }}>
+                <h4 style={{ marginBottom: 'var(--space-2)', color: 'var(--text-primary, #181126)', fontSize: 'var(--text-body-sm)' }}>Quantum Qubit (Continuous Superposition)</h4>
                 <input 
                   type="range" min="0" max="1" step="0.01" 
                   value={qubitProb} 
                   onChange={(e) => setQubitProb(parseFloat(e.target.value))}
-                  style={{ width: '100%', marginBottom: '1rem' }}
+                  style={{ width: '100%', marginBottom: '0.75rem', accentColor: 'var(--color-purple-60)' }}
                 />
                 <ProbabilityBar label="|0⟩" probability={qubitProb} />
-                <div style={{ height: '8px' }} />
+                <div style={{ height: '6px' }} />
                 <ProbabilityBar label="|1⟩" probability={1 - qubitProb} colorBasis="1" />
               </div>
             </div>
@@ -139,34 +139,37 @@ export const QuantumUniverse: React.FC = () => {
 
         {/* Section 2: Superposition */}
         <EducationalSection
-          title="2. Superposition"
-          illustrationSrc="/assets/images/illustrations/quantum-universe/sec2-superposition.svg"
+          title="2. Quantum Superposition"
+          illustrationSrc="/assets/images/illustrations/quantum-universe/superposition.svg"
           reversed
           description={
             <>
-              <p style={{ marginBottom: '1rem' }}>Superposition is the ability of a quantum system to be in multiple states at the same time until it is measured.</p>
-              <p>Applying a Hadamard (H) gate to a |0⟩ state puts it into a perfect 50/50 superposition, denoted as |+⟩.</p>
+              <p style={{ marginBottom: '0.75rem' }}>Superposition enables a quantum system to hold linear combinations of basis states simultaneously.</p>
+              <p>Applying the <strong>Hadamard (H)</strong> gate rotates a basis state |0⟩ into equal probability superposition |+⟩ = (|0⟩ + |1⟩)/√2.</p>
             </>
           }
           interactiveDemo={
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-6)', alignItems: 'center' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-5)', alignItems: 'center' }}>
               <DiracNotation stateLabel={demo2Measurement ? `|${demo2Measurement}⟩` : (demo2State[0].re === 1 ? '|0⟩' : '|+⟩')} size="xl" />
+              
               <div style={{ width: '100%' }}>
                 <ProbabilityBar label="|0⟩" probability={getProbabilities1Q(demo2State).p0} />
-                <div style={{ height: '8px' }} />
+                <div style={{ height: '6px' }} />
                 <ProbabilityBar label="|1⟩" probability={getProbabilities1Q(demo2State).p1} colorBasis="1" />
               </div>
-              <div style={{ display: 'flex', gap: 'var(--space-4)', marginTop: 'var(--space-4)' }}>
+
+              <div style={{ display: 'flex', gap: 'var(--space-3)', marginTop: 'var(--space-2)', alignItems: 'center' }}>
                 <GateButton gateId="H" onClick={handleDemo2Gate} />
                 <button 
+                  className="qynx-btn"
                   onClick={handleDemo2Measure}
-                  style={{ padding: '0 24px', background: 'var(--color-solstice)', border: '1px solid var(--color-icicle)', color: 'white', borderRadius: '8px', cursor: 'pointer' }}
+                  style={{ padding: '8px 20px' }}
                 >
-                  Measure
+                  Measure Qubit
                 </button>
                 <button 
                   onClick={() => { setDemo2State(createZeroState()); setDemo2Measurement(null); }}
-                  style={{ padding: '0 16px', background: 'transparent', border: 'none', color: 'var(--color-arctic)', cursor: 'pointer', textDecoration: 'underline' }}
+                  style={{ padding: '6px 12px', background: 'transparent', border: 'none', color: 'var(--color-purple-60, #8A3FFC)', cursor: 'pointer', textDecoration: 'underline', fontSize: 'var(--text-body-sm)' }}
                 >
                   Reset
                 </button>
@@ -177,36 +180,61 @@ export const QuantumUniverse: React.FC = () => {
 
         {/* Section 3: Measurement */}
         <EducationalSection
-          title="3. The Observer Effect (Measurement)"
-          illustrationSrc="/assets/images/illustrations/quantum-universe/sec3-measurement.svg"
+          title="3. The Measurement Postulate"
+          illustrationSrc="/assets/images/illustrations/quantum-universe/measurement.svg"
           description={
             <>
-              <p style={{ marginBottom: '1rem' }}>When a quantum state is measured, its superposition collapses into one of the definite classical states (0 or 1).</p>
-              <p>The probability of collapsing to 0 or 1 is determined by the state vector's amplitudes. Once measured, the state stays classical until further quantum operations are applied.</p>
+              <p style={{ marginBottom: '0.75rem' }}>According to the Born rule, observing a qubit irreversibly collapses its probability wave into an eigenstate |0⟩ or |1⟩ with probability |α|² and |β|² respectively.</p>
+              <p>Once measured, the superposition state is completely collapsed until additional unitary operations are applied.</p>
             </>
           }
           interactiveDemo={
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-6)' }}>
-              <p style={{ color: 'var(--color-arctic)' }}>Adjust the probabilities and imagine rolling a weighted quantum die.</p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
+              <p style={{ color: 'var(--text-secondary, #4D3E6B)', fontSize: 'var(--text-body-sm)' }}>Adjust basis amplitude weighting and simulate quantum projection:</p>
               <input 
-                  type="range" min="0" max="1" step="0.01" 
-                  value={demo3AlphaSq} 
-                  onChange={(e) => setDemo3AlphaSq(parseFloat(e.target.value))}
-                  style={{ width: '100%' }}
-                />
-              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <span style={{ color: 'var(--color-white)' }}>P(0) = {Math.round(demo3AlphaSq * 100)}%</span>
-                <span style={{ color: 'var(--color-white)' }}>P(1) = {Math.round((1 - demo3AlphaSq) * 100)}%</span>
+                type="range" min="0" max="1" step="0.01" 
+                value={demo3AlphaSq} 
+                onChange={(e) => setDemo3AlphaSq(parseFloat(e.target.value))}
+                style={{ width: '100%', accentColor: 'var(--color-purple-60)' }}
+              />
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: 'var(--font-mono)', fontSize: 'var(--text-body-sm)' }}>
+                <span style={{ color: 'var(--text-primary, #181126)' }}>P(0) = {Math.round(demo3AlphaSq * 100)}%</span>
+                <span style={{ color: 'var(--text-primary, #181126)' }}>P(1) = {Math.round((1 - demo3AlphaSq) * 100)}%</span>
               </div>
+
               <button 
+                className="qynx-btn"
                 onClick={() => {
-                  const result = Math.random() < demo3AlphaSq ? '0' : '1';
-                  alert(`State collapsed to |${result}⟩`);
+                  const outcome = Math.random() < demo3AlphaSq ? '0' : '1';
+                  setDemo3Collapsed(outcome);
                 }}
-                style={{ padding: '12px 24px', background: 'var(--gradient-gate-button)', border: '1px solid var(--color-icicle)', color: 'white', borderRadius: '8px', cursor: 'pointer', width: '100%', marginTop: '1rem' }}
+                style={{ padding: '10px 20px', width: '100%' }}
               >
-                Simulate Measurement
+                Perform Measurement
               </button>
+
+              <AnimatePresence mode="wait">
+                {demo3Collapsed && (
+                  <motion.div
+                    key={demo3Collapsed}
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0 }}
+                    style={{
+                      padding: '10px 14px',
+                      borderRadius: 'var(--radius-md)',
+                      background: 'var(--color-purple-20, #E8DAFF)',
+                      border: '1px solid var(--border-default, #D4BBFF)',
+                      textAlign: 'center',
+                      fontFamily: 'var(--font-mono)',
+                      color: 'var(--text-primary, #181126)',
+                      fontSize: 'var(--text-body-sm)'
+                    }}
+                  >
+                    State collapsed into eigenstate: <strong>|{demo3Collapsed}⟩</strong>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           }
         />
@@ -214,16 +242,16 @@ export const QuantumUniverse: React.FC = () => {
         {/* Section 4: Quantum Gates */}
         <EducationalSection
           title="4. Quantum Logic Gates"
-          illustrationSrc="/assets/images/illustrations/quantum-universe/sec4-gates.svg"
+          illustrationSrc="/assets/images/illustrations/quantum-universe/quantum-gates.svg"
           reversed
           description={
             <>
-              <p style={{ marginBottom: '1rem' }}>Classical logic gates (AND, OR, NOT) operate on classical bits.</p>
-              <p>Quantum gates are unitary matrices that rotate the state vector around the Bloch sphere without collapsing it.</p>
+              <p style={{ marginBottom: '0.75rem' }}>Unlike irreversible classical logic gates, single-qubit quantum gates are norm-preserving unitary operators (U†U = I).</p>
+              <p>They execute continuous, deterministic rotations of the state vector across the surface of the Bloch sphere.</p>
             </>
           }
           interactiveDemo={
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-6)', alignItems: 'center' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-5)', alignItems: 'center' }}>
               <DiracNotation stateLabel={
                 demo4State[0].re === 1 ? '|0⟩' : 
                 demo4State[1].re === 1 ? '|1⟩' : 
@@ -233,21 +261,21 @@ export const QuantumUniverse: React.FC = () => {
               
               <div style={{ width: '100%' }}>
                 <ProbabilityBar label="|0⟩" probability={getProbabilities1Q(demo4State).p0} />
-                <div style={{ height: '8px' }} />
+                <div style={{ height: '6px' }} />
                 <ProbabilityBar label="|1⟩" probability={getProbabilities1Q(demo4State).p1} colorBasis="1" />
               </div>
 
-              <div style={{ display: 'flex', gap: 'var(--space-4)', flexWrap: 'wrap', justifyContent: 'center', marginTop: 'var(--space-4)' }}>
+              <div style={{ display: 'flex', gap: 'var(--space-2)', flexWrap: 'wrap', justifyContent: 'center' }}>
                 {(['X', 'Y', 'Z', 'H'] as const).map(gate => (
                   <GateButton key={gate} gateId={gate} onClick={() => setDemo4State(applyGate(demo4State, gate))} />
                 ))}
               </div>
               <button 
-                  onClick={() => setDemo4State(createZeroState())}
-                  style={{ marginTop: '1rem', background: 'transparent', border: 'none', color: 'var(--color-arctic)', cursor: 'pointer', textDecoration: 'underline' }}
-                >
-                  Reset to |0⟩
-                </button>
+                onClick={() => setDemo4State(createZeroState())}
+                style={{ background: 'transparent', border: 'none', color: 'var(--color-purple-60, #8A3FFC)', cursor: 'pointer', textDecoration: 'underline', fontSize: 'var(--text-body-sm)' }}
+              >
+                Reset to Ground |0⟩
+              </button>
             </div>
           }
         />
@@ -255,52 +283,72 @@ export const QuantumUniverse: React.FC = () => {
         {/* Section 5: Entanglement */}
         <EducationalSection
           title="5. Quantum Entanglement"
-          illustrationSrc="/assets/images/illustrations/quantum-universe/sec5-entanglement.svg"
+          illustrationSrc="/assets/images/illustrations/quantum-universe/entanglement.svg"
           description={
             <>
-              <p style={{ marginBottom: '1rem' }}>When qubits become entangled, their states are mathematically linked. Measuring one instantly determines the state of the other, no matter the distance between them.</p>
-              <p>Albert Einstein famously called this "spooky action at a distance."</p>
+              <p style={{ marginBottom: '0.75rem' }}>When two qubits become entangled, their joint state cannot be factored independently: |ψ⟩ ≠ |q₀⟩ ⊗ |q₁⟩.</p>
+              <p>Measuring one qubit instantly determines the state of the second, confirming non-local correlation.</p>
             </>
           }
           interactiveDemo={
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-6)' }}>
-              <div style={{ display: 'flex', justifyContent: 'center', gap: '2rem' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-5)' }}>
+              <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '2rem', position: 'relative' }}>
                 <div style={{ textAlign: 'center' }}>
-                  <h4 style={{ color: 'var(--color-arctic)', marginBottom: '0.5rem' }}>Qubit A</h4>
-                  <Icon category="core" name="qubit-0" size={48} className={demo5Entangled ? 'animate-pulse' : ''} />
+                  <h4 style={{ color: 'var(--text-primary, #181126)', fontSize: 'var(--text-body-sm)', marginBottom: '0.25rem' }}>Qubit A</h4>
+                  <div style={{ borderRadius: 'var(--radius-md)', padding: '6px', background: 'var(--color-purple-20, #E8DAFF)', border: '1px solid var(--border-default, #D4BBFF)' }}>
+                    <Icon category="quantum" name="qubit" size={40} />
+                  </div>
                 </div>
+
+                {/* Clean Solid Correlation Link Line */}
+                {demo5Entangled && (
+                  <motion.div
+                    initial={{ scaleX: 0, opacity: 0 }}
+                    animate={{ scaleX: 1, opacity: 1 }}
+                    style={{
+                      height: '2px',
+                      flex: 1,
+                      maxWidth: '80px',
+                      background: 'var(--color-purple-60, #8A3FFC)',
+                    }}
+                  />
+                )}
+
                 <div style={{ textAlign: 'center' }}>
-                  <h4 style={{ color: 'var(--color-arctic)', marginBottom: '0.5rem' }}>Qubit B</h4>
-                  <Icon category="core" name="qubit-1" size={48} className={demo5Entangled ? 'animate-pulse' : ''} />
+                  <h4 style={{ color: 'var(--text-primary, #181126)', fontSize: 'var(--text-body-sm)', marginBottom: '0.25rem' }}>Qubit B</h4>
+                  <div style={{ borderRadius: 'var(--radius-md)', padding: '6px', background: 'var(--color-purple-20, #E8DAFF)', border: '1px solid var(--border-default, #D4BBFF)' }}>
+                    <Icon category="quantum" name="two-qubits" size={40} />
+                  </div>
                 </div>
               </div>
               
               {demo5Entangled && (
-                <div style={{ textAlign: 'center', color: 'var(--color-icicle)', fontWeight: 'bold' }} className="animate-fade-in">
-                  ENTANGLED (Bell State)
+                <div style={{ textAlign: 'center', color: 'var(--text-primary, #181126)', fontFamily: 'var(--font-mono)', fontSize: 'var(--text-body-sm)', fontWeight: 600 }}>
+                  Bell State Active: |Φ⁺⟩ = (|00⟩ + |11⟩)/√2
                 </div>
               )}
 
-              <div style={{ display: 'flex', gap: 'var(--space-4)' }}>
+              <div style={{ display: 'flex', gap: 'var(--space-3)' }}>
                 <button 
+                  className="qynx-btn"
                   onClick={handleDemo5Create}
                   disabled={demo5Entangled}
-                  style={{ flex: 1, padding: '12px', background: demo5Entangled ? 'var(--color-midnight)' : 'var(--gradient-gate-button)', border: '1px solid var(--color-icicle)', color: demo5Entangled ? 'var(--color-polar)' : 'white', borderRadius: '8px', cursor: demo5Entangled ? 'not-allowed' : 'pointer' }}
+                  style={{ flex: 1 }}
                 >
                   Create Bell State (H + CNOT)
                 </button>
                 <button 
                   onClick={handleDemo5Reset}
-                  style={{ padding: '12px', background: 'transparent', border: '1px solid var(--color-polar)', color: 'var(--color-white)', borderRadius: '8px', cursor: 'pointer' }}
+                  className="qynx-btn qynx-btn-secondary"
+                  style={{ padding: '8px 16px' }}
                 >
                   Reset
                 </button>
               </div>
 
               {demo5Entangled && (
-                <div className="animate-slide-up">
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
                   <ProbabilityBar label="|00⟩" probability={getProbabilities2Q(demo5State).p00} />
-                  <div style={{ height: '4px' }} />
                   <ProbabilityBar label="|11⟩" probability={getProbabilities2Q(demo5State).p11} colorBasis="1" />
                 </div>
               )}
@@ -310,34 +358,33 @@ export const QuantumUniverse: React.FC = () => {
 
         {/* Section 6: Circuits */}
         <EducationalSection
-          title="6. Quantum Circuits"
-          illustrationSrc="/assets/images/illustrations/quantum-universe/sec6-circuit.svg"
+          title="6. Quantum Circuit Execution"
+          illustrationSrc="/assets/images/illustrations/quantum-universe/quantum-circuit.svg"
           reversed
           description={
             <>
-              <p style={{ marginBottom: '1rem' }}>Algorithms are built by wiring qubits and gates together into quantum circuits.</p>
-              <p>Just like sheet music, time flows from left to right. Qubits are initialized on the left, gates are applied in sequence, and measurements are read on the right.</p>
+              <p style={{ marginBottom: '0.75rem' }}>Quantum algorithms are structured as circuit schematics where time progresses left-to-right along register wires.</p>
+              <p>Explore the full interactive editor to assemble multi-qubit routines, place controlled operators, and inspect collapse histograms.</p>
             </>
           }
           interactiveDemo={
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'var(--space-8)' }}>
-               <img src="/assets/images/illustrations/circuit-builder/circuit-canvas-bg.svg" alt="Circuit diagram example" style={{ width: '100%', borderRadius: '8px' }} />
-               <Link to="/circuit-builder" style={{
-                  padding: 'var(--space-3) var(--space-6)',
-                  background: 'var(--color-solstice)',
-                  border: '1px solid var(--color-icicle)',
-                  borderRadius: 'var(--radius-lg)',
-                  color: 'var(--color-white)',
-                  textDecoration: 'none',
-                  transition: 'all 0.3s ease'
-                }}>
-                  Try the Circuit Builder →
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'var(--space-4)' }}>
+               <img 
+                 src="/assets/images/illustrations/circuit-builder/circuit-builder.svg" 
+                 alt="Circuit Canvas" 
+                 style={{ width: '100%', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-default, #D4BBFF)' }} 
+               />
+               <Link
+                  to="/circuit-builder"
+                  className="qynx-btn"
+                  style={{ padding: '10px 20px' }}
+                >
+                  Open Circuit Builder →
                </Link>
             </div>
           }
         />
       </div>
-
-    </motion.div>
+    </div>
   );
 };

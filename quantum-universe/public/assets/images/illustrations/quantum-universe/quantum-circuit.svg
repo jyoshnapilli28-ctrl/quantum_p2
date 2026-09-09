@@ -1,85 +1,78 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="500" height="300"  fill="none">
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="320" viewBox="0 0 600 320" fill="none">
+  <!-- Canvas Card -->
+  <rect width="600" height="320" rx="16" fill="#1C0F30"/>
+  <rect x="1" y="1" width="598" height="318" rx="15" stroke="#491D8B" stroke-width="1.5"/>
 
-    <defs>
-        <!-- Glassmorphism filter -->
-        <filter id="glass" x="-20%" y="-20%" width="140%" height="140%">
-            <feGaussianBlur stdDeviation="8" result="blur" />
-            <feComposite in="SourceGraphic" in2="blur" operator="over" />
-        </filter>
-        
-        <!-- Subtle Glow -->
-        <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
-            <feGaussianBlur stdDeviation="4" result="blur" />
-            <feMerge>
-                <feMergeNode in="blur" />
-                <feMergeNode in="SourceGraphic" />
-            </feMerge>
-        </filter>
-        
-        <!-- Strong Glow -->
-        <filter id="strong-glow" x="-50%" y="-50%" width="200%" height="200%">
-            <feGaussianBlur stdDeviation="8" result="blur" />
-            <feMerge>
-                <feMergeNode in="blur" />
-                <feMergeNode in="SourceGraphic" />
-            </feMerge>
-        </filter>
+  <!-- Title Header -->
+  <text x="300" y="38" font-family="'Inter', system-ui, sans-serif" font-size="13" font-weight="700" fill="#BE95FF" text-anchor="middle" letter-spacing="2">QUANTUM CIRCUIT MODEL</text>
 
-        <!-- Linear Gradients -->
-        <linearGradient id="bg-grad-1" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="#071018" />
-            <stop offset="100%" stop-color="#0B132B" />
-        </linearGradient>
-        
-        <linearGradient id="surface-grad" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stop-color="#1C2B38" stop-opacity="0.8"/>
-            <stop offset="100%" stop-color="#071018" stop-opacity="0.9"/>
-        </linearGradient>
+  <!-- Wires & Components Container -->
+  <g transform="translate(40, 50)">
+    <!-- Wire 0 (q0) -->
+    <text x="15" y="65" font-family="'JetBrains Mono', monospace" font-size="16" font-weight="700" fill="#FFFFFF">q₀</text>
+    <text x="45" y="65" font-family="'JetBrains Mono', monospace" font-size="13" fill="#BE95FF">|0⟩</text>
+    <line x1="75" y1="60" x2="420" y2="60" stroke="#491D8B" stroke-width="2.5"/>
 
-        <linearGradient id="accent-grad" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stop-color="#446983" />
-            <stop offset="100%" stop-color="#7991A8" />
-        </linearGradient>
+    <!-- Wire 1 (q1) -->
+    <text x="15" y="155" font-family="'JetBrains Mono', monospace" font-size="16" font-weight="700" fill="#FFFFFF">q₁</text>
+    <text x="45" y="155" font-family="'JetBrains Mono', monospace" font-size="13" fill="#BE95FF">|0⟩</text>
+    <line x1="75" y1="150" x2="420" y2="150" stroke="#491D8B" stroke-width="2.5"/>
 
-        <radialGradient id="radial-glow" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stop-color="#38506A" stop-opacity="0.3"/>
-            <stop offset="100%" stop-color="#071018" stop-opacity="0"/>
-        </radialGradient>
-        
-        <!-- Grid Pattern -->
-        <pattern id="quantum-grid-pattern" width="40" height="40" patternUnits="userSpaceOnUse">
-            <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1C2B38" stroke-width="1"/>
-            <circle cx="40" cy="40" r="1" fill="#38506A" />
-        </pattern>
-        
-        <!-- Small Grid Pattern -->
-        <pattern id="small-grid" width="20" height="20" patternUnits="userSpaceOnUse">
-            <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#0B132B" stroke-width="0.5"/>
-        </pattern>
-    </defs>
+    <!-- Gate H on q0 -->
+    <g transform="translate(130, 35)">
+      <rect width="50" height="50" rx="8" fill="#31135E" stroke="#8A3FFC" stroke-width="2"/>
+      <text x="25" y="33" font-family="'JetBrains Mono', monospace" font-size="22" font-weight="700" fill="#FFFFFF" text-anchor="middle">H</text>
+    </g>
 
+    <!-- CNOT Gate: Control on q0, Target on q1 -->
+    <!-- Control Dot on q0 -->
+    <circle cx="260" cy="60" r="7" fill="#8A3FFC"/>
+    <!-- Vertical Connector Line -->
+    <line x1="260" y1="60" x2="260" y2="150" stroke="#8A3FFC" stroke-width="2.5"/>
+    <!-- Target XOR on q1 -->
+    <circle cx="260" cy="150" r="16" fill="#31135E" stroke="#8A3FFC" stroke-width="2"/>
+    <line x1="244" y1="150" x2="276" y2="150" stroke="#FFFFFF" stroke-width="2"/>
+    <line x1="260" y1="134" x2="260" y2="166" stroke="#FFFFFF" stroke-width="2"/>
 
+    <!-- Measurement Gates (M) -->
+    <!-- M on q0 -->
+    <g transform="translate(350, 38)">
+      <rect width="44" height="44" rx="6" fill="#31135E" stroke="#6929C4" stroke-width="2"/>
+      <path d="M 12 32 A 16 16 0 0 1 32 32" fill="none" stroke="#BE95FF" stroke-width="1.5"/>
+      <line x1="22" y1="32" x2="30" y2="18" stroke="#8A3FFC" stroke-width="2" stroke-linecap="round"/>
+      <text x="22" y="40" font-family="'Inter', sans-serif" font-size="8" font-weight="700" fill="#FFFFFF" text-anchor="middle">M</text>
+    </g>
+    <!-- M on q1 -->
+    <g transform="translate(350, 128)">
+      <rect width="44" height="44" rx="6" fill="#31135E" stroke="#6929C4" stroke-width="2"/>
+      <path d="M 12 32 A 16 16 0 0 1 32 32" fill="none" stroke="#BE95FF" stroke-width="1.5"/>
+      <line x1="22" y1="32" x2="30" y2="18" stroke="#8A3FFC" stroke-width="2" stroke-linecap="round"/>
+      <text x="22" y="40" font-family="'Inter', sans-serif" font-size="8" font-weight="700" fill="#FFFFFF" text-anchor="middle">M</text>
+    </g>
 
-    <text x="40" y="105" font-family="'Inter', sans-serif" font-size="16" fill="#FFFFFF">q₀</text>
-    <path d="M 70 100 L 400 100" fill="none" stroke="#38506A" stroke-width="2"/>
+    <!-- Classical Output Wires (Double Lines) -->
+    <line x1="394" y1="58" x2="490" y2="58" stroke="#6929C4" stroke-width="1.5"/>
+    <line x1="394" y1="62" x2="490" y2="62" stroke="#6929C4" stroke-width="1.5"/>
+    <text x="500" y="64" font-family="'JetBrains Mono', monospace" font-size="12" font-weight="700" fill="#FFFFFF">c₀</text>
+
+    <line x1="394" y1="148" x2="490" y2="148" stroke="#6929C4" stroke-width="1.5"/>
+    <line x1="394" y1="152" x2="490" y2="152" stroke="#6929C4" stroke-width="1.5"/>
+    <text x="500" y="154" font-family="'JetBrains Mono', monospace" font-size="12" font-weight="700" fill="#FFFFFF">c₁</text>
+  </g>
+
+  <!-- Step Timeline Indicators -->
+  <g transform="translate(40, 245)">
+    <rect width="520" height="50" rx="8" fill="#31135E" stroke="#491D8B" stroke-width="1.5"/>
+    <text x="50" y="24" font-family="'Inter', sans-serif" font-size="10" font-weight="700" fill="#BE95FF">Step 1: Init</text>
+    <text x="50" y="38" font-family="'JetBrains Mono', monospace" font-size="9" fill="#D4BBFF">|00⟩</text>
     
-    <text x="40" y="205" font-family="'Inter', sans-serif" font-size="16" fill="#FFFFFF">q₁</text>
-    <path d="M 70 200 L 400 200" fill="none" stroke="#38506A" stroke-width="2"/>
-
-    <rect x="120" y="75" width="50" height="50" rx="4" fill="#1C2B38" stroke="#446983"/>
-    <text x="145" y="106" font-family="'Inter', sans-serif" font-size="18" fill="#FFFFFF" text-anchor="middle">H</text>
-
-    <!-- CNOT -->
-    <circle cx="250" cy="100" r="6" fill="#446983"/>
-    <path d="M 250 100 L 250 200" fill="none" stroke="#446983" stroke-width="2"/>
-    <circle cx="250" cy="200" r="15" fill="none" stroke="#446983" stroke-width="2"/>
-    <path d="M 235 200 L 265 200 M 250 185 L 250 215" stroke="#446983" stroke-width="2"/>
-
-    <!-- Measurements -->
-    <rect x="350" y="80" width="40" height="40" rx="4" fill="#1C2B38" stroke="#38506A"/>
-    <text x="370" y="106" font-family="'Inter', sans-serif" font-size="14" fill="#FFFFFF" text-anchor="middle">M</text>
+    <text x="175" y="24" font-family="'Inter', sans-serif" font-size="10" font-weight="700" fill="#BE95FF">Step 2: Superposition</text>
+    <text x="175" y="38" font-family="'JetBrains Mono', monospace" font-size="9" fill="#D4BBFF">(|00⟩+|10⟩)/√2</text>
     
-    <rect x="350" y="180" width="40" height="40" rx="4" fill="#1C2B38" stroke="#38506A"/>
-    <text x="370" y="206" font-family="'Inter', sans-serif" font-size="14" fill="#FFFFFF" text-anchor="middle">M</text>
+    <text x="310" y="24" font-family="'Inter', sans-serif" font-size="10" font-weight="700" fill="#BE95FF">Step 3: Entangle (CNOT)</text>
+    <text x="310" y="38" font-family="'JetBrains Mono', monospace" font-size="9" fill="#D4BBFF">(|00⟩+|11⟩)/√2</text>
     
+    <text x="445" y="24" font-family="'Inter', sans-serif" font-size="10" font-weight="700" fill="#BE95FF">Step 4: Measurement</text>
+    <text x="445" y="38" font-family="'JetBrains Mono', monospace" font-size="9" fill="#D4BBFF">{00: 50%, 11: 50%}</text>
+  </g>
 </svg>

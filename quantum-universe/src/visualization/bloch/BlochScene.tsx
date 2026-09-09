@@ -6,6 +6,7 @@ import { BlochSphere3D } from './BlochSphere3D';
 import { StateVector } from './StateVector';
 import type { BlochCoordinates } from '@types/quantum';
 import { useReducedMotion } from '../../hooks/useReducedMotion';
+import { animationConfig } from '../../animations/animationConfig';
 
 interface BlochSceneProps {
   coordinates: BlochCoordinates;
@@ -14,10 +15,10 @@ interface BlochSceneProps {
   onAnimationComplete: () => void;
 }
 
-// Map Three.js Y (up) to Quantum Mechanics Z (up)
-// QM: Z is up/down, X is front/back, Y is left/right
-// Three: Y is up/down, Z is front/back, X is left/right
-const mapCoords = (coords: BlochCoordinates) => new THREE.Vector3(coords.y, coords.z, coords.x);
+// Map Quantum Mechanics coordinates to Three.js (Y-up convention):
+// QM: Z is vertical (|0> up, |1> down), X is front, Y is lateral
+// Three.js: Y is up (+Y = +Z_qm), X is lateral, Z is front
+const mapCoords = (coords: BlochCoordinates) => new THREE.Vector3(coords.x, coords.z, coords.y);
 
 export const BlochScene: React.FC<BlochSceneProps> = ({
   coordinates,
@@ -31,6 +32,7 @@ export const BlochScene: React.FC<BlochSceneProps> = ({
 
   const targetVec = mapCoords(coordinates);
   const startVec = previousCoordinates ? mapCoords(previousCoordinates) : targetVec;
+  const durationSec = animationConfig.durations.blochTransition / 1000;
 
   useEffect(() => {
     if (isAnimating) {
@@ -45,15 +47,15 @@ export const BlochScene: React.FC<BlochSceneProps> = ({
 
   useFrame((_, delta) => {
     if (isAnimating && !prefersReducedMotion) {
-      progressRef.current += delta / 0.6; // 600ms duration
+      progressRef.current += delta / durationSec;
       
       if (progressRef.current >= 1) {
         currentVecRef.current.copy(targetVec);
         onAnimationComplete();
       } else {
-        // Cubic bezier easing (0.4, 0, 0.2, 1) approximation
+        // Smooth S-curve easing: 3*t^2 - 2*t^3 (smoothstep)
         const t = progressRef.current;
-        const easeT = t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+        const easeT = t * t * (3 - 2 * t);
         
         // Spherical interpolation on unit sphere
         currentVecRef.current.copy(startVec).lerp(targetVec, easeT).normalize();
@@ -71,27 +73,27 @@ export const BlochScene: React.FC<BlochSceneProps> = ({
         z={currentVecRef.current.z} 
       />
 
-      {/* State Labels (Z axis) */}
-      <Html position={[0, 1.3, 0]} center style={{ color: 'white', fontFamily: 'var(--font-mono)', userSelect: 'none' }}>
+      {/* State Labels (Z axis - North/South poles) */}
+      <Html position={[0, 1.25, 0]} center style={{ color: '#181126', fontFamily: 'var(--font-mono)', fontWeight: 800, fontSize: '15px', userSelect: 'none', background: 'rgba(255,255,255,0.9)', padding: '1px 6px', borderRadius: '4px', border: '1px solid #D4BBFF' }}>
         |0⟩
       </Html>
-      <Html position={[0, -1.3, 0]} center style={{ color: 'white', fontFamily: 'var(--font-mono)', userSelect: 'none' }}>
+      <Html position={[0, -1.25, 0]} center style={{ color: '#181126', fontFamily: 'var(--font-mono)', fontWeight: 800, fontSize: '15px', userSelect: 'none', background: 'rgba(255,255,255,0.9)', padding: '1px 6px', borderRadius: '4px', border: '1px solid #D4BBFF' }}>
         |1⟩
       </Html>
 
       {/* X axis */}
-      <Html position={[0, 0, 1.3]} center style={{ color: '#446983', fontFamily: 'var(--font-mono)', fontSize: '12px', userSelect: 'none' }}>
+      <Html position={[1.25, 0, 0]} center style={{ color: '#6929C4', fontFamily: 'var(--font-mono)', fontSize: '12px', fontWeight: 700, userSelect: 'none', background: 'rgba(255,255,255,0.85)', padding: '1px 5px', borderRadius: '3px', border: '1px solid #E8DAFF' }}>
         |+⟩ (X)
       </Html>
-      <Html position={[0, 0, -1.3]} center style={{ color: '#446983', fontFamily: 'var(--font-mono)', fontSize: '12px', userSelect: 'none' }}>
+      <Html position={[-1.25, 0, 0]} center style={{ color: '#6929C4', fontFamily: 'var(--font-mono)', fontSize: '12px', fontWeight: 700, userSelect: 'none', background: 'rgba(255,255,255,0.85)', padding: '1px 5px', borderRadius: '3px', border: '1px solid #E8DAFF' }}>
         |-⟩ (-X)
       </Html>
 
       {/* Y axis */}
-      <Html position={[1.3, 0, 0]} center style={{ color: '#446983', fontFamily: 'var(--font-mono)', fontSize: '12px', userSelect: 'none' }}>
+      <Html position={[0, 0, 1.25]} center style={{ color: '#8A3FFC', fontFamily: 'var(--font-mono)', fontSize: '12px', fontWeight: 700, userSelect: 'none', background: 'rgba(255,255,255,0.85)', padding: '1px 5px', borderRadius: '3px', border: '1px solid #E8DAFF' }}>
         |i⟩ (Y)
       </Html>
-      <Html position={[-1.3, 0, 0]} center style={{ color: '#446983', fontFamily: 'var(--font-mono)', fontSize: '12px', userSelect: 'none' }}>
+      <Html position={[0, 0, -1.25]} center style={{ color: '#8A3FFC', fontFamily: 'var(--font-mono)', fontSize: '12px', fontWeight: 700, userSelect: 'none', background: 'rgba(255,255,255,0.85)', padding: '1px 5px', borderRadius: '3px', border: '1px solid #E8DAFF' }}>
         |-i⟩ (-Y)
       </Html>
     </group>

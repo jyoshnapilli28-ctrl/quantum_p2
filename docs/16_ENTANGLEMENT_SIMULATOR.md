@@ -1,345 +1,98 @@
-# PAGE 4 — ENTANGLEMENT SIMULATOR
+# PAGE 4 — QUANTUM ENTANGLEMENT SIMULATOR — SPECIFICATION — QYNX
 
 ---
 
-## 1. Purpose
+## 1. Purpose & Educational Mission
 
-The Entanglement Simulator expands the application from single-qubit to **two-qubit quantum mechanics**. It demonstrates quantum entanglement — the phenomenon where two qubits become correlated such that measuring one instantly determines the state of the other, regardless of the distance between them.
+**QUANTUM ENTANGLEMENT SIMULATOR** is Page 4 of **QYNX**, modeling two-qubit quantum states and non-classical correlations. It guides users through the canonical Bell-state preparation protocol ($H + \text{CNOT}$), demonstrating how measurement of one qubit deterministically correlates with the measurement of another.
 
-The primary workflow creates a **Bell state** (the maximally entangled two-qubit state) and demonstrates correlated measurement.
+### Pedagogical Core Standards:
+1. **Mathematical State Non-Separability**: Entanglement is presented rigorously as state non-separability ($|\psi_{AB}\rangle \neq |\psi_A\rangle \otimes |\psi_B\rangle$).
+2. **Explicit Myth Refutation**: The documentation and interface must clearly emphasize that correlated outcomes are non-classical correlations, explicitly refuting the misconception of physical cables, instantaneous signaling, or faster-than-light radio links between the qubits.
+3. **High-Contrast Legibility**: The circuit diagram, correlation indicators, and histogram bars conform to the QYNX Purple scale and Diagram Visibility standards.
 
 ---
 
-## 2. Route and Component
+## 2. Route & Component Architecture
 
 ```
 Route: /entanglement
-Component: EntanglementSim.tsx
-State slice: entanglementSlice
-Engine calls: engine.createTwoQubitZeroState, engine.applyGateToQubit,
-             engine.applyCNOT, engine.isEntangled, engine.getProbabilities2Q,
-             engine.measureTwoQubit, engine.measureMultiShot2Q
+Component: src/pages/EntanglementSim.tsx
+State Slice: src/store/entanglementSlice.ts
+Engine Contracts: engine.createTwoQubitZeroState, engine.applyGateToQubit, engine.applyCNOT, engine.isEntangled, engine.measureMultiShot2Q
 ```
 
 ---
 
-## 3. Page Layout
+## 3. Visual Layout & Workspace Architecture
 
 ```
-┌──────────────────────────────────────────────────────────────────┐
-│ ENTANGLEMENT SIMULATOR                     [Reset] [Info]        │
-├──────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│         ┌───────────────────────────────────────────┐           │
-│         │           CIRCUIT VISUALIZATION           │           │
-│         │                                           │           │
-│         │  QUBIT A ──── [H] ────●──────── [M]       │           │
-│         │                      │                    │           │
-│         │  QUBIT B ────────────⊕──────── [M]        │           │
-│         │                                           │           │
-│         └───────────────────────────────────────────┘           │
-│                                                                  │
-│    QUBIT A              STATE               QUBIT B             │
-│  ┌────────────┐  ┌─────────────────┐  ┌────────────┐           │
-│  │            │  │                 │  │            │           │
-│  │   STATE    │  │ (|00⟩+|11⟩)/√2 │  │   STATE    │           │
-│  │   |0⟩      │  │                 │  │   |0⟩      │           │
-│  │            │  │ ⚛ ENTANGLED     │  │            │           │
-│  └────────────┘  └─────────────────┘  └────────────┘           │
-│                                                                  │
-│         WORKFLOW                                                 │
-│    [1: Apply H to A]  [2: Apply CNOT]  [3: Measure]             │
-│                                                                  │
-│         MEASUREMENT RESULTS (100 shots)                          │
-│    |00⟩  ████████████████████  49   49.0%                       │
-│    |01⟩                         0    0.0%                       │
-│    |10⟩                         0    0.0%                       │
-│    |11⟩  ███████████████████   51   51.0%                       │
-│                                                                  │
-│    "Measuring A as |0⟩ guarantees B is |0⟩..."                  │
-└──────────────────────────────────────────────────────────────────┘
-```
-
----
-
-## 4. Circuit Visualization
-
-The circuit is always shown as a fixed diagram at the top of the page. It represents the Bell state creation circuit.
-
-```
-QUBIT A ──── H ────●──────── M
-                   │
-QUBIT B ───────────⊕──────── M
-```
-
-**Specification:**
-
-```
-SVG-based circuit diagram using shared CircuitDiagram component
-Width: 100%; max-width: 600px; centered
-
-Wire lines: stroke --color-polar, stroke-width 2px
-Gate tokens:
-  [H]: square box, label "H" (see 10_GATE_SYSTEM.md for gate token styling)
-  [●]: CNOT control dot (see 10_GATE_SYSTEM.md)
-  [⊕]: CNOT target symbol
-  [M]: measurement symbol (meter symbol or box with "M")
-  Vertical CNOT connector line: dashed when not yet entangled, solid after CNOT applied
-
-Step highlighting:
-  The gate corresponding to the current workflow step is highlighted:
-  Gate token: border color changes to --color-icicle, glow effect applied
-  Others: standard --color-polar border
+┌────────────────────────────────────────────────────────────────────────┐
+│ 04 QUANTUM ENTANGLEMENT SIMULATOR                      [ Reset State ] │
+├────────────────────────────────────────────────────────────────────────┤
+│  CANONICAL BELL-STATE CIRCUIT DIAGRAM                                  │
+│                                                                        │
+│  q0 (|0⟩) ─────[ H ]─────●───────────────[ M ]                         │
+│                          │                                             │
+│  q1 (|0⟩) ───────────────⊕───────────────[ M ]                         │
+├────────────────────────────────────────────────────────────────────────┤
+│  STATE REGISTERS                                                       │
+│                                                                        │
+│    QUBIT 0               COMPOSITE STATE              QUBIT 1          │
+│  ┌──────────┐        ┌─────────────────────┐        ┌──────────┐       │
+│  │   |0⟩    │        │  (|00⟩ + |11⟩) / √2 │        │   |0⟩    │       │
+│  │ Register │        │  ✦ ENTANGLED STATE  │        │ Register │       │
+│  └──────────┘        └─────────────────────┘        └──────────┘       │
+├────────────────────────────────────────────────────────────────────────┤
+│  GUIDED WORKFLOW                                                       │
+│  [ 1: Init |00⟩ ] ──► [ 2: Apply H to q0 ] ──► [ 3: Apply CNOT ]       │
+│                                                [ 4: Trigger Measure ]  │
+├────────────────────────────────────────────────────────────────────────┤
+│  CORRELATED DETECTION OUTCOMES (1,000 Shots)                           │
+│  |00⟩ [████████████████████         ]  502 shots (50.2%)               │
+│  |01⟩ [                             ]    0 shots ( 0.0%)               │
+│  |10⟩ [                             ]    0 shots ( 0.0%)               │
+│  |11⟩ [████████████████████         ]  498 shots (49.8%)               │
+├────────────────────────────────────────────────────────────────────────┤
+│  SCIENTIFIC EXPLANATION                                                │
+│  "Applying Hadamard to q0 creates a superposition. CNOT then entangles │
+│   q0 and q1 into the Bell state |Φ⁺⟩. When measured, both qubits       │
+│   always agree (00 or 11), with zero occurrences of 01 or 10."         │
+└────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## 5. Qubit State Indicators
+## 4. Bell-State Preparation Protocol
 
-Three panels in a row:
+$$\text{Step 1: } |00\rangle \xrightarrow{H \text{ on } q_0} \frac{|00\rangle + |10\rangle}{\sqrt{2}} \xrightarrow{\text{CNOT}_{0 \to 1}} \frac{|00\rangle + |11\rangle}{\sqrt{2}} = |\Phi^+\rangle$$
 
-```
-QUBIT A              STATE               QUBIT B
-┌────────────┐  ┌─────────────────┐  ┌────────────┐
-│  ⬡ |0⟩    │  │ (|00⟩+|11⟩)/√2  │  │  ⬡ |0⟩    │
-└────────────┘  └─────────────────┘  └────────────┘
-```
-
-**Qubit A panel:**
-```
-Container: quantum-panel, flex-column, centered
-Icon: hexagonal atom SVG (or circle), color --color-arctic
-State label: --font-mono, --text-h3, --color-white
-Sub-label: "Qubit A", --text-label, --color-arctic
-```
-
-**Combined state panel (center):**
-```
-Container: quantum-panel, larger; flex-column; centered
-State label: full two-qubit state in Dirac notation
-  Examples:
-    Before entanglement: "|00⟩"
-    After H on A: "(|00⟩ + |10⟩) / √2"
-    After CNOT: "(|00⟩ + |11⟩) / √2"
-  Font: --font-mono, --text-h2 (reduced on mobile)
-  
-Entanglement indicator:
-  When isEntangled = false: not shown
-  When isEntangled = true:
-    ⚛ ENTANGLED — shown in a chip/badge below the state label
-    Badge: background rgba(68,105,131,0.2), border 1px solid --color-icicle
-    Icon: atom symbol, --color-icicle
-    Text: "ENTANGLED", --text-label, --color-icicle, uppercase
-    Enter animation: scale 0→1, opacity 0→1, 300ms spring
-```
-
-**Qubit B panel:**
-- Same as Qubit A panel (mirrored).
+1. **Step 1 (Initialize)**:
+   - State initialized to separable ground state $|00\rangle = [1, 0, 0, 0]^T$.
+   - Schmidt rank test $\Delta = 0$ (`isEntangled = false`).
+2. **Step 2 (Apply $H$ to $q_0$)**:
+   - Transforms register to $\frac{1}{\sqrt{2}}|00\rangle + \frac{1}{\sqrt{2}}|10\rangle$.
+   - $q_0$ is in superposition; $q_1$ remains unentangled in $|0\rangle$.
+3. **Step 3 (Apply $\text{CNOT}_{0 \to 1}$)**:
+   - Target wire $q_1$ flips conditioned on $q_0$, generating the entangled Bell state $|\Phi^+\rangle$.
+   - Engine evaluates Schmidt rank $\Delta = 0.5 > 10^{-10}$, setting `isEntangled = true`.
+   - The central status badge illuminates with a `Purple 60 #8A3FFC` border and tag `✦ ENTANGLED STATE`.
+4. **Step 4 (Correlated Measurement)**:
+   - Executes multi-shot detection over $100$ or $1,000$ shots.
+   - Outputs conform strictly to correlated pairs: $|00\rangle \approx 50\%$ and $|11\rangle \approx 50\%$. The cross-terms $|01\rangle$ and $|10\rangle$ remain strictly at $0.0\%$.
 
 ---
 
-## 6. Entanglement Visualization
+## 5. Visual Specifications & Diagram Visibility
 
-When the two qubits are entangled (after CNOT applied):
-
-Display a visual connection between the two qubit panels:
-
-```
-QUBIT A     ~~~~ entanglement ~~~~     QUBIT B
-  ⬡                                      ⬡
-   \                                     /
-    ───────────●─────────────────────────
-```
-
-**Implementation:** An SVG `<path>` or `<line>` drawn beneath the qubit panels, connecting their centers. The path uses a gentle arc (quadratic bezier).
-
-```
-Path style:
-  stroke: --color-icicle
-  stroke-width: 2px
-  stroke-dasharray: 6 4 (dashed)
-  opacity: 0.7
-  Animation: stroke-dashoffset animated (marching ants effect, 1s loop)
-  On prefers-reduced-motion: static dashed line, no marching animation
-```
-
-The connection appears (fade in, 400ms) when `isEntangled` becomes true.
-The connection disappears (fade out) when Reset is clicked.
-
----
-
-## 7. Workflow Steps
-
-The entanglement workflow is presented as three sequential buttons:
-
-```
-[ 1: Initialize ]   [ 2: Apply H → A ]   [ 3: CNOT ]   [ 4: Measure ]
-```
-
-**Step 1 — Initialize:**
-- Both qubits reset to |0⟩.
-- State = |00⟩.
-- Dispatches `reset()`.
-
-**Step 2 — Apply H to Qubit A:**
-- Applies H to qubit 0 of the two-qubit state.
-- Dispatches `applyHadamardToA()`.
-- State becomes (|00⟩ + |10⟩)/√2.
-- Circuit diagram highlights the H gate on Qubit A.
-- Probability panel updates: p00=0.5, p10=0.5.
-- `isEntangled` remains false.
-
-**Step 3 — Apply CNOT:**
-- Applies CNOT (control=A, target=B).
-- Dispatches `applyCNOT()`.
-- State becomes (|00⟩ + |11⟩)/√2 (Bell state Φ+).
-- `isEntangled` becomes true.
-- Entanglement indicator appears.
-- Visual connection between qubits appears.
-- Circuit diagram highlights CNOT.
-
-**Step 4 — Measure:**
-- Uses shot count selector.
-- Dispatches `measureMultiShot()` or `measure()` based on shot count.
-- Results histogram updates.
-
-**Auto-progression:** "Run All" button executes steps 2, 3, and 4 sequentially with 800ms delay between.
-
-**Button state rules:**
-```
-Step 2 enabled: always (initializes first if needed)
-Step 3 enabled: only after H is applied (appliedSteps includes H step)
-Step 4 enabled: only after CNOT is applied
-Measure button: disabled until step 3 complete
-```
-
----
-
-## 8. Probability Display
-
-Before measurement, show the four basis state probabilities.
-
-```
-STATE PROBABILITIES
-
-|00⟩  ████████████████████  50.0%
-|01⟩                         0.0%
-|10⟩                         0.0%
-|11⟩  ████████████████████  50.0%
-```
-
-These update in real-time as the workflow progresses.
-
-After Bell state creation:
-```
-|00⟩: 50.0%
-|11⟩: 50.0%
-|01⟩: 0.0%
-|10⟩: 0.0%
-```
-
-This visual makes the correlation obvious before any measurement.
-
----
-
-## 9. Measurement Results Histogram
-
-After measuring:
-
-```
-MEASUREMENT RESULTS  (100 shots)
-
-|00⟩  ████████████████████  47   47.0%
-|01⟩                         0    0.0%
-|10⟩                         0    0.0%
-|11⟩  █████████████████████  53   53.0%
-
-Note: Displayed values are simulation results and vary with each run.
-```
-
-The "Note" text appears as: `--text-label, --color-arctic, opacity: 0.7`, below the histogram.
-
-See `11_MEASUREMENT_SYSTEM.md` Section 5.2 for histogram styling specification.
-
----
-
-## 10. Shot Count Selector
-
-```
-SHOTS
-[ ← ] [ 100 ] [ → ]
-Presets: 1 | 10 | 100 | 1000
-```
-
-Specification: see `11_MEASUREMENT_SYSTEM.md` Section 4.
-
----
-
-## 11. Explanation Panel
-
-Below the histogram:
-
-**Before entanglement:** "Apply Hadamard to Qubit A, then CNOT to entangle the two qubits."
-
-**After H applied:** "Qubit A is now in superposition. Qubit B is still |0⟩. The qubits are not yet entangled."
-
-**After CNOT (Bell state):** "CNOT has entangled the qubits. The state cannot be written as a product of individual qubit states. Measuring one qubit will instantly determine the other's state."
-
-**After measurement:** "The state collapsed to [|00⟩ or |11⟩]. Notice that both qubits always agree — they are never [|01⟩ or |10⟩]. This is the signature of entanglement."
-
----
-
-## 12. Mathematical Detail Toggle
-
-A subtle "Show Mathematics" link below the explanation panel:
-
-When toggled on, show the mathematical state vector:
-```
-STATE VECTOR (amplitude form)
-
-|00⟩: 0.7071 + 0.0000i  (P = 50.00%)
-|01⟩: 0.0000 + 0.0000i  (P =  0.00%)
-|10⟩: 0.0000 + 0.0000i  (P =  0.00%)
-|11⟩: 0.7071 + 0.0000i  (P = 50.00%)
-```
-
-Format: `--font-mono, --text-body-sm, --color-arctic`, in a table inside a quantum panel.
-
-This is optional/advanced content. Default: hidden.
-
----
-
-## 13. Reset
-
-The "Reset" button in the page header:
-1. Dispatches `entanglementSlice.reset()`.
-2. Both qubit panels show |0⟩.
-3. Combined state shows |00⟩.
-4. Entanglement indicator disappears.
-5. Visual connection between qubits disappears.
-6. Probability bars reset (p00=100%, others 0%).
-7. Measurement results cleared.
-8. Circuit diagram unhighlights all gates.
-
----
-
-## 14. Responsive Behavior
-
-| Breakpoint | Adaptation |
-|-----------|-----------|
-| Desktop (>1024px) | Three-column qubit panel (A | State | B); circuit full width |
-| Tablet (768–1024px) | Two-column (circuit top, states below); single column qubit panels |
-| Mobile (<768px) | Single column: circuit → qubit A → state → qubit B → workflow → results |
-
-On mobile:
-- The visual entanglement connection arc becomes a vertical line between the stacked qubit panels.
-- Shot count stepper is full-width.
-
----
-
-## 15. Accessibility
-
-- The entanglement indicator has `role="status"` and announces: "Qubits are now entangled" via `aria-live="polite"`.
-- Circuit diagram: `role="img"`, `aria-label="Quantum circuit: Qubit A through Hadamard gate and CNOT control, Qubit B through CNOT target, both measured."`.
-- Workflow buttons: `aria-label="Step 2: Apply Hadamard gate to Qubit A"`, etc.
-- Measurement result: announced via `aria-live="polite"`: "Measurement results: |00⟩: 47%, |01⟩: 0%, |10⟩: 0%, |11⟩: 53%."
+- **Circuit Diagram**:
+  - Horizontal wires rendered in $2\text{px}$ `Purple 70 #6929C4`.
+  - Gate box $[H]$ in `Purple 80` with $1.5\text{px}$ border.
+  - CNOT control dot in `Purple 60` with solid vertical connector line to target $\oplus$ glyph.
+  - Passes the 3-second comprehension rule by visually distinguishing the control register from the entangling target.
+- **Entanglement Link Indicator**:
+  - Subtle connecting arc between Qubit 0 and Qubit 1 panels rendered as an SVG path in `Purple 60` with $2\text{px}$ stroke width.
+  - Respects `prefers-reduced-motion` by displaying as a static line with no flashing or traveling pulses.
+- **Histogram**:
+  - Basis bars in `Purple 60 #8A3FFC` on `Purple 90 #31135E` tracks.
+  - Numerical readouts in `White #FFFFFF` and `JetBrains Mono`.

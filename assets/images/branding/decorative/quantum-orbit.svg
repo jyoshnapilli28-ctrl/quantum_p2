@@ -27,42 +27,42 @@
 
         <!-- Linear Gradients -->
         <linearGradient id="bg-grad-1" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="#071018" />
-            <stop offset="100%" stop-color="#0B132B" />
+            <stop offset="0%" stop-color="#1C0F30" />
+            <stop offset="100%" stop-color="#31135E" />
         </linearGradient>
         
         <linearGradient id="surface-grad" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stop-color="#1C2B38" stop-opacity="0.8"/>
-            <stop offset="100%" stop-color="#071018" stop-opacity="0.9"/>
+            <stop offset="0%" stop-color="#31135E" stop-opacity="0.8"/>
+            <stop offset="100%" stop-color="#1C0F30" stop-opacity="0.9"/>
         </linearGradient>
 
         <linearGradient id="accent-grad" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stop-color="#446983" />
-            <stop offset="100%" stop-color="#7991A8" />
+            <stop offset="0%" stop-color="#8A3FFC" />
+            <stop offset="100%" stop-color="#BE95FF" />
         </linearGradient>
 
         <radialGradient id="radial-glow" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stop-color="#38506A" stop-opacity="0.3"/>
-            <stop offset="100%" stop-color="#071018" stop-opacity="0"/>
+            <stop offset="0%" stop-color="#491D8B" stop-opacity="0.3"/>
+            <stop offset="100%" stop-color="#1C0F30" stop-opacity="0"/>
         </radialGradient>
         
         <!-- Grid Pattern -->
         <pattern id="quantum-grid-pattern" width="40" height="40" patternUnits="userSpaceOnUse">
-            <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1C2B38" stroke-width="1"/>
-            <circle cx="40" cy="40" r="1" fill="#38506A" />
+            <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#31135E" stroke-width="1"/>
+            <circle cx="40" cy="40" r="1" fill="#491D8B" />
         </pattern>
         
         <!-- Small Grid Pattern -->
         <pattern id="small-grid" width="20" height="20" patternUnits="userSpaceOnUse">
-            <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#0B132B" stroke-width="0.5"/>
+            <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#31135E" stroke-width="0.5"/>
         </pattern>
     </defs>
 
 
 
-    <ellipse cx="400" cy="400" rx="350" ry="120" fill="none" stroke="#38506A" stroke-width="1" transform="rotate(15 400 400)" opacity="0.3"/>
-    <ellipse cx="400" cy="400" rx="350" ry="120" fill="none" stroke="#0B132B" stroke-width="2" transform="rotate(-15 400 400)" opacity="0.5"/>
-    <circle cx="100" cy="300" r="4" fill="#446983" opacity="0.5" filter="url(#glow)"/>
-    <circle cx="700" cy="500" r="2" fill="#7991A8" opacity="0.3"/>
+    <ellipse cx="400" cy="400" rx="350" ry="120" fill="none" stroke="#491D8B" stroke-width="1" transform="rotate(15 400 400)" opacity="0.3"/>
+    <ellipse cx="400" cy="400" rx="350" ry="120" fill="none" stroke="#31135E" stroke-width="2" transform="rotate(-15 400 400)" opacity="0.5"/>
+    <circle cx="100" cy="300" r="4" fill="#8A3FFC" opacity="0.5" filter="url(#glow)"/>
+    <circle cx="700" cy="500" r="2" fill="#BE95FF" opacity="0.3"/>
     
 </svg>

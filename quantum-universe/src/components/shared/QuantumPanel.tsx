@@ -8,6 +8,7 @@ interface QuantumPanelProps {
   className?: string;
   style?: React.CSSProperties;
   onClick?: () => void;
+  hoverable?: boolean;
 }
 
 export const QuantumPanel: React.FC<QuantumPanelProps> = ({ 
@@ -15,49 +16,46 @@ export const QuantumPanel: React.FC<QuantumPanelProps> = ({
   variant = 'default', 
   className = '',
   style,
-  onClick
+  onClick,
+  hoverable = true,
 }) => {
-  // Inline styles using CSS variables defined in tokens.css.
-  // For simplicity, we'll use inline styles using CSS variables defined in tokens.css.
-  
   const getStyles = (): React.CSSProperties => {
     const styles: React.CSSProperties = {
-      borderRadius: 'var(--radius-xl)',
-      transition: 'all 0.3s ease',
+      borderRadius: 'var(--radius-lg, 8px)',
+      position: 'relative',
     };
 
     switch (variant) {
       case 'default':
-        styles.background = 'var(--gradient-panel)';
-        styles.border = '1px solid rgba(121, 145, 168, 0.1)'; // Arctic 10%
-        styles.backdropFilter = 'blur(16px)';
-        styles.WebkitBackdropFilter = 'blur(16px)';
-        styles.boxShadow = 'var(--shadow-md)';
+        styles.background = 'var(--surface-card, #FFFFFF)';
+        styles.border = '1px solid var(--border-default, #D4BBFF)';
+        styles.boxShadow = 'var(--shadow-sm)';
         break;
       case 'deep':
-        styles.background = 'var(--gradient-visualization)';
-        styles.border = '1px solid rgba(28, 43, 56, 0.5)'; // Solstice 50%
-        styles.boxShadow = 'inset 0 4px 24px rgba(7, 16, 24, 0.5)'; // Inner shadow
+        styles.background = 'var(--surface-card-subtle, #F6F2FF)';
+        styles.border = '1px solid var(--border-subtle, #E8DAFF)';
+        styles.boxShadow = 'none';
         break;
       case 'highlight':
-        styles.background = 'var(--gradient-panel)';
-        styles.border = '1px solid var(--color-icicle)';
-        styles.backdropFilter = 'blur(16px)';
-        styles.WebkitBackdropFilter = 'blur(16px)';
-        styles.boxShadow = '0 0 16px rgba(68, 105, 131, 0.3)'; // Icicle glow
+        styles.background = 'var(--surface-card-highlight, #E8DAFF)';
+        styles.border = '1.5px solid var(--color-purple-60, #8A3FFC)';
+        styles.boxShadow = 'var(--shadow-sm)';
         break;
       case 'flat':
-        styles.background = 'var(--color-solstice)';
-        styles.border = '1px solid transparent';
+        styles.background = 'var(--surface-card-subtle, #F6F2FF)';
+        styles.border = '1px solid var(--border-default, #D4BBFF)';
+        styles.boxShadow = 'none';
         break;
     }
 
     return styles;
   };
 
+  const hoverClass = hoverable && (variant === 'default' || variant === 'highlight') ? 'qynx-card' : '';
+
   return (
     <div 
-      className={`quantum-panel ${className}`} 
+      className={`quantum-panel ${hoverClass} ${className}`} 
       style={{ ...getStyles(), ...style }}
       onClick={onClick}
     >

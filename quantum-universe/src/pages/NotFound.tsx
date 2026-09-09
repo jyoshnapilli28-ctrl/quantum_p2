@@ -13,39 +13,27 @@ export const NotFound: React.FC = () => {
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        minHeight: '60vh',
-        textAlign: 'center'
+        minHeight: '50vh',
+        textAlign: 'center',
+        padding: 'var(--space-8)'
       }}
     >
       <img 
         src="/assets/images/illustrations/system/page-not-found.svg?v=2" 
         alt="404 Not Found"
-        style={{ width: '400px', maxWidth: '90%', marginBottom: 'var(--space-8)' }}
+        style={{ width: '320px', maxWidth: '85%', marginBottom: 'var(--space-6)', display: 'block' }}
       />
       
-      <h1 style={{ fontSize: 'var(--text-h1)', marginBottom: 'var(--space-4)' }}>
-        Quantum State Not Found
+      <h1 style={{ fontSize: 'var(--text-h1)', marginBottom: 'var(--space-2)', color: 'var(--text-primary, #181126)' }}>
+        State Not Found
       </h1>
       
-      <p style={{ fontSize: 'var(--text-body-lg)', color: 'var(--color-arctic)', maxWidth: '500px', marginBottom: 'var(--space-8)' }}>
-        The state you're looking for doesn't exist in this Hilbert space.
+      <p style={{ fontSize: 'var(--text-body)', color: 'var(--text-secondary, #4D3E6B)', maxWidth: '440px', marginBottom: 'var(--space-6)', lineHeight: 1.5 }}>
+        The state you requested does not exist in this Hilbert space.
       </p>
       
-      <Link to="/" style={{ textDecoration: 'none' }}>
-        <button style={{
-          padding: 'var(--space-4) var(--space-8)',
-          background: 'var(--gradient-gate-button)',
-          border: '1px solid var(--color-icicle)',
-          borderRadius: 'var(--radius-lg)',
-          color: 'var(--color-white)',
-          fontFamily: 'var(--font-primary)',
-          fontSize: 'var(--text-body)',
-          fontWeight: 600,
-          cursor: 'pointer',
-          transition: 'all 0.3s ease'
-        }}>
-          Return to the Observable Universe
-        </button>
+      <Link to="/" className="qynx-btn" style={{ padding: '10px 24px' }}>
+        Return to Overview
       </Link>
     </motion.div>
   );

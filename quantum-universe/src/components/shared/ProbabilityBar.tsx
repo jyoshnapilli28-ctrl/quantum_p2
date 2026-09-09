@@ -1,10 +1,12 @@
 import React from 'react';
 import { useReducedMotion } from '../../hooks/useReducedMotion';
+import { useInterpolatedNumber } from '../../hooks/useInterpolatedNumber';
+import { animationConfig } from '../../animations/animationConfig';
 
 interface ProbabilityBarProps {
   label: string;
   probability: number; // 0 to 1
-  colorBasis?: '0' | '1'; // Dictates fill color
+  colorBasis?: '0' | '1';
   className?: string;
 }
 
@@ -15,65 +17,77 @@ export const ProbabilityBar: React.FC<ProbabilityBarProps> = ({
   className = ''
 }) => {
   const prefersReduced = useReducedMotion();
-  const percentage = Math.round(probability * 100);
+  const clampedProb = Math.max(0, Math.min(1, probability));
+  
+  // Smooth numeric counter
+  const interpolatedPercentage = useInterpolatedNumber(
+    clampedProb * 100,
+    animationConfig.durations.stateTransition
+  );
 
-  const fillGradient = colorBasis === '0' 
-    ? 'linear-gradient(90deg, var(--color-polar) 0%, var(--color-arctic) 100%)'
-    : 'linear-gradient(90deg, var(--color-solstice) 0%, var(--color-icicle) 100%)';
+  // Solid bar fill color
+  const barColor = colorBasis === '0'
+    ? 'var(--color-purple-60, #8A3FFC)'
+    : 'var(--color-purple-50, #A56EFF)';
 
   return (
-    <div 
+    <div
       className={`probability-bar-container ${className}`}
-      style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-4)', width: '100%' }}
+      style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)', width: '100%' }}
     >
-      <div 
-        style={{ 
-          fontFamily: 'var(--font-mono)', 
+      <div
+        style={{
+          fontFamily: 'var(--font-mono)',
           fontSize: 'var(--text-body-sm)',
-          color: 'var(--color-arctic)',
-          width: '28px'
+          color: 'var(--text-primary, #181126)',
+          width: '36px',
+          fontWeight: 600,
         }}
       >
         {label}
       </div>
 
-      <div 
+      <div
         style={{
           flex: 1,
-          height: '12px',
-          background: 'var(--color-midnight)',
-          borderRadius: 'var(--radius-full)',
+          height: '10px',
+          background: 'var(--color-purple-20, #E8DAFF)',
+          borderRadius: 'var(--radius-sm, 4px)',
           overflow: 'hidden',
           position: 'relative',
-          border: '1px solid rgba(56, 80, 106, 0.3)'
+          border: '1px solid var(--border-default, #D4BBFF)',
         }}
       >
-        <div 
+        <div
           style={{
             position: 'absolute',
             top: 0,
             left: 0,
             height: '100%',
             width: '100%',
-            background: fillGradient,
-            borderRadius: 'var(--radius-full)',
+            background: barColor,
+            borderRadius: '2px',
             transformOrigin: 'left',
-            transform: `scaleX(${probability})`,
-            transition: prefersReduced ? 'none' : 'transform 400ms cubic-bezier(0.4, 0, 0.2, 1)',
+            transform: `scaleX(${clampedProb})`,
+            transition: prefersReduced
+              ? 'none'
+              : `transform ${animationConfig.durations.stateTransition}ms cubic-bezier(0.16, 1, 0.3, 1)`,
+            willChange: 'transform',
           }}
         />
       </div>
 
-      <div 
-        style={{ 
-          fontFamily: 'var(--font-mono)', 
+      <div
+        style={{
+          fontFamily: 'var(--font-mono)',
           fontSize: 'var(--text-body-sm)',
-          color: 'var(--color-white)',
-          width: '40px',
-          textAlign: 'right'
+          color: 'var(--text-primary, #181126)',
+          fontWeight: 600,
+          width: '52px',
+          textAlign: 'right',
         }}
       >
-        {percentage}%
+        {interpolatedPercentage.toFixed(1)}%
       </div>
     </div>
   );

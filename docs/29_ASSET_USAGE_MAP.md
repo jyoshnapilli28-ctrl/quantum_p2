@@ -1,64 +1,66 @@
-# 29. ASSET USAGE MAP
+# 29. ASSET USAGE MAP — QYNX
 
-This document maps all production graphical assets (3D, SVGs, Fonts) to their intended application pages and explicitly dictates usage permissions.
+This document maps all production graphical assets (3D models, SVGs, Typography) to their designated application pages and dictates usage permissions, caching, and rendering constraints.
 
-## Shared / Global Assets
-These assets are used across the entire application and can be loaded universally.
+## Shared & Global Brand Assets
 
-| Filename | Category | Purpose | Interactive | Animation Allowed? | Duplication Prohibited? |
+These assets are universal across QYNX and cached globally across route transitions.
+
+| Asset Identifier | Format / Category | Intended Purpose | Interactivity | Animation Policy | Duplication Constraint |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| `bloch-sphere.gltf` | 3D | Central 3D render | Yes (Rotate/Zoom) | Yes (SLERP updates) | **YES. Load once.** |
-| `Inter-*.woff2` | Font | Primary typography | No | No | YES |
-| `JetBrainsMono-*.woff2` | Font | Math/Code blocks | No | No | YES |
-| `quantum-universe-logo.svg` | Branding | Main navigation bar | No | Yes (Hover glow) | No (Reusable) |
-| `quantum-universe-icon.svg` | Branding | Favicon / App Icon | No | No | No |
-| `quantum-orbit.svg` | Branding | Decorative footer | No | Yes (Slow spin) | No |
-| `quantum-universe-global-bg.svg`| Background | Core app backdrop | No | No | YES |
-| `quantum-grid.svg` | Background | Overlay pattern | No | Yes (Parallax) | No |
-| `quantum-particles.svg` | Background | Overlay element | No | Yes (Drift) | No |
-| `quantum-wave.svg` | Background | Header decoration | No | Yes (Sine shift) | No |
+| `bloch-sphere.gltf` | 3D (WebGL / GLTF) | Central 3D Bloch sphere | Yes (Orbit/Drag) | Yes (SLERP state transitions) | **STRICT: Load once; share geometry** |
+| `Syne-*.woff2` / `CabinetGrotesk-*.woff2` | Web Font | Display wordmark & headings | No | No | Cached globally |
+| `Inter-*.woff2` | Web Font | UI controls & body typography | No | No | Cached globally |
+| `JetBrainsMono-*.woff2` | Web Font | Mathematical Dirac notation & code | No | No | Cached globally |
+| `qynx-logo.svg` | Vector Branding | Main navigation bar wordmark | Interactive link | Subtle hover opacity transition | Header component only |
+| `qynx-icon.svg` | Vector Branding | Favicon & shortcut icon | No | No | System-level |
+| `qynx-global-bg.svg` | Vector Background | Canvas subtle background texture | No | Static (Zero motion) | Single root backdrop |
+| `gate-state-presets.json` | JSON Data | Target coordinates & matrix maps | No | N/A | Pure data import |
 
-## PAGE 1: Quantum Universe
-| Filename | Category | Purpose | Interactive | Animation Allowed? |
+## PAGE 1: Quantum Universe (Educational Hub)
+
+| Asset Identifier | Format / Category | Concept Represented | Interactivity | Animation Allowed? |
 | :--- | :--- | :--- | :--- | :--- |
-| `bit-vs-qubit.svg` | Illustration | Intro concept visual | No | Yes (Scroll reveal) |
-| `superposition.svg` | Illustration | Probability visual | No | Yes (Subtle wave) |
-| `measurement.svg` | Illustration | Collapse visual | No | Yes (Collapse state) |
-| `quantum-gates.svg` | Illustration | Logic concept visual | No | Yes (Pulse) |
-| `entanglement.svg` | Illustration | Node connection | No | Yes (Sync pulse) |
-| `quantum-circuit.svg` | Illustration | Wireframe visual | No | Yes (Signal flow) |
+| `bit-vs-qubit.svg` | High-Contrast Diagram | Classical Bit (0/1) vs. Qubit ($|\psi\rangle$) | Interactive toggle | Purposeful state reveal |
+| `superposition.svg` | High-Contrast Diagram | Probability distribution $|\alpha|^2 + |\beta|^2 = 1$ | Interactive slider | Wave amplitude shift |
+| `measurement.svg` | High-Contrast Diagram | Wavefunction collapse into $|0\rangle$ or $|1\rangle$ | Click trigger | Instant collapse snap |
+| `quantum-gates.svg` | High-Contrast Diagram | Unitary matrix transformation rotations | Click trigger | Axis rotation |
+| `entanglement.svg` | High-Contrast Diagram | Correlated twin-qubit state (no cables) | Click trigger | Correlated pulse |
+| `quantum-circuit.svg` | High-Contrast Diagram | Multi-wire quantum circuit timeline | Step-through | Timeline signal sweep |
 
 ## PAGE 2: Quantum Gate Visualizer
-| Filename | Category | Purpose | Interactive | Animation Allowed? |
-| :--- | :--- | :--- | :--- | :--- |
-| `x-gate.svg`, `y-gate.svg` etc. | Illustration | Detailed gate cards | Yes (Clickable) | Yes (Hover scale) |
-| `gate-visualizer-bg.svg` | Background | Section environment | No | No |
-| `gate-state-presets.json` | 3D Data | Target coordinates | N/A | N/A |
 
-## PAGE 3: Quantum Experimental Lab
-| Filename | Category | Purpose | Interactive | Animation Allowed? |
+| Asset Identifier | Format / Category | Concept Represented | Interactivity | Animation Allowed? |
 | :--- | :--- | :--- | :--- | :--- |
-| `experiment-superposition.svg` | Illustration | Stage 1 Concept | No | Yes (Scroll reveal) |
-| `experiment-bit-flip.svg` | Illustration | Stage 2 Concept | No | Yes (Scroll reveal) |
-| `measurement-results.svg` | Illustration | Histogram base | No | Yes (Bars fill) |
-| `experiment-lab-bg.svg` | Background | Section environment | No | No |
+| `x-gate.svg` through `t-gate.svg` | Interactive Gate Tokens | $X, Y, Z, H, S, T$ gate operator badges | Click / Keyboard | Focus ring & active press |
+| `bloch-axes.svg` | Orthographic Fallback | 2D projection for WebGL-disabled clients | Click | 2D vector rotation |
+
+## PAGE 3: Quantum Expo Lab
+
+| Asset Identifier | Format / Category | Concept Represented | Interactivity | Animation Allowed? |
+| :--- | :--- | :--- | :--- | :--- |
+| `protocol-superposition.svg` | Protocol Diagram | $|0\rangle \xrightarrow{H} |+\rangle \to$ Measure | Step buttons | Sequencer step highlight |
+| `protocol-bit-flip.svg` | Protocol Diagram | $|0\rangle \xrightarrow{X} |1\rangle \to$ Measure | Step buttons | Sequencer step highlight |
+| `histogram-bars.svg` | SVG Chart Template | Multi-shot outcome frequency bar container | Dynamic DOM | Smooth bar width fill |
 
 ## PAGE 4: Quantum Entanglement Simulator
-| Filename | Category | Purpose | Interactive | Animation Allowed? |
+
+| Asset Identifier | Format / Category | Concept Represented | Interactivity | Animation Allowed? |
 | :--- | :--- | :--- | :--- | :--- |
-| `entanglement-state.svg` | Illustration | Connection visual | No | Yes (Marching ants) |
-| `bell-state.svg` | Illustration | Correlated output | No | Yes (Sync pulse) |
-| `entanglement-bg.svg` | Background | Section environment | No | No |
+| `qubit-pair-card.svg` | UI Frame | Independent Qubit A and Qubit B cards | State selection | Correlation status border |
+| `bell-state-indicator.svg`| Status Badge | Active Bell state ($|\Phi^+\rangle, |\Phi^-\rangle, |\Psi^+\rangle, |\Psi^-\rangle$) | Click | Subtle glow pulse |
 
 ## PAGE 5: Quantum Circuit Builder
-| Filename | Category | Purpose | Interactive | Animation Allowed? |
-| :--- | :--- | :--- | :--- | :--- |
-| `circuit-builder.svg` | Illustration | Palette mockup | No | No |
-| `controlled-gate.svg` | Illustration | CNOT connection | No | Yes (Path draw) |
-| `circuit-results.svg` | Illustration | Histogram base | No | Yes (Bars fill) |
-| `circuit-builder-bg.svg` | Background | Linear workspace | No | No |
 
-## General Rules
-* **Icons:** The 83 icons in `assets/icons/` are strictly reusable. SVGs should be implemented as React components (e.g., via SVGR) to allow fill color manipulation via CSS variables (`currentColor`).
-* **Backgrounds:** Must be implemented via CSS `background-image` or an absolute positioned `<img>` with `pointer-events: none` and `z-index: -1`.
-* **Prohibited Duplication:** The 3D Bloch Sphere GLTF file must only be downloaded **once** per session. Multiple instances of the sphere must reuse the same loaded geometry and material in memory.
+| Asset Identifier | Format / Category | Concept Represented | Interactivity | Animation Allowed? |
+| :--- | :--- | :--- | :--- | :--- |
+| `circuit-grid.svg` | SVG Matrix Frame | 3-qubit wire lines with step columns | Drag / Drop / Tap | Active drop target highlight |
+| `cnot-connection.svg` | Connector Glyphs | Control bullet ($\bullet$) and Target XOR ($\oplus$) | Dynamic placement | SVG path stroke draw |
+| `swap-connection.svg` | Connector Glyphs | Cross markers ($\times$) on swap endpoints | Dynamic placement | SVG path stroke draw |
+
+## Architectural Asset Constraints
+
+1. **Diagram Visibility Standard Compliance:** All SVG lines, wire paths, and arrows must maintain a minimum stroke width of $2\text{px}$ (wires) or $3\text{px}$ (vectors) with high contrast against `#1C0F30` canvas.
+2. **Dynamic Theming via CSS Custom Properties:** All SVG icons and diagrams must utilize `currentColor` or CSS custom properties (e.g., `var(--color-purple-60)`) rather than hardcoded hex fills.
+3. **Memory Management & Singletons:** The 3D Bloch sphere mesh and material instances must be managed as singletons. Unmounting the view must pause the animation loop without dumping the shared geometry cache.
+4. **No Ambient Noise or Distracting Swarms:** Atmospheric background drift, ambient particle canvases, and unprompted looping glows are strictly forbidden. All visuals must serve direct didactic utility.

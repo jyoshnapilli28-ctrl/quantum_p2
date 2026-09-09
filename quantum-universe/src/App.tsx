@@ -1,15 +1,9 @@
-import React, { Suspense, lazy } from 'react';
+import { Suspense, lazy } from 'react';
 import { createBrowserRouter, RouterProvider, Outlet, useLocation } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import { PageShell } from './components/layout/PageShell';
-import { QuantumParticles } from './visualization/particles/QuantumParticles';
-
-// Fallback for lazy loading
-const PageLoader = () => (
-  <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '50vh', color: 'var(--color-arctic)' }}>
-    Loading Quantum State...
-  </div>
-);
+import { QynxLoading } from './components/shared/QynxLoading';
+import { PageTransition } from './components/shared/PageTransition';
 
 // Lazy load pages
 const QuantumUniverse = lazy(() => import('./pages/QuantumUniverse').then(m => ({ default: m.QuantumUniverse })));
@@ -25,17 +19,12 @@ const RootLayout = () => {
 
   return (
     <PageShell>
-      {/* Background particles only on the home page for performance, or everywhere if desired. 
-          Let's put it globally behind everything but fade it. */}
-      {location.pathname === '/' && <QuantumParticles />}
-      
       <AnimatePresence mode="wait">
-        {/* We use location.pathname as the key so Framer Motion knows when to animate out/in */}
-        <React.Fragment key={location.pathname}>
-          <Suspense fallback={<PageLoader />}>
+        <PageTransition key={location.pathname}>
+          <Suspense fallback={<QynxLoading message="Initializing Simulation Engine..." size={72} />}>
             <Outlet />
           </Suspense>
-        </React.Fragment>
+        </PageTransition>
       </AnimatePresence>
     </PageShell>
   );
@@ -45,7 +34,7 @@ const router = createBrowserRouter([
   {
     path: '/',
     element: <RootLayout />,
-    errorElement: <NotFound />, // Catch-all inside the app shell, or could be a raw page
+    errorElement: <NotFound />,
     children: [
       {
         index: true,

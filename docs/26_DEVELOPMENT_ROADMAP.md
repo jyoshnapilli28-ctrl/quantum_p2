@@ -1,492 +1,228 @@
-# DEVELOPMENT ROADMAP — QUANTUM UNIVERSE
+# QYNX — DEVELOPMENT ROADMAP
 
 ---
 
 ## 1. Overview
 
-This roadmap defines the **recommended implementation sequence** for building the Quantum Universe application. Phases are ordered to maximize developer productivity and minimize rework.
+This roadmap defines the **authoritative 18-phase implementation sequence** for engineering the QYNX quantum simulation and educational platform. Phases are structured to maximize engineering velocity, enforce mathematical rigor early, and eliminate visual or architectural rework.
 
-Key principle: **Build the quantum engine first, then the UI on top of it.** Never build a page's UI before its underlying engine and store slice are complete and tested.
+Core Architectural Invariant: **Quantum engine first, state store second, UI third.** Never construct a page's visual components before its underlying mathematical engine functions and Zustand store slice are verified by deterministic unit tests.
 
 ---
 
-## 2. Phase Dependency Map
+## 2. Phase Dependency Graph
 
 ```
-Phase 1: Foundation
+Phase 1: Project Foundation & Build System
      │
      ▼
-Phase 2: Educational Page (no engine needed)
+Phase 2: QYNX Design System & Purple Tokens
      │
      ▼
-Phase 3: Single-Qubit Engine
+Phase 3: Quantum Mathematics & Complex Arithmetic
      │
-     ├──────────────────┐
-     ▼                  ▼
-Phase 4: Gate         Phase 5: Experiment
-Visualizer            Lab
-     │                  │
-     └────────┬─────────┘
-              │
-              ▼
-Phase 6: Two-Qubit Engine
-              │
-     ┌────────┴────────┐
-     ▼                 ▼
-Phase 7: Entangle.   Phase 8: Circuit
-Simulator            Builder
-     │                  │
-     └────────┬─────────┘
-              │
-              ▼
-Phase 9: Animation & 3D Polish
-              │
-              ▼
-Phase 10: Responsive Optimization
-              │
-              ▼
-Phase 11: Accessibility
-              │
-              ▼
-Phase 12: Performance Testing
-              │
-              ▼
-Phase 13: Final QA & Release
+     ▼
+Phase 4: Single-Qubit Engine & Gate Kernels
+     │
+     ├──────────────────────────┐
+     ▼                          ▼
+Phase 5: Page 1 —           Phase 6: Page 2 —
+Quantum Universe Hub        Gate Visualizer
+(Educational Sections)          │
+     │                          ▼
+     │                      Phase 7: 3D Bloch Sphere
+     │                      (Three.js / R3F SLERP)
+     │                          │
+     └──────────┬───────────────┘
+                │
+                ▼
+Phase 8: Page 3 — Quantum Expo Lab
+(Experiment Protocols & Sequencer)
+                │
+                ▼
+Phase 9: Multi-Qubit Engine & Tensor Products
+                │
+     ┌──────────┴───────────────┐
+     ▼                          ▼
+Phase 10: Page 4 —          Phase 11: Page 5 —
+Entanglement Simulator      Circuit Builder
+(Bell States & Correlation) (Grid, Drag/Tap, Simulation)
+     │                          │
+     └──────────┬───────────────┘
+                │
+                ▼
+Phase 12: Diagram Visibility & Visualization Polish
+                │
+                ▼
+Phase 13: Purposeful Animation Polish (60 FPS & Reduced-Motion)
+                │
+                ▼
+Phase 14: Responsive Optimization (Mobile Tap Alternatives)
+                │
+                ▼
+Phase 15: WCAG 2.1 AA Accessibility & Announcer (#qynx-live-announcer)
+                │
+                ▼
+Phase 16: Performance Optimization & WebGL Demand Rendering
+                │
+                ▼
+Phase 17: Comprehensive Testing & Mathematical QA
+                │
+                ▼
+Phase 18: Final Release Certification
 ```
 
 ---
 
-## 3. Phase 1 — Project Foundation and Design System
+## 3. Master 18-Phase Implementation Specification
 
-**Duration:** 3–5 days
-**Depends on:** Nothing
-
-### Deliverables
-
-- [ ] Vite + React + TypeScript project scaffolded
-- [ ] React Router v6 configured with 5 routes (lazy-loaded)
-- [ ] Zustand store initialized (empty slices, no logic yet)
-- [ ] `src/styles/tokens.css` with all CSS custom properties
-- [ ] `src/styles/global.css` with base styles (body, typography, scrollbar)
-- [ ] Google Fonts loaded (Inter + JetBrains Mono)
-- [ ] Navigation component built and styled (desktop + mobile hamburger)
-- [ ] Page layout shell (navigation + content area padding)
-- [ ] Page transition animation (Framer Motion AnimatePresence)
-- [ ] 404 page
-- [ ] ESLint + Prettier configured
-- [ ] Vitest configured
-
-### Key Design System Tasks
-
-- [ ] `.quantum-panel` glass component CSS class
-- [ ] Button variants (primary, gate, icon)
-- [ ] Color tokens verified for contrast ratios
-
-**Done when:** Navigation works across all 5 placeholder page routes. Design system is visually correct.
+| Phase | Phase Name | Duration | Primary Deliverables | Verification Gate |
+|-------|------------|----------|----------------------|-------------------|
+| **Phase 1** | Project Foundation | 3–4 days | Vite + React 18 + TS setup, Zustand store shell, React Router v6, Vitest setup | Route switching across 5 placeholder pages, clean build |
+| **Phase 2** | Design System | 2–3 days | QYNX Purple Scale CSS variables (`tokens.css`), typography (Syne, Inter, JetBrains Mono), button & card components | Contrast audit passes WCAG AA, zero legacy blue tokens |
+| **Phase 3** | Quantum Mathematics | 2–3 days | `complex.ts`, `matrix.ts`, `vector.ts`, inner/outer products, Hermiticity check | 100% unit test coverage with tolerance $\varepsilon = 10^{-10}$ |
+| **Phase 4** | Single-Qubit Engine | 3–4 days | State vector initialization, $X, Y, Z, H, S, T$ gate matrix multiplication, Born rule | Self-inverse tests pass ($H^2=I$, $X^2=I$), normalization invariant |
+| **Phase 5** | Page 1: Quantum Universe | 4–6 days | 9 educational topics, interactive comparison cards, high-contrast SVG diagrams | All 9 topics readable within 3 seconds, responsive at 375px |
+| **Phase 6** | Page 2: Gate Visualizer | 5–7 days | `gateVisualizerSlice.ts`, gate toolbar, Dirac bra-ket renderer, Born probability bars | Applying gates updates probabilities and state label in real time |
+| **Phase 7** | 3D Bloch Sphere | 4–6 days | Three.js + R3F canvas, geodesic SLERP vector transition, coordinate mapping ($Z$-up) | Smooth 60 FPS rotation, `frameloop="demand"`, no WebGL leaks |
+| **Phase 8** | Page 3: Quantum Expo Lab | 4–6 days | Superposition & Bit-Flip protocols, step sequencer, multi-shot histogram | 1000-shot run yields expected distribution ($50\% \pm 3\%$) |
+| **Phase 9** | Multi-Qubit Engine | 3–4 days | Kronecker tensor product, 4×4 unitary expansion, CNOT, SWAP, Schmidt rank | Bell state synthesis generates canonical $|\Phi^+\rangle$ state |
+| **Phase 10** | Page 4: Entanglement Simulator | 4–6 days | 2-qubit workspace, Bell state selector, correlated measurement collapse | Measuring Qubit A instantly collapses Qubit B without lag |
+| **Phase 11** | Page 5: Circuit Builder | 7–10 days | 3-qubit $\times$ 8-step matrix, drag-and-drop + mobile tap-to-place, wire engine | Bell circuit execution yields $50\%$ $|00\rangle$ / $50\%$ $|11\rangle$ |
+| **Phase 12** | Diagram & Visual Polish | 3–4 days | Enforcement of 3-second comprehension rule, wire stroke $\ge 2\text{px}$, vector $\ge 3\text{px}$ | All diagrams clearly legible against `#1C0F30` background |
+| **Phase 13** | Animation Polish | 2–3 days | Framer Motion orchestration, SLERP curves, `prefers-reduced-motion` compliance | Zero disorientation; animations disabled when reduced motion set |
+| **Phase 14** | Responsive Optimization | 3–4 days | Mobile tap-to-place testing, sticky wire headers, horizontal scroll containers | Usable across iPhone SE (375px), iPad (768px), desktop (1440px) |
+| **Phase 15** | Accessibility (A11y) | 3–4 days | `#qynx-live-announcer`, keyboard grid navigation, ARIA roles and labels | axe DevTools reports 0 critical / serious issues; NVDA reads states |
+| **Phase 16** | Performance Optimization | 2–3 days | Bundle code-splitting, WebGL context disposal, sub-5ms 10k shot sampling | Lighthouse Performance score $\ge 90$ across mobile & desktop |
+| **Phase 17** | Testing & QA | 3–5 days | Vitest unit suite, component integration tests, Bell state regression checks | All engine and store tests pass; zero console errors |
+| **Phase 18** | Release Certification | 2–3 days | Final production build verification, cross-browser audits, documentation sign-off | Production bundle serves cleanly on preview with 0 defects |
 
 ---
 
-## 4. Phase 2 — Quantum Universe Educational Page
-
-**Duration:** 5–7 days
-**Depends on:** Phase 1
-
-### Deliverables
-
-- [ ] `QuantumUniverse.tsx` page with all 6 sections
-- [ ] Hero section with particle background (`QuantumParticles` canvas)
-- [ ] Section 1: Classical Bit vs Qubit (toggle interaction, no engine)
-- [ ] Section 2: Superposition (uses engine for real measurement)
-- [ ] Section 3: Measurement (slider + 10-shot measurement, uses engine)
-- [ ] Section 4: Quantum Gates (gate matrix display, mini qubit demo, uses engine)
-- [ ] Section 5: Entanglement (H+CNOT demo, uses engine partially)
-- [ ] Section 6: Quantum Circuits (static SVG circuit diagram, step-through)
-- [ ] Scroll-triggered entry animations (IntersectionObserver + Framer Motion)
-- [ ] Bottom CTA section
-- [ ] Responsive layout for all breakpoints
-- [ ] `QubitIndicator` component
-
-**Note on engine dependency:** Sections 2, 3, 4, and 5 use the quantum engine for real probabilistic simulation. If the engine is not ready, use a simplified placeholder (hardcoded probability values) to unblock visual development. Replace with real engine calls in Phase 3.
-
-**Done when:** All 6 sections render correctly on desktop and mobile with working interactions.
-
----
-
-## 5. Phase 3 — Single-Qubit Quantum Engine
-
-**Duration:** 3–5 days
-**Depends on:** Phase 1
-
-### Deliverables
-
-- [ ] `src/engine/math/complex.ts` — all complex arithmetic functions
-- [ ] `src/engine/math/matrix.ts` — 2×2 matrix-vector multiply
-- [ ] `src/engine/math/vector.ts` — normalize, inner product
-- [ ] `src/engine/qubit.ts` — state creation functions
-- [ ] `src/engine/gates.ts` — GATE_MATRICES constant + applyGate
-- [ ] `src/engine/measurement.ts` — probabilities, measureSingle, measureMultiShot, getBlochCoordinates
-- [ ] `src/types/quantum.ts` — all TypeScript types
-- [ ] `src/engine/index.ts` — barrel export
-- [ ] Unit tests for all engine modules (> 90% coverage)
-- [ ] `gateVisualizerSlice.ts` — store slice for Page 2
-- [ ] Connect Page 2's placeholder calls to real engine
-
-**Done when:** All unit tests pass. `applyGate`, `measureSingle`, and `getBlochCoordinates` return mathematically correct values.
-
----
-
-## 6. Phase 4 — Gate Visualizer
-
-**Duration:** 7–10 days
-**Depends on:** Phase 3
-
-### Deliverables
-
-- [ ] `GateVisualizer.tsx` page layout
-- [ ] `GatePanel` component (6 gate buttons with tooltips)
-- [ ] `DiracNotation` component (cross-fade animation)
-- [ ] `ProbabilityBar` component (animated width)
-- [ ] `GateHistory` panel
-- [ ] Measure button with post-measurement state behavior
-- [ ] Explanation panel (contextual text based on last gate)
-- [ ] Reset button
-- [ ] **3D Bloch Sphere (Three.js + R3F):**
-  - [ ] `BlochScene.ts` — Three.js scene, camera, lighting
-  - [ ] `BlochSphere3D.ts` — sphere mesh, axes, labels, meridians
-  - [ ] `StateVector.ts` — arrow mesh
-  - [ ] `BlochAnimator.ts` — SLERP animation
-  - [ ] `BlochSphere.tsx` — React wrapper, frameloop="demand"
-  - [ ] WebGL fallback
-  - [ ] OrbitControls with limits
-- [ ] `BlochSphere.tsx` connected to store coordinates
-- [ ] Animation complete callback → store.setAnimationComplete()
-- [ ] Gate buttons disable during animation and after measurement
-- [ ] Full ARIA labels and live region announcements
-- [ ] Responsive layout (desktop 2-col → tablet → mobile)
-
-**Done when:** Applying all 6 gates produces correct Bloch sphere movement, state label, and probability updates. The Bloch sphere SLERP animation is smooth. All gate buttons, measure, and reset function correctly.
-
----
-
-## 7. Phase 5 — Experiment Lab
-
-**Duration:** 5–7 days
-**Depends on:** Phase 3
-
-### Deliverables
-
-- [ ] `experimentSlice.ts` — store slice with all 5 experiment definitions
-- [ ] `ExperimentLab.tsx` page layout
-- [ ] Experiment selector (sidebar on desktop, dropdown on tablet, chips on mobile)
-- [ ] Step progress indicator component
-- [ ] Step card (description, gate applied, before/after state)
-- [ ] Run Next Step logic (sequential gate application)
-- [ ] Run All logic (auto-execution with 600ms delay)
-- [ ] State display (DiracNotation + ProbabilityBar — reused from Phase 4)
-- [ ] Shot count stepper component
-- [ ] Multi-shot measurement histogram (`ProbabilityHistogram` component)
-- [ ] Experiment history panel
-- [ ] Explanation panel
-- [ ] Reset button
-- [ ] Responsive layout
-
-**Done when:** All 5 experiments run correctly, step-by-step and auto. Multi-shot measurement produces correct distributions.
-
----
-
-## 8. Phase 6 — Two-Qubit Quantum Engine
-
-**Duration:** 3–4 days
-**Depends on:** Phase 3
-
-### Deliverables
-
-- [ ] `src/engine/multiQubit.ts`:
-  - [ ] `tensorProduct`
-  - [ ] `applyGateToQubit` (with Kronecker expansion to 4×4)
-  - [ ] `applyCNOT` (standard + reversed)
-  - [ ] `applySWAP`
-  - [ ] `isEntangled`
-  - [ ] `getProbabilities2Q`
-  - [ ] `measureTwoQubit`
-  - [ ] `measureMultiShot2Q`
-  - [ ] `createTwoQubitZeroState`
-- [ ] `src/engine/math/matrix.ts` updated for 4×4 operations
-- [ ] Unit tests for all multi-qubit functions
-- [ ] Bell state creation test (verify 50%/50% distribution)
-- [ ] `entanglementSlice.ts` — store slice for Page 4
-
-**Done when:** All multi-qubit unit tests pass. Bell state creation produces exactly [1/√2, 0, 0, 1/√2].
-
----
-
-## 9. Phase 7 — Entanglement Simulator
-
-**Duration:** 4–6 days
-**Depends on:** Phase 6
-
-### Deliverables
-
-- [ ] `EntanglementSim.tsx` page layout
-- [ ] Circuit diagram (SVG via `CircuitDiagram` component)
-- [ ] Qubit A / State / Qubit B panel layout
-- [ ] `EntanglementConnection` component (animated arc)
-- [ ] Entanglement indicator badge
-- [ ] Workflow buttons (H → CNOT → Measure)
-- [ ] Four-state probability display (|00⟩, |01⟩, |10⟩, |11⟩)
-- [ ] `ProbabilityHistogram` component (reused from Phase 5)
-- [ ] Shot count stepper
-- [ ] Mathematical detail toggle (state vector table)
-- [ ] Explanation panel
-- [ ] Reset button
-- [ ] Responsive layout (desktop 3-col → mobile single-col with vertical arc)
-
-**Done when:** Full Bell state workflow executes, entanglement arc animates, measurement always shows |00⟩ or |11⟩ only.
-
----
-
-## 10. Phase 8 — Circuit Builder
-
-**Duration:** 8–12 days
-**Depends on:** Phase 6
-
-### Deliverables
-
-- [ ] `src/engine/circuit.ts`:
-  - [ ] `CircuitDefinition` type
-  - [ ] `validateCircuit`
-  - [ ] `executeCircuit`
-- [ ] `circuitSlice.ts` — store slice with all circuit actions
-- [ ] `CircuitBuilder.tsx` page layout
-- [ ] Gate Panel sidebar with gate selection
-- [ ] `CircuitGrid.tsx` — grid of cells
-- [ ] `CircuitWire.tsx` — wire row with label
-- [ ] `GateToken.tsx` — draggable/placeable gate
-- [ ] **Drag-and-drop (desktop):** @dnd-kit integration
-  - [ ] DndContext wrapper
-  - [ ] Draggable gate tokens in gate panel
-  - [ ] Droppable grid cells
-  - [ ] Drop handler → dispatch addGate
-- [ ] **Tap-to-place (mobile):** selected gate + tap cell
-- [ ] Gate removal (× button on hover)
-- [ ] Gate move (drag placed gate to new position)
-- [ ] Multi-qubit gate rendering (CNOT vertical connector, SWAP ×)
-- [ ] Add/remove qubit row
-- [ ] Circuit validation panel
-- [ ] Run Circuit button (execute + spinner + results)
-- [ ] Results histogram (reused component)
-- [ ] Final state summary (entanglement indicator)
-- [ ] Predefined example circuits dropdown
-- [ ] Clear and Reset buttons
-- [ ] Undo (Ctrl+Z, 20-action history)
-- [ ] Keyboard grid navigation (arrow keys, Enter, Delete)
-- [ ] Responsive layout (sidebar → drawer → strip)
-
-**Done when:** User can build a Bell-state circuit by drag-and-drop, run it, and see 50%/50% |00⟩/|11⟩ results.
-
----
-
-## 11. Phase 9 — Animation and 3D Polish
-
-**Duration:** 4–6 days
-**Depends on:** Phases 4–8
-
-### Deliverables
-
-- [ ] Verify all animation durations match `20_ANIMATION_SYSTEM.md`
-- [ ] Implement scroll-triggered section animations (Page 1)
-- [ ] Polish Bloch sphere lighting and material
-- [ ] Add glow state point (point light at state vector tip)
-- [ ] Add equator/meridian lines to Bloch sphere
-- [ ] Polish entanglement marching ants animation
-- [ ] Stagger histogram bar animations
-- [ ] Circuit gate placement spring animation
-- [ ] Experiment step progress animation (progress line draw)
-- [ ] Toast notification animation
-- [ ] Add `prefers-reduced-motion` support for all animations (verify against checklist in `20_ANIMATION_SYSTEM.md`)
-
-**Done when:** All animations from `20_ANIMATION_SYSTEM.md` are implemented and the `prefers-reduced-motion` flag correctly disables/simplifies all of them.
-
----
-
-## 12. Phase 10 — Responsive Optimization
-
-**Duration:** 3–5 days
-**Depends on:** Phases 1–9
-
-### Deliverables
-
-- [ ] Test all 5 pages at 375px (iPhone SE), 768px, 1024px, 1440px
-- [ ] Mobile navigation (hamburger menu) verified
-- [ ] Bloch sphere responsive sizing
-- [ ] Circuit builder tap-to-place on mobile verified
-- [ ] Gate panel horizontal scroll on mobile
-- [ ] Experiment Lab chip selector on mobile
-- [ ] Entanglement Simulator vertical arc on mobile
-- [ ] All touch targets meet 48px minimum
-- [ ] SVG circuit diagram horizontal scroll
-
-**Done when:** All 5 pages pass the responsive manual QA checklist in `25_TESTING_QA.md`.
-
----
-
-## 13. Phase 11 — Accessibility
-
-**Duration:** 3–4 days
-**Depends on:** Phase 10
-
-### Deliverables
-
-- [ ] ARIA labels on all interactive elements
-- [ ] `#quantum-announcer` live region wired to all state changes
-- [ ] Keyboard navigation through all 5 pages (Tab, arrow keys, Enter)
-- [ ] Circuit grid keyboard navigation (arrow keys, Delete, Ctrl+Z)
-- [ ] `:focus-visible` styles on all focusable elements
-- [ ] Screen reader test with NVDA + Chrome
-- [ ] Color contrast verification for all text combinations
-- [ ] Semantic HTML audit (headings hierarchy, nav, main, section)
-- [ ] `aria-disabled` on disabled gate buttons
-- [ ] `prefers-reduced-motion` media query in CSS
-
-**Done when:** axe DevTools reports 0 critical and 0 serious issues on all 5 pages.
-
----
-
-## 14. Phase 12 — Performance Testing
-
-**Duration:** 2–3 days
-**Depends on:** Phase 11
-
-### Deliverables
-
-- [ ] Lighthouse audit on all 5 pages (desktop + mobile simulation)
-- [ ] Performance score ≥ 90 on all pages
-- [ ] Verify initial bundle size < 200 KB gzipped (using Vite bundle analyzer)
-- [ ] Verify Three.js chunk size is only loaded on /gate-visualizer
-- [ ] Verify frame time < 16.6ms during Bloch sphere animation (Chrome DevTools Performance)
-- [ ] Verify 10k measurement shots < 5ms
-- [ ] Verify no layout shift during probability bar animations
-
-**Done when:** All Lighthouse scores ≥ 90 on all pages.
-
----
-
-## 15. Phase 13 — Final QA and Release
-
-**Duration:** 2–3 days
-**Depends on:** Phase 12
-
-### Deliverables
-
-- [ ] Full manual QA checklist from `25_TESTING_QA.md`
-- [ ] Cross-browser test: Chrome, Firefox, Safari, Edge
-- [ ] Cross-device test: desktop, tablet, iPhone, Android
-- [ ] All unit tests pass (`npm run test`)
-- [ ] No console errors or warnings in production build
-- [ ] `npm run build` succeeds without errors
-- [ ] Production build served from `npm run preview` verified
-- [ ] Final bundle size and chunk report reviewed
-- [ ] Documentation review: all 27 docs files consistent with implementation
-
----
-
-## 16. Phase Summary Table (18 Phases — Master Specification)
-
-| Phase | Name | Duration | Depends On |
-|-------|------|---------|-----------|
-| 1 | Project Foundation | 3–5d | — |
-| 2 | Design System | 2–3d | 1 |
-| 3 | Quantum Mathematics | 2–3d | 1 |
-| 4 | Quantum Engine (single-qubit) | 3–5d | 3 |
-| 5 | Quantum Universe (Page 1) | 5–7d | 2, 4 |
-| 6 | Gate Visualizer (Page 2) | 7–10d | 4 |
-| 7 | Bloch Sphere (3D) | 4–6d | 6 |
-| 8 | Experiment Lab (Page 3) | 5–7d | 4 |
-| 9 | Multi-Qubit Engine | 3–4d | 4 |
-| 10 | Entanglement Simulator (Page 4) | 4–6d | 9 |
-| 11 | Circuit Builder (Page 5) | 8–12d | 9 |
-| 12 | Visualization Polish | 3–4d | 7, 10, 11 |
-| 13 | Animation Polish | 2–3d | 5–11 |
-| 14 | Responsive Optimization | 3–5d | 5–11 |
-| 15 | Accessibility | 3–4d | 14 |
-| 16 | Performance Optimization | 2–3d | 15 |
-| 17 | Testing and QA | 3–5d | 16 |
-| 18 | Final Polish | 2–3d | 17 |
-| **Total** | | **68–101 days** | |
-
----
-
-## 17. Phases 12–18 Detail
-
-### Phase 12 — Visualization Polish
-
-- [ ] Bloch sphere lighting, material, and glow reviewed against reference image
-- [ ] Entanglement arc marching-ants animation polished
-- [ ] Probability bar animations smooth and correct
-- [ ] State vector arrow tip glow (point light at sphere surface)
-- [ ] All circuit gate visuals match `05_DESIGN_SYSTEM.md` gate tiles
-- [ ] Entanglement connection arc renders correctly on mobile (vertical)
-
-### Phase 13 — Animation Polish
-
-- [ ] All animation durations match `20_ANIMATION_SYSTEM.md`
-- [ ] All easing curves match spec
-- [ ] Gate application Bloch sphere SLERP smooth at 60fps
-- [ ] Page transitions animate correctly (fade in/out)
-- [ ] Experiment step progress animation (progress line draw)
-- [ ] Circuit gate placement spring animation
-- [ ] `prefers-reduced-motion` disables or simplifies all animations
-
-### Phase 14 — Responsive Optimization
-
-- [ ] 375px (mobile S): all content usable
-- [ ] 768px (tablet): layout correct
-- [ ] 1024px (laptop): layout correct
-- [ ] 1440px (desktop): maximum layout correct
-- [ ] Bloch sphere responsive sizing
-- [ ] Circuit builder tap-to-place on mobile verified
-- [ ] Gate panel horizontal scroll on mobile
-- [ ] All touch targets ≥ 48px
-
-### Phase 15 — Accessibility
-
-- [ ] ARIA labels on all interactive elements
-- [ ] `#quantum-announcer` live region wired to state changes
-- [ ] Full keyboard navigation through all 5 pages
-- [ ] `:focus-visible` visible on all focusable elements
-- [ ] NVDA + Chrome screen reader test
-- [ ] Color contrast WCAG AA verified on all text pairs
-- [ ] `prefers-reduced-motion` media query in CSS
-- [ ] axe DevTools: 0 critical issues on all 5 pages
-
-### Phase 16 — Performance Optimization
-
-- [ ] Lighthouse ≥ 90 on all 5 pages (desktop + mobile simulation)
-- [ ] Initial bundle < 200 KB gzipped
-- [ ] Three.js chunk loaded only on `/gate-visualizer`
-- [ ] Bloch sphere: frame time < 16.6ms during animation
-- [ ] Quantum calculations < 5ms for 10k shots
-- [ ] `frameloop="demand"` verified on R3F Canvas
-
-### Phase 17 — Testing and QA
-
-- [ ] All engine unit tests pass
-- [ ] Gate matrix values verified for all 8 gates
-- [ ] Bell state (50%/50%) distribution test passes
-- [ ] Bloch sphere coordinates verified for |0⟩, |1⟩, |+⟩, |−⟩, |i⟩
-- [ ] Circuit execution verified for Bell state circuit
-- [ ] Reset verified on all 5 pages
-- [ ] Full manual QA from `25_TESTING_QA.md`
-- [ ] Cross-browser: Chrome, Firefox, Safari, Edge
-- [ ] Cross-device: desktop, tablet, iPhone, Android
-
-### Phase 18 — Final Polish
-
-- [ ] Visual review against `05_DESIGN_SYSTEM.md`
-- [ ] All colors match approved palette (no stray values)
-- [ ] All icons match `05_DESIGN_SYSTEM.md` Section 11 color rules
-- [ ] No console errors or warnings in production build
-- [ ] `npm run build` completes without TypeScript errors
-- [ ] Final bundle report reviewed
-- [ ] All 27 documentation files consistent with implementation
-
+## 4. Phase Detail Specifications
+
+### Phase 1: Project Foundation & Build System
+- Initialize Vite project with React 18 and strict TypeScript configuration.
+- Configure path aliases (`@/engine`, `@/components`, `@/store`, `@/styles`, `@/types`).
+- Set up React Router v6 with lazy route splitting for `/`, `/gate-visualizer`, `/expo-lab`, `/entanglement`, `/circuit-builder`.
+- Initialize root Zustand store (`QynxStore`).
+- Configure Vitest test runner with `@testing-library/react` and `vitest-axe`.
+
+### Phase 2: QYNX Design System & Purple Tokens
+- Define official QYNX Purple Scale CSS custom properties in `src/styles/tokens.css`:
+  - Purple 10 (`#F6F2FF`) through Purple 100 (`#1C0F30`).
+  - High-contrast text White (`#FFFFFF`) and Muted Purple (`#D4BBFF`).
+- Establish typographic tokens with Google Fonts (`Syne` / `Cabinet Grotesk` headings, `Inter` body, `JetBrains Mono` code/math).
+- Build foundational UI components: `QuantumPanel` (restrained surface without excessive blur), `Button`, `IconButton`, `Badge`.
+- Eliminate all legacy blue hex codes (`#071018`, `#0B132B`, `#1C2B38`, `#38506A`, `#446983`, `#7991A8`, `#3A506B`).
+
+### Phase 3: Quantum Mathematics & Complex Arithmetic
+- Implement pure TypeScript complex number library (`src/engine/math/complex.ts`): addition, multiplication, conjugate, magnitude, phase angle.
+- Implement matrix operations (`src/engine/math/matrix.ts`): matrix-vector multiply, 2×2 and 4×4 adjoint, unitarity verification.
+- Implement vector operations (`src/engine/math/vector.ts`): Euclidean norm, inner product, normalization.
+- Author exhaustive unit tests in `src/engine/__tests__/complex.test.ts` and `matrix.test.ts`.
+
+### Phase 4: Single-Qubit Engine & Gate Kernels
+- Implement `StateVector1Q` type and state factory functions: `createZeroState()`, `createOneState()`, `createPlusState()`, `createMinusState()`.
+- Implement gate application kernel supporting $X, Y, Z, H, S, T$ unitary operators.
+- Implement projective measurement and Born probability calculator ($P(0) = |\alpha|^2, P(1) = |\beta|^2$).
+- Implement Bloch sphere coordinate extraction ($x = 2\text{Re}(\alpha^*\beta), y = 2\text{Im}(\alpha^*\beta), z = |\alpha|^2 - |\beta|^2$).
+- Author unit tests for all single-qubit gates and self-inverse involutions ($H^2=I$, $X^2=I$).
+
+### Phase 5: Page 1 — Quantum Universe Hub
+- Construct educational overview covering 9 fundamental quantum concepts:
+  1. Classical Bit vs. Qubit
+  2. Superposition Principle
+  3. Bloch Sphere Representation
+  4. Quantum Measurement & Wavefunction Collapse
+  5. Quantum Logic Gates
+  6. Quantum Entanglement & Non-Locality
+  7. Quantum Circuit Model
+  8. Quantum Decoherence & Environmental Noise
+  9. Real-World Applications & Cryptographic Quantum Advantage
+- Incorporate interactive comparison widgets and high-contrast SVG diagrams adhering to the 3-second comprehension rule.
+
+### Phase 6: Page 2 — Quantum Gate Visualizer
+- Implement `gateVisualizerSlice.ts` to manage active state vector, gate history, and measurement status.
+- Build gate toolbar with responsive buttons and keyboard accelerators.
+- Build `DiracNotation` readout displaying dynamic bra-ket expansion: $|\psi\rangle = \alpha|0\rangle + \beta|1\rangle$.
+- Build `ProbabilityBar` components with animated percentages and accessible ARIA attributes.
+- Implement projective measurement action that disables further unitary operations until user clicks "Reset".
+
+### Phase 7: 3D Bloch Sphere Visualization
+- Implement Three.js scene wrapped in React Three Fiber (`src/components/canvas/BlochSphere.tsx`).
+- Map mathematical $Z$-up Bloch coordinates to Three.js $Y$-up coordinate space (`three_x = bloch_x`, `three_y = bloch_z`, `three_z = bloch_y`).
+- Implement spherical geodesic SLERP animation between previous and next state vectors.
+- Configure `frameloop="demand"` to conserve GPU cycles when vector is stationary.
+- Provide a clean WebGL fallback diagram for environments without WebGL support.
+
+### Phase 8: Page 3 — Quantum Expo Lab
+- Implement `expoLabSlice.ts` supporting structured step-by-step experimentation protocols.
+- Author Superposition Protocol (State $|0\rangle \to H \to |+\rangle \to$ Measure) and Bit-Flip Protocol ($|0\rangle \to X \to |1\rangle \to$ Measure).
+- Build step sequencer controls ("Run Next Step", "Run All", "Reset").
+- Build `ProbabilityHistogram` component displaying multi-shot measurement distributions ($N = 10, 100, 1000, 10000$ shots).
+- Display scientific disclaimer clarifying that multi-shot results reflect classical pseudo-random sampling of theoretical Born probabilities.
+
+### Phase 9: Multi-Qubit Engine & Tensor Products
+- Implement Kronecker tensor product for 2-qubit state space ($\mathbb{C}^2 \otimes \mathbb{C}^2 \cong \mathbb{C}^4$).
+- Implement multi-qubit gate application: single-qubit gate on wire $k$ expanded via $I \otimes \dots \otimes U \otimes \dots \otimes I$.
+- Implement 2-qubit entangling gates: Controlled-NOT ($\text{CNOT}$) and $\text{SWAP}$.
+- Implement Bell state synthesis functions for all 4 canonical states ($|\Phi^+\rangle, |\Phi^-\rangle, |\Psi^+\rangle, |\Psi^-\rangle$).
+- Implement entanglement verification via von Neumann entropy of reduced density matrix or Schmidt rank.
+
+### Phase 10: Page 4 — Quantum Entanglement Simulator
+- Implement `entanglementSlice.ts` to manage 2-qubit entangled pairs.
+- Construct twin-qubit workspace displaying Qubit A and Qubit B side-by-side in high-contrast card panels (no physical connecting wires or cables).
+- Build Bell state selector buttons and manual protocol triggers ($H$ on A, $\text{CNOT}$ with control A and target B).
+- Display dynamic non-classical correlation explanation and 4-outcome probability distribution ($P(00), P(01), P(10), P(11)$).
+- Wire correlated measurement collapse: measuring Qubit A immediately projects Qubit B into the corresponding paired state.
+
+### Phase 11: Page 5 — Quantum Circuit Builder
+- Implement `circuitSlice.ts` to manage an $N$-qubit $\times$ $M$-column quantum gate matrix ($N \le 3$, $M \le 8$).
+- Build desktop drag-and-drop circuit interface using `@dnd-kit`.
+- Build accessible mobile tap-to-place alternative: tap gate card from palette, then tap target wire slot.
+- Implement circuit validation engine: detect missing targets, prevent overlapping multi-qubit operations, validate wire indices.
+- Implement step-by-step circuit execution engine with intermediate state vector inspection and final multi-shot histogram output.
+
+### Phase 12: Diagram Visibility & Visual Polish
+- Audit all SVG and canvas diagrams to ensure compliance with the **QYNX Diagram Visibility Standard**:
+  - Circuit wire stroke $\ge 2\text{px}$, stroke color `#491D8B` or `#8A3FFC`.
+  - State vector stroke $\ge 3\text{px}$, arrow head radius $\ge 0.09$ Three.js units.
+  - Text contrast $\ge 4.5:1$ against surface backgrounds; non-text graphical elements $\ge 3:1$.
+- Review all icons and illustrations to ensure clean, human-designed aesthetics without AI tropes, unnecessary particle swarms, or muddy glassmorphism.
+
+### Phase 13: Purposeful Animation Polish
+- Implement consistent timing curves across UI transitions: state vector SLERP (400ms), probability bar fill (350ms), step advancement (250ms).
+- Ensure animations answer the foundational user question: *"What changed and why?"*
+- Implement `@media (prefers-reduced-motion: reduce)` overrides to instantly snap states without transition lag.
+- Profile Framer Motion transitions to guarantee 60 FPS performance on mid-tier hardware.
+
+### Phase 14: Responsive Optimization
+- Validate layout stability across breakpoints: Mobile Small (375px), Mobile Standard (390px), Tablet (768px), Desktop (1024px), Widescreen (1440px).
+- Implement horizontal scrolling with sticky wire headers on Page 5 Circuit Builder.
+- Ensure all interactive touch targets meet the $48\times 48\text{px}$ minimum size standard.
+- Verify mobile chip selector for Quantum Expo Lab protocols.
+
+### Phase 15: Accessibility (WCAG 2.1 AA)
+- Wire global `#qynx-live-announcer` live region to state mutations (e.g., *"Hadamard gate applied: state is now ket plus with equal 50 percent probabilities"*).
+- Implement complete keyboard navigation: Tab order traversal, Enter/Space activation, Esc modal dismissal.
+- Implement arrow-key grid navigation for Circuit Builder cells.
+- Audit semantic markup (single `<h1>` per page, descriptive landmarks, `aria-expanded`, `aria-selected`).
+
+### Phase 16: Performance Optimization
+- Configure Vite manual code chunks: separate Three.js/R3F bundle loaded only when navigating to `/gate-visualizer`.
+- Optimize Born rule multi-shot sampling algorithms to complete 10,000 shots in under 5ms.
+- Verify Three.js geometry and material disposal on component unmount to prevent WebGL memory leaks.
+- Run Lighthouse performance audits to ensure score $\ge 90$ across mobile and desktop profiles.
+
+### Phase 17: Comprehensive Testing & QA
+- Execute Vitest test suite covering mathematical engine, Zustand store slices, and UI integration flows.
+- Verify all 8 quantum gates, Bell state distributions, and circuit error cases.
+- Run automated `axe-core` accessibility audit across all 5 routes.
+- Perform cross-browser testing across Google Chrome, Mozilla Firefox, Apple Safari, and Microsoft Edge.
+
+### Phase 18: Final Release Certification
+- Build production distribution bundle (`npm run build`) with zero TypeScript errors or ESLint warnings.
+- Verify production preview (`npm run preview`) against master requirements.
+- Ensure all documentation files in `docs/` are 100% synchronized with the architecture, color palette, and module naming.
+- Certify final delivery of QYNX platform specifications.

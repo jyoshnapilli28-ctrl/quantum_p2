@@ -1,324 +1,232 @@
-# PROJECT ARCHITECTURE — QUANTUM UNIVERSE
+# PROJECT ARCHITECTURE — QYNX
 
 ---
 
-## 1. Architecture Philosophy
+## 1. Architectural Philosophy & Layered Structure
 
-The Quantum Universe application follows a strict **layered architecture** where:
-- The **UI layer** handles rendering and user interaction.
-- The **Page Controller layer** coordinates per-page logic.
-- The **Quantum Engine** performs all mathematical computation.
-- The **State Management layer** holds application state and triggers reactive updates.
-- The **Visualization layer** reads state and renders visual output.
+QYNX follows a strict **layered architecture** designed for modularity, scientific fidelity, testability, and seamless performance. The architectural layers are strictly decoupled:
 
-No layer may bypass a lower layer to access a higher one. UI components do not perform quantum math. The quantum engine does not import UI libraries.
-
----
-
-## 2. Top-Level Architecture Diagram
+1. **Presentation Layer (`src/components/`, `src/pages/`)**: React components rendering the user interface, handling DOM events, and presenting educational copy and controls.
+2. **Page Controller / Orchestration Layer**: Connects UI events to state actions, coordinating multi-step flows without embedding mathematical equations.
+3. **State Management Layer (`src/store/`)**: Centralized reactive Zustand store maintaining application state slices, dispatching actions, and maintaining undo/redo history.
+4. **Visualization Layer (`src/visualization/`)**: Three.js WebGL rendering (Bloch Sphere), SVG circuit grids, and Canvas chart elements. Passively subscribes to state.
+5. **Shared Quantum Engine (`src/engine/`)**: Completely headless, dependency-free mathematical library implementing linear algebra, unitary matrix transformations, tensor products, and projective measurements.
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                      QUANTUM UNIVERSE APP                       │
+│                          QYNX SHELL                             │
+│       Global Navigation, Brand Header, Theme Infrastructure     │
 │                                                                 │
-│  ┌──────────┐ ┌──────────────┐ ┌──────────┐ ┌──────────────┐  │
-│  │ Page 1   │ │   Page 2     │ │  Page 3  │ │   Page 4     │  │
-│  │ Universe │ │ Gate Visual. │ │ Exp. Lab │ │ Entanglement │  │
-│  └──────────┘ └──────────────┘ └──────────┘ └──────────────┘  │
-│                                                                 │
-│                      ┌──────────┐                              │
-│                      │  Page 5  │                              │
-│                      │ Circuit  │                              │
-│                      │ Builder  │                              │
-│                      └──────────┘                              │
+│  ┌──────────────┐ ┌──────────────┐ ┌──────────────┐            │
+│  │    Page 1    │ │    Page 2    │ │    Page 3    │            │
+│  │   QUANTUM    │ │ QUANTUM GATE │ │ QUANTUM EXPO │            │
+│  │   UNIVERSE   │ │  VISUALIZER  │ │     LAB      │            │
+│  └──────────────┘ └──────────────┘ └──────────────┘            │
+│         ┌──────────────┐            ┌──────────────┐            │
+│         │    Page 4    │            │    Page 5    │            │
+│         │ ENTANGLEMENT │            │   CIRCUIT    │            │
+│         │  SIMULATOR   │            │   BUILDER    │            │
+│         └──────────────┘            └──────────────┘            │
 │                                                                 │
 │  ┌─────────────────────────────────────────────────────────┐   │
 │  │                    STATE MANAGEMENT                     │   │
-│  │              (Zustand global store)                     │   │
+│  │             (Reactive Zustand Store & Slices)           │   │
 │  └─────────────────────────────────────────────────────────┘   │
 │                                                                 │
 │  ┌─────────────────────────────────────────────────────────┐   │
-│  │                    QUANTUM ENGINE                       │   │
-│  │   ┌──────────┐  ┌──────────┐  ┌──────────┐            │   │
-│  │   │   Gates  │  │Measurement│  │ Circuits │            │   │
-│  │   └──────────┘  └──────────┘  └──────────┘            │   │
-│  │   ┌──────────┐  ┌──────────┐  ┌──────────┐            │   │
-│  │   │  Single  │  │ Multi    │  │ Matrix   │            │   │
-│  │   │  Qubit   │  │ Qubit    │  │  Math    │            │   │
-│  │   └──────────┘  └──────────┘  └──────────┘            │   │
+│  │                  SHARED QUANTUM ENGINE                  │   │
+│  │   ┌──────────┐  ┌──────────┐  ┌───────────────────────┐ │   │
+│  │   │Unitary   │  │Projective│  │Circuit Execution      │ │   │
+│  │   │Gates     │  │Measure   │  │Pipeline               │ │   │
+│  │   └──────────┘  └──────────┘  └───────────────────────┘ │   │
+│  │   ┌──────────┐  ┌──────────┐  ┌───────────────────────┐ │   │
+│  │   │Single    │  │Multi-Qub.│  │Complex Matrix         │ │   │
+│  │   │StateVec  │  │Tensor    │  │Math                   │ │   │
+│  │   └──────────┘  └──────────┘  └───────────────────────┘ │   │
 │  └─────────────────────────────────────────────────────────┘   │
 │                                                                 │
 │  ┌─────────────────────────────────────────────────────────┐   │
-│  │                  VISUALIZATION LAYER                    │   │
-│  │   ┌────────────┐  ┌──────────────┐  ┌──────────────┐  │   │
-│  │   │Bloch Sphere│  │ Probability  │  │   Circuit    │  │   │
-│  │   │ (Three.js) │  │    Bars      │  │   Diagram    │  │   │
-│  │   └────────────┘  └──────────────┘  └──────────────┘  │   │
+│  │                  VISUALIZATION SYSTEM                   │   │
+│  │   ┌────────────┐  ┌──────────────┐  ┌──────────────┐    │   │
+│  │   │  3D Bloch  │  │  High-Contr. │  │   Circuit    │    │   │
+│  │   │Sphere (r3f)│  │  Prob. Bars  │  │ Grid & Wires │    │   │
+│  │   └────────────┘  └──────────────┘  └──────────────┘    │   │
 │  └─────────────────────────────────────────────────────────┘   │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## 3. Module Boundaries
+## 2. Module Boundaries & Dependency Invariants
 
-### 3.1 Quantum Engine (`src/engine/`)
-
-**Exports only pure functions and data structures.** No side effects. No UI imports.
+### 2.1 Shared Quantum Engine (`src/engine/`)
+Contains zero external dependencies, zero React imports, and zero DOM interactions. Pure functions with deterministic output:
 
 ```
 src/engine/
 ├── math/
-│   ├── complex.ts          — Complex number operations
-│   ├── matrix.ts           — 2x2 and 4x4 matrix multiply
-│   └── vector.ts           — State vector normalization, inner product
-├── qubit.ts                — Single-qubit state creation and operations
-├── gates.ts                — Gate matrix definitions and application
-├── measurement.ts          — Probability calculation, random measurement
-├── multiQubit.ts           — Tensor products, two-qubit gates
-├── circuit.ts              — Circuit data structure and executor
-└── index.ts                — Public API barrel export
+│   ├── complex.ts          — Complex arithmetic (add, multiply, conjugate, norm)
+│   ├── matrix.ts           — Unitary matrix operations & multiplication
+│   └── vector.ts           — State vector inner product, norm verification
+├── qubit.ts                — Single-qubit state creation [alpha, beta]
+├── gates.ts                — Elementary unitary matrices (X, Y, Z, H, S, T)
+├── measurement.ts          — Born rule probabilities & collapse sampling
+├── multiQubit.ts           — Kronecker tensor products, CNOT, SWAP operators
+├── circuit.ts              — Circuit timeline AST and state propagation
+└── index.ts                — Unified public API export
 ```
 
-**Permitted imports in this module:** None (zero external dependencies).
-
-### 3.2 State Management (`src/store/`)
-
-Consumes the quantum engine and exposes reactive state to UI components.
+### 2.2 State Management (`src/store/`)
+Translates user interactions into engine calls and exposes immutable state:
 
 ```
 src/store/
-├── quantumStore.ts         — Main Zustand store
-├── gateVisualizerSlice.ts  — State slice for Page 2
-├── experimentSlice.ts      — State slice for Page 3
-├── entanglementSlice.ts    — State slice for Page 4
-├── circuitSlice.ts         — State slice for Page 5
+├── quantumStore.ts         — Global Zustand store combining all slices
+├── gateVisualizerSlice.ts  — Page 2 single-qubit state & gate history
+├── expoLabSlice.ts         — Page 3 guided experiment state & shot records
+├── entanglementSlice.ts    — Page 4 two-qubit Bell pair state & correlations
+├── circuitSlice.ts         — Page 5 circuit grid, gate placement & results
 └── index.ts                — Unified store export
 ```
 
-**Permitted imports:** Quantum engine modules only. No React component imports.
-
-### 3.3 UI Layer (`src/components/`, `src/pages/`)
-
-Contains React components. Components read from the store and dispatch actions.
+### 2.3 UI & Presentation Layer (`src/components/`, `src/pages/`)
+Implements human-designed, scientific UI components using the QYNX design tokens:
 
 ```
 src/pages/
-├── QuantumUniverse.tsx     — Page 1
-├── GateVisualizer.tsx      — Page 2
-├── ExperimentLab.tsx       — Page 3
-├── EntanglementSim.tsx     — Page 4
-└── CircuitBuilder.tsx      — Page 5
+├── QuantumUniverse.tsx     — Page 1: Educational concept hub
+├── GateVisualizer.tsx      — Page 2: Single-qubit & 3D Bloch sphere
+├── QuantumExpoLab.tsx      — Page 3: Structured guided laboratory
+├── EntanglementSim.tsx     — Page 4: Two-qubit entanglement simulator
+└── CircuitBuilder.tsx      — Page 5: Visual circuit builder
 
 src/components/
-├── shared/                 — Shared across all pages
-│   ├── Navigation.tsx
-│   ├── DiracNotation.tsx   — Renders |ψ⟩ notation
-│   ├── ProbabilityBar.tsx
-│   ├── GateButton.tsx
-│   └── QuantumPanel.tsx    — Glass panel wrapper
+├── shared/                 — Shared UI primitives (QYNX design system)
+│   ├── Navigation.tsx      — Global header with 01–05 module links
+│   ├── DiracNotation.tsx   — High-contrast Dirac ket notation
+│   ├── ProbabilityBar.tsx  — High-contrast probability indicator
+│   ├── GateButton.tsx      — Interactive gate token button
+│   └── RestrainedCard.tsx  — Human-designed panel container
 ├── bloch/
-│   └── BlochSphere.tsx     — Three.js Bloch sphere container
+│   └── BlochSphere.tsx     — React container for WebGL canvas
 ├── circuit/
-│   ├── CircuitGrid.tsx
-│   ├── CircuitWire.tsx
-│   └── GateToken.tsx
-└── experiment/
-    ├── ExperimentCard.tsx
-    └── StepDisplay.tsx
+│   ├── CircuitGrid.tsx     — Desktop grid & touch/tap wire matrix
+│   ├── CircuitWire.tsx     — Accessible quantum register wire
+│   └── GateToken.tsx       — Movable/placeable unitary gate token
+└── lab/
+    ├── ExperimentCard.tsx  — Laboratory protocol card
+    └── ShotDistribution.tsx— Statistical outcome histogram
 ```
 
-### 3.4 Visualization Layer (`src/visualization/`)
-
-Three.js scenes, canvas-based renderers, SVG diagrams. Reads state; does not write state.
+### 2.4 Visualization Layer (`src/visualization/`)
+High-performance rendering modules that passively reflect quantum states:
 
 ```
 src/visualization/
 ├── bloch/
-│   ├── BlochScene.ts       — Three.js scene setup
-│   ├── BlochSphere3D.ts    — Sphere mesh, axes, labels
-│   ├── StateVector.ts      — Arrow/vector mesh
-│   └── BlochAnimator.ts    — State transition animations
-├── probability/
-│   └── ProbabilityChart.ts — Canvas-based bar chart
-├── particles/
-│   └── QuantumParticles.ts — Background particle system
-└── circuit/
-    └── CircuitDiagram.ts   — SVG circuit renderer
+│   ├── BlochScene.ts       — Three.js scene, lighting, camera controls
+│   ├── BlochGeometry.ts    — Sphere wireframe, axes (X, Y, Z), equator
+│   ├── StateVectorMesh.ts  — 3D arrow representing state vector
+│   └── TrajectoryAnimator.ts— Geodesic SLERP state-to-state interpolation
+├── charts/
+│   └── DistributionChart.ts— High-contrast canvas outcome distribution
+└── diagrams/
+    └── SvgCircuitRenderer.ts— High-contrast SVG circuit line renderer
 ```
 
 ---
 
-## 4. Data Flow
-
-### 4.1 Gate Application Flow (Page 2 — Gate Visualizer)
+## 3. Strict Dependency Rules
 
 ```
-USER clicks gate button [H]
-          │
-          ▼
-GateVisualizer.tsx dispatches action:
-  store.applyGate('H')
-          │
-          ▼
-gateVisualizerSlice.ts handles action:
-  1. Reads current state vector from store
-  2. Calls: engine.applyGate(currentState, 'H')
-  3. engine returns: new state vector
-  4. Store updates: currentState, stateHistory, selectedGate
-          │
-          ▼
-React components re-render (subscribed to store):
-  - DiracNotation updates label
-  - ProbabilityBar updates values
-  - BlochSphere receives new state via props
-          │
-          ▼
-BlochAnimator.ts interpolates:
-  old state vector position → new state vector position
-  (SLERP interpolation over 600ms)
-          │
-          ▼
-Animation complete:
-  State labels and probability values settle
-  Gate history panel prepends new entry
+UI Layer          ───▶  State Management (reads state, dispatches actions)
+State Management  ───▶  Quantum Engine (computes transformations)
+Visualization     ───▶  State Management (reads state only)
+Quantum Engine    ───▶  [ZERO IMPORTS] (completely self-contained)
 ```
 
-### 4.2 Circuit Execution Flow (Page 5 — Circuit Builder)
+**Forbidden Patterns**:
+- UI components importing math functions directly to compute states.
+- The quantum engine referencing React, Zustand, DOM elements, or Three.js.
+- Visualization components mutating the quantum store directly.
 
+---
+
+## 4. End-to-End Data Flows
+
+### 4.1 Gate Application Flow (Page 2 — QUANTUM GATE VISUALIZER)
 ```
-USER presses [RUN CIRCUIT]
+[User Clicks Gate 'H']
           │
           ▼
-CircuitBuilder.tsx reads circuit from store:
-  { qubits: 2, gates: [{ wire: 0, col: 0, type: 'H' }, { wire: [0,1], col: 1, type: 'CNOT' }] }
+GateVisualizer.tsx dispatches: store.applyGate('H')
           │
           ▼
-circuitSlice.ts calls:
-  engine.executeCircuit(circuitDefinition)
+gateVisualizerSlice:
+  1. Reads currentState: [1+0i, 0+0i] (|0⟩)
+  2. Calls engine: applyUnitary(currentState, H_MATRIX)
+  3. Receives newState: [1/√2+0i, 1/√2+0i] (|+⟩)
+  4. Computes Bloch angles: θ = π/2, φ = 0
+  5. Updates store: { currentState: newState, blochAngles: { theta, phi }, history: [...] }
           │
           ▼
-circuit.ts (engine):
-  1. Initialize state vector for N qubits: |00...0⟩
-  2. Sort gates by column (left-to-right)
-  3. For each gate, apply the corresponding matrix operation
-  4. After all gates applied, measure to get result probabilities
+React components re-render:
+  - DiracNotation updates to: |+⟩ = 0.707|0⟩ + 0.707|1⟩
+  - ProbabilityBar animates: P(|0⟩)=50%, P(|1⟩)=50%
           │
           ▼
-Return value: { stateVector, probabilities, measurementResults }
-          │
-          ▼
-circuitSlice.ts updates store:
-  lastResult, executionState = 'complete'
-          │
-          ▼
-ResultHistogram component re-renders with new probability data
+TrajectoryAnimator.ts:
+  - Interpolates state vector from (0, 0, 1) to (1, 0, 0) over 600ms via geodesic arc
 ```
 
-### 4.3 Measurement Flow
-
+### 4.2 Circuit Execution Flow (Page 5 — QUANTUM CIRCUIT BUILDER)
 ```
-Measurement triggered (button click or experiment step)
+[User Clicks 'RUN CIRCUIT']
           │
           ▼
-measurement.ts (engine):
-  1. Calculate probability for each basis state from state vector
-  2. Generate random number [0, 1)
-  3. Walk cumulative probability distribution
-  4. Return measured basis state (e.g., '0', '1', '00', '11')
+CircuitBuilder.tsx dispatches: store.executeCircuit()
           │
           ▼
-Store receives measured outcome
+circuitSlice:
+  1. Serializes circuit AST: { qubits: 2, columns: [...] }
+  2. Invokes engine.executeCircuitAST(circuitAST)
           │
           ▼
-UI displays:
-  - Collapsed state label
-  - Measurement result indicator
-  - Probability bars freeze at 0% or 100%
-  - (Multi-shot: aggregate counts displayed in histogram)
+circuit.ts (Engine):
+  1. Initializes state vector for n qubits: |00...0⟩ (length 2^n)
+  2. Iterates columns left-to-right
+  3. Applies Kronecker product expansions for single-qubit gates and CNOT/SWAP operators
+  4. Computes theoretical probabilities: P(i) = |amplitude_i|²
+  5. Simulates N measurement shots using cumulative distribution sampling
+          │
+          ▼
+Store receives: { finalStateVector, probabilities, shotCounts }
+          │
+          ▼
+DistributionChart renders high-contrast histogram in QYNX Purple scale
 ```
 
 ---
 
-## 5. Shared Components
+## 5. Routing Architecture
 
-These components are used by **multiple pages** and must be built as shared, reusable, stateless presentational components:
+QYNX uses client-side routing with clean URL endpoints and route-level code splitting:
 
-| Component | Used By Pages | Description |
-|-----------|--------------|-------------|
-| `DiracNotation` | 1, 2, 3, 4, 5 | Renders quantum state in ket notation |
-| `ProbabilityBar` | 2, 3, 4, 5 | Animated probability bar with label and percentage |
-| `GateButton` | 2, 3, 5 | Clickable gate with label, tooltip, and active state |
-| `QuantumPanel` | All | Glass-effect card container |
-| `CircuitDiagram` | 4, 5 | SVG circuit line drawing |
-| `MeasurementResult` | 2, 3, 4, 5 | Displays single measurement outcome |
+| Path | Module | Code Splitting Chunk |
+|:---|:---|:---|
+| `/` | Page 1: QUANTUM UNIVERSE | `quantum-universe.chunk.js` |
+| `/gate-visualizer` | Page 2: QUANTUM GATE VISUALIZER | `gate-visualizer.chunk.js` (lazy-loads Three.js) |
+| `/expo-lab` | Page 3: QUANTUM EXPO LAB | `expo-lab.chunk.js` |
+| `/entanglement` | Page 4: QUANTUM ENTANGLEMENT SIMULATOR | `entanglement.chunk.js` |
+| `/circuit-builder` | Page 5: QUANTUM CIRCUIT BUILDER | `circuit-builder.chunk.js` |
 
----
-
-## 6. Routing
-
-Use React Router v6 with `createBrowserRouter`.
-
-```
-/                      → Page 1: Quantum Universe
-/gate-visualizer       → Page 2: Gate Visualizer
-/experiment-lab        → Page 3: Experiment Lab
-/entanglement          → Page 4: Entanglement Simulator
-/circuit-builder       → Page 5: Circuit Builder
-```
-
-Route transitions use a fade animation (opacity 0 → 1, 300ms).
-
-Each route is **lazy-loaded**. Heavy visualization libraries (Three.js) are only imported when their route is activated.
+Route transitions execute a fast, accessible 200ms cross-fade using standard CSS transitions.
 
 ---
 
-## 7. State Isolation Between Pages
+## 6. Error Boundary & Fallback System
 
-Each page has its own state slice. Navigating away from a page does **not** automatically reset its state — the user's work is preserved within the session.
-
-An explicit **Reset** button on each interactive page resets that page's state slice to initial values.
-
-The quantum engine is **stateless** — all state is held in the Zustand store. The engine only computes and returns new values; it never stores anything.
-
----
-
-## 8. Error Boundaries
-
-Wrap each page-level component in a React `ErrorBoundary`. If the visualization layer throws (e.g., WebGL context lost), the error boundary renders a fallback panel with a "Reload visualization" button, without crashing the entire app.
-
----
-
-## 9. Module Dependency Rules (Enforced)
-
-```
-UI Components      → Store (read/write) + Visualization
-Store              → Quantum Engine (calls only)
-Visualization      → Store (read only)
-Quantum Engine     → Nothing (zero imports)
-```
-
-Violations of these rules break the architectural guarantee. Do not import engine functions directly into React components — always go through the store.
-
----
-
-## 10. File Naming Conventions
-
-| Type | Convention | Example |
-|------|-----------|---------|
-| React components | PascalCase `.tsx` | `BlochSphere.tsx` |
-| Engine modules | camelCase `.ts` | `measurement.ts` |
-| Store slices | camelCase `.ts` | `gateVisualizerSlice.ts` |
-| Visualization classes | PascalCase `.ts` | `BlochScene.ts` |
-| CSS modules | camelCase `.module.css` | `blochSphere.module.css` |
-| Constants | UPPER_SNAKE_CASE | `GATE_MATRICES` |
-
----
-
-## 11. Inter-Page Communication
-
-Pages do **not** communicate directly with each other. All cross-page communication happens through the global Zustand store.
-
-Example: If the user completes a Bell-state experiment on Page 3 and navigates to Page 4, Page 4 can read the last experiment result from the store if needed — but only through the store API.
-
-There is no event bus or prop drilling across pages.
+Every module is isolated within a React `ErrorBoundary`. In the event of a WebGL context crash or rendering exception:
+- The canvas gracefully degrades to a 2D high-contrast fallback diagram.
+- A concise error card provides clear recovery options ("Reset 3D Canvas", "Reload Module").
+- The global application shell, navigation, and other pages remain completely functional.

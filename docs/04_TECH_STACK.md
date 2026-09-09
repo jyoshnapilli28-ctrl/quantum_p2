@@ -1,310 +1,153 @@
-# TECH STACK — QUANTUM UNIVERSE
+# TECH STACK — QYNX
 
 ---
 
 ## 1. Technology Selection Principles
 
-- Choose tools that are **well-maintained, widely adopted, and appropriate for the task**.
-- Avoid over-engineering: no tool should be added unless it provides a clear, necessary benefit.
-- Prefer **composition over heavy frameworks** where possible.
-- The quantum engine must have **zero external dependencies** — only native JavaScript/TypeScript.
-- 3D rendering requires a library (Three.js) — this is the one justified heavy dependency.
+- **Precision & Reliability**: Select tools that are battle-tested, maintainable, and appropriate for scientific simulation.
+- **Zero Engine Dependencies**: The shared quantum engine is strictly written in vanilla TypeScript/JavaScript with zero third-party dependencies.
+- **Selective Heavy Tooling**: Heavy WebGL dependencies (Three.js) are isolated and lazy-loaded on the `/gate-visualizer` route.
+- **Restrained Scientific Design**: Style with CSS Modules and CSS Custom Properties adhering to the QYNX Purple design system without fragile utility abstractions.
 
 ---
 
-## 2. Complete Tech Stack
+## 2. Complete Technology Stack
 
-### 2.1 Core Framework
-
-| Tool | Version | Purpose |
-|------|---------|---------|
-| **React** | 18.x | Component-based UI framework |
-| **TypeScript** | 5.x | Type safety across engine, store, and UI |
-| **Vite** | 5.x | Build tool and dev server (fast HMR) |
-
-**Why React:** Component architecture maps cleanly to the visualization-heavy, state-reactive nature of the application. Hooks allow clean integration with Zustand.
-
-**Why TypeScript:** The quantum engine deals with complex numbers, matrices, and state vectors. Strict typing prevents subtle bugs in mathematical operations.
-
-**Why Vite:** Fast development iteration, built-in code splitting, and excellent TypeScript support. No Create React App overhead.
-
----
+### 2.1 Core Framework & Runtime
+| Tool | Version | Purpose | Architectural Rationale |
+|:---|:---|:---|:---|
+| **React** | 18.x | Component Presentation Layer | Declarative rendering, functional hooks, concurrent mode compatibility |
+| **TypeScript** | 5.x | End-to-End Type Safety | Strict typing prevents numerical anomalies in state vectors and matrix transformations |
+| **Vite** | 5.x | Build System & Dev Server | Fast HMR, ES module chunking, and efficient tree-shaking |
 
 ### 2.2 Routing
-
 | Tool | Version | Purpose |
-|------|---------|---------|
-| **React Router** | 6.x | Client-side routing for five pages |
+|:---|:---|:---|
+| **React Router** | 6.x | Client-side routing across the five QYNX modules |
 
-Use `createBrowserRouter` with lazy-loaded route components.
-
+```typescript
+// Route Configuration in src/App.tsx
+const routes = [
+  { path: '/', component: lazy(() => import('@pages/QuantumUniverse')) },
+  { path: '/gate-visualizer', component: lazy(() => import('@pages/GateVisualizer')) },
+  { path: '/expo-lab', component: lazy(() => import('@pages/QuantumExpoLab')) },
+  { path: '/entanglement', component: lazy(() => import('@pages/EntanglementSim')) },
+  { path: '/circuit-builder', component: lazy(() => import('@pages/CircuitBuilder')) },
+];
 ```
-Route configuration:
-/                   → lazy(() => import('./pages/QuantumUniverse'))
-/gate-visualizer    → lazy(() => import('./pages/GateVisualizer'))
-/experiment-lab     → lazy(() => import('./pages/ExperimentLab'))
-/entanglement       → lazy(() => import('./pages/EntanglementSim'))
-/circuit-builder    → lazy(() => import('./pages/CircuitBuilder'))
-```
-
----
 
 ### 2.3 State Management
-
 | Tool | Version | Purpose |
-|------|---------|---------|
-| **Zustand** | 4.x | Lightweight reactive global state |
+|:---|:---|:---|
+| **Zustand** | 4.x | Reactive global state store |
 
-**Why Zustand over Redux:** Redux is excessive for this application. Zustand provides reactive state with minimal boilerplate, direct store access from anywhere, and excellent TypeScript support. The quantum engine state (state vectors, gate history, experiment results) fits naturally into Zustand slices.
+- `gateVisualizerSlice`: Single-qubit state vector, Bloch coordinates, gate history.
+- `expoLabSlice`: Guided experiment state, step sequencing, shot counts, distribution tallies.
+- `entanglementSlice`: Two-qubit state, Bell-pair creation, joint measurement counts.
+- `circuitSlice`: Wire matrix, gate placement AST, simulation outputs.
 
-Store slices:
-- `gateVisualizerSlice` — current qubit state, gate history, selected gate
-- `experimentSlice` — active experiment, step index, measurement results
-- `entanglementSlice` — two-qubit state, entanglement status, measurement results
-- `circuitSlice` — circuit definition, execution state, results
-
----
-
-### 2.4 3D Visualization
-
+### 2.4 3D Visualization & Graphics
 | Tool | Version | Purpose |
-|------|---------|---------|
-| **Three.js** | r165+ | 3D Bloch sphere rendering |
-| **@react-three/fiber** | 8.x | React renderer for Three.js |
-| **@react-three/drei** | 9.x | Three.js helpers (OrbitControls, Text3D, etc.) |
+|:---|:---|:---|
+| **Three.js** | r165+ | 3D WebGL Bloch Sphere rendering |
+| **@react-three/fiber** | 8.x | Declarative Three.js scene tree in React |
+| **@react-three/drei** | 9.x | OrbitControls and canvas helper utilities |
 
-**Why Three.js:** The Bloch sphere requires a real 3D WebGL visualization with smooth camera interaction and state vector animation. Three.js is the industry standard for browser 3D.
+*Note: Three.js is code-split and only loaded upon visiting `/gate-visualizer`.*
 
-**Why React Three Fiber (R3F):** Integrates Three.js cleanly into the React component tree, enabling React state to drive 3D scene updates without manual scene management.
-
-**Lazy loading:** Three.js is only loaded when the `/gate-visualizer` route is activated. It must not inflate the initial page bundle.
-
----
-
-### 2.5 Animation
-
+### 2.5 Animation & Motion
 | Tool | Version | Purpose |
-|------|---------|---------|
-| **Framer Motion** | 11.x | React component animations, page transitions |
-| **GSAP** (optional) | 3.x | Complex timeline animations if Framer Motion is insufficient |
+|:---|:---|:---|
+| **Framer Motion** | 11.x | State-change transitions, probability bar animations, modal dialogs |
 
-**Primary:** Use Framer Motion for:
-- Page transition fades
-- Gate button press animations
-- Probability bar value animations
-- Panel entry/exit animations
-- Experiment step transitions
+*All animations respect the system `prefers-reduced-motion` setting.*
 
-**Secondary (if needed):** Use GSAP for:
-- Bloch sphere vector interpolation timelines (if Three.js TWEEN is insufficient)
-- Complex multi-step animation sequences in the circuit builder
-
-Do **not** use both GSAP and Framer Motion for the same element. Keep animation responsibility clear per component.
-
----
-
-### 2.6 SVG / Canvas
-
-| Tool | Purpose |
-|------|---------|
-| **Native SVG** (inline React) | Circuit diagrams, qubit wires, 2D gate tokens |
-| **HTML Canvas** (via `useRef`) | Probability bar charts, particle background |
-
-Do not use a charting library (Chart.js, D3) for probability bars — the bars are simple enough to implement with CSS or Canvas without the overhead of a full chart library.
-
----
-
-### 2.7 Drag and Drop (Circuit Builder)
-
+### 2.6 Interactive Circuit Construction
 | Tool | Version | Purpose |
-|------|---------|---------|
-| **@dnd-kit/core** | 6.x | Drag-and-drop for circuit gate placement |
-| **@dnd-kit/sortable** | 8.x | Sortable gate positions |
+|:---|:---|:---|
+| **@dnd-kit/core** | 6.x | Accessible drag-and-drop for circuit gate placement |
+| **@dnd-kit/sortable** | 8.x | Sequential gate reordering |
 
-**Why dnd-kit over react-dnd:** dnd-kit is actively maintained, has excellent accessibility support, and works well with touch devices (important for mobile circuit building).
+*Includes touch and keyboard alternatives (tap-to-select and tap-to-place) for mobile and assistive devices.*
 
----
-
-### 2.8 Styling
-
+### 2.7 Styling Architecture
 | Tool | Purpose |
-|------|---------|
-| **CSS Modules** | Component-scoped styles |
-| **CSS Custom Properties** | Design tokens (colors, spacing, radii) |
-| **Google Fonts (Inter + JetBrains Mono)** | Typography |
+|:---|:---|
+| **CSS Modules** | Scoped component styling |
+| **CSS Custom Properties** | Global design tokens (`src/styles/tokens.css`) implementing the QYNX Purple scale |
+| **Google Fonts** | Inter (UI and body copy) + JetBrains Mono (Dirac notation & mathematical equations) |
 
-Do **not** use Tailwind CSS for this project. The glassmorphism, atmospheric gradients, and custom quantum-visualization styles require precise custom CSS that Tailwind's utility classes would make harder to maintain and read.
-
-CSS Custom Properties are defined once in `src/styles/tokens.css` and imported globally. All components use the token variable names, not raw hex values.
+*Avoid generic utility frameworks (e.g., Tailwind) to maintain strict control over restrained surfaces, scientific contrast, and custom SVG styling.*
 
 ---
 
-### 2.9 Mathematical Utilities
-
-| Tool | Purpose |
-|------|---------|
-| **Native JavaScript Math** | All quantum calculations |
-| **Custom complex.ts module** | Complex number arithmetic |
-| **Custom matrix.ts module** | 2×2 and 4×4 matrix operations |
-
-Do **not** use mathjs, numeric.js, or any external math library. Quantum computing at 1–5 qubits requires only basic complex arithmetic that is straightforward to implement correctly in TypeScript. External math libraries add weight and abstraction.
-
----
-
-### 2.10 Development Tools
-
-| Tool | Purpose |
-|------|---------|
-| **ESLint** (with TypeScript plugin) | Code quality |
-| **Prettier** | Code formatting |
-| **Vitest** | Unit tests for quantum engine |
-| **@testing-library/react** | UI component tests |
-
----
-
-## 3. Project Setup Commands
-
-```bash
-# Create project
-npm create vite@latest quantum-universe -- --template react-ts
-
-# Install core dependencies
-npm install react-router-dom zustand framer-motion @dnd-kit/core @dnd-kit/sortable
-
-# Install 3D visualization
-npm install three @react-three/fiber @react-three/drei
-
-# Install dev tools
-npm install -D vitest @testing-library/react @testing-library/jest-dom eslint prettier
-
-# Start dev server
-npm run dev
-```
-
----
-
-## 4. Layer Dependency Matrix
+## 3. Layer Dependency Matrix
 
 ```
 Layer                  Imports From
-─────────────────────────────────────────────────────
-UI Components          ← Store, Visualization Layer
-Store Slices           ← Quantum Engine only
-Quantum Engine         ← Nothing (zero deps)
-Visualization Layer    ← Store (read), Three.js, Canvas API
-CSS/Styles             ← Design tokens (CSS vars)
+──────────────────────────────────────────────────────────────────
+UI Components          ← Zustand Store, Shared Visualization Primitives
+Store Slices           ← Shared Quantum Engine only
+Quantum Engine         ← [ZERO IMPORTS - Pure TypeScript/Math]
+Visualization System   ← Store (read-only), Three.js, Canvas/SVG APIs
+Styles / Tokens        ← Global CSS Variables (--qynx-purple-*)
 ```
 
 ---
 
-## 5. Bundle Size Strategy
-
-| Module | Loading Strategy | Justification |
-|--------|-----------------|---------------|
-| React, Zustand | Eager (main bundle) | Core framework, always needed |
-| React Router | Eager | Routing active from first render |
-| Framer Motion | Eager | Used on all pages |
-| Three.js + R3F | Lazy (Gate Visualizer route) | Heavy; only needed for one page |
-| @dnd-kit | Lazy (Circuit Builder route) | Only needed for one page |
-| Page components | Lazy (per route) | Code split per page |
-
-Target initial bundle size (excluding lazy chunks): **< 200 KB gzipped**.
-
----
-
-## 6. TypeScript Configuration Requirements
-
-```json
-{
-  "compilerOptions": {
-    "strict": true,
-    "noImplicitAny": true,
-    "strictNullChecks": true,
-    "exactOptionalPropertyTypes": true,
-    "target": "ES2020",
-    "module": "ESNext",
-    "moduleResolution": "bundler"
-  }
-}
-```
-
-Strict mode is **required**. The quantum engine uses complex number operations where implicit `any` types would hide critical bugs.
-
----
-
-## 7. Path Aliases (vite.config.ts)
-
-```
-@engine     → src/engine/
-@store      → src/store/
-@components → src/components/
-@pages      → src/pages/
-@styles     → src/styles/
-@viz        → src/visualization/
-@types      → src/types/
-```
-
----
-
-## 8. TypeScript Type Definitions
-
-Create a shared types file: `src/types/quantum.ts`
-
-Key types to define:
+## 4. TypeScript Core Contracts (`src/types/quantum.ts`)
 
 ```typescript
-// Complex number
-type Complex = { re: number; im: number }
+// Complex number { re, im }
+export interface Complex {
+  readonly re: number;
+  readonly im: number;
+}
 
 // Single-qubit state vector [alpha, beta]
-type StateVector1Q = [Complex, Complex]
+export type StateVector1Q = readonly [Complex, Complex];
 
 // Two-qubit state vector [c00, c01, c10, c11]
-type StateVector2Q = [Complex, Complex, Complex, Complex]
+export type StateVector2Q = readonly [Complex, Complex, Complex, Complex];
 
-// Gate identifier
-type GateId = 'X' | 'Y' | 'Z' | 'H' | 'S' | 'T' | 'CNOT' | 'SWAP'
+// Supported elementary gates
+export type GateId = 'X' | 'Y' | 'Z' | 'H' | 'S' | 'T' | 'CNOT' | 'SWAP';
 
-// Measurement outcome (single)
-type MeasurementOutcome1Q = '0' | '1'
-type MeasurementOutcome2Q = '00' | '01' | '10' | '11'
+// Bloch sphere spherical coordinates
+export interface BlochCoordinates {
+  readonly theta: number; // Polar angle [0, π]
+  readonly phi: number;   // Azimuthal angle [0, 2π)
+  readonly x: number;
+  readonly y: number;
+  readonly z: number;
+}
 
-// Probability map
-type ProbabilityMap = Record<string, number>
+// Measurement outcomes
+export type MeasurementOutcome1Q = '0' | '1';
+export type MeasurementOutcome2Q = '00' | '01' | '10' | '11';
 
-// Circuit gate placement
-type GatePlacement = {
-  id: string;
-  type: GateId;
-  wire: number | [number, number]; // single or multi-qubit
-  column: number;
+// Circuit gate AST placement
+export interface GatePlacement {
+  readonly id: string;
+  readonly type: GateId;
+  readonly wire: number | readonly [number, number];
+  readonly column: number;
 }
 
 // Complete circuit definition
-type CircuitDefinition = {
-  qubits: number;
-  gates: GatePlacement[];
+export interface CircuitDefinition {
+  readonly qubits: number;
+  readonly gates: readonly GatePlacement[];
 }
 
-// Experiment step
-type ExperimentStep = {
-  description: string;
-  action: 'applyGate' | 'measure' | 'reset';
-  gate?: GateId;
-  targetWire?: number;
-}
-
-// Experiment definition
-type ExperimentDefinition = {
-  id: string;
-  title: string;
-  description: string;
-  objective: string;
-  initialState: StateVector1Q | StateVector2Q;
-  steps: ExperimentStep[];
-  expectedOutcome: string;
-  explanation: string;
+// Guided experiment definition
+export interface ExperimentDefinition {
+  readonly id: string;
+  readonly title: string;
+  readonly objective: string;
+  readonly initialKet: string;
+  readonly targetGate: GateId;
+  readonly expectedProbability: Record<string, number>;
+  readonly explanation: string;
 }
 ```
-
-All modules import types from `@types/quantum.ts` — never redefine types locally.

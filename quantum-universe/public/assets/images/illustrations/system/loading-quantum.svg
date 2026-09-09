@@ -1,8 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100%" height="100%">
   <defs>
     <radialGradient id="loading-glow" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#7991A8" stop-opacity="0.8"/>
-      <stop offset="100%" stop-color="#446983" stop-opacity="0"/>
+      <stop offset="0%" stop-color="#8A3FFC" stop-opacity="0.8"/>
+      <stop offset="100%" stop-color="#6929C4" stop-opacity="0"/>
     </radialGradient>
     <style>
       @keyframes spin {
@@ -27,14 +27,14 @@
   
   <g class="orbit">
     <!-- Orbital Rings -->
-    <ellipse cx="50" cy="50" rx="30" ry="10" fill="none" stroke="#38506A" stroke-width="2" transform="rotate(30 50 50)"/>
-    <ellipse cx="50" cy="50" rx="30" ry="10" fill="none" stroke="#3A506B" stroke-width="2" transform="rotate(-30 50 50)"/>
-    <ellipse cx="50" cy="50" rx="30" ry="10" fill="none" stroke="#446983" stroke-width="2" transform="rotate(90 50 50)"/>
+    <ellipse cx="50" cy="50" rx="30" ry="10" fill="none" stroke="#491D8B" stroke-width="2" transform="rotate(30 50 50)"/>
+    <ellipse cx="50" cy="50" rx="30" ry="10" fill="none" stroke="#6929C4" stroke-width="2" transform="rotate(-30 50 50)"/>
+    <ellipse cx="50" cy="50" rx="30" ry="10" fill="none" stroke="#8A3FFC" stroke-width="2" transform="rotate(90 50 50)"/>
     
     <!-- Electrons/Qubits on Orbit -->
-    <circle cx="24" cy="65" r="3" fill="#7991A8"/>
+    <circle cx="24" cy="65" r="3" fill="#BE95FF"/>
     <circle cx="76" cy="35" r="3" fill="#FFFFFF"/>
-    <circle cx="50" cy="20" r="3" fill="#446983"/>
+    <circle cx="50" cy="20" r="3" fill="#A56EFF"/>
   </g>
   
   <!-- Central Glowing Qubit -->

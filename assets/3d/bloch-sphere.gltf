@@ -257,18 +257,18 @@
       "name": "SphereSurface",
       "pbrMetallicRoughness": {
         "baseColorFactor": [
-          0.05780543019106723,
-          0.14126329114027164,
-          0.22696587351009836,
-          0.18
+          0.0658,
+          0.0114,
+          0.256,
+          0.3
         ],
         "metallicFactor": 0.0,
         "roughnessFactor": 0.25
       },
       "emissiveFactor": [
-        0.013841182346856492,
-        0.028076937110063913,
-        0.050444964800320215
+        0.02,
+        0.005,
+        0.08
       ],
       "alphaMode": "BLEND",
       "doubleSided": true
@@ -277,18 +277,18 @@
       "name": "LatitudeLines",
       "pbrMetallicRoughness": {
         "baseColorFactor": [
-          0.19120168274079138,
-          0.2831487404299921,
-          0.39157247774972326,
-          0.35
+          0.1384,
+          0.0212,
+          0.5457,
+          0.55
         ],
         "metallicFactor": 0.0,
         "roughnessFactor": 0.3
       },
       "emissiveFactor": [
-        0.010577852655202419,
-        0.02005495507861708,
-        0.036756816624398746
+        0.05,
+        0.01,
+        0.2
       ],
       "alphaMode": "BLEND",
       "doubleSided": true
@@ -297,18 +297,18 @@
       "name": "LongitudeLines",
       "pbrMetallicRoughness": {
         "baseColorFactor": [
-          0.19120168274079138,
-          0.2831487404299921,
-          0.39157247774972326,
-          0.35
+          0.1384,
+          0.0212,
+          0.5457,
+          0.55
         ],
         "metallicFactor": 0.0,
         "roughnessFactor": 0.3
       },
       "emissiveFactor": [
-        0.010577852655202419,
-        0.02005495507861708,
-        0.036756816624398746
+        0.05,
+        0.01,
+        0.2
       ],
       "alphaMode": "BLEND",
       "doubleSided": true
@@ -317,18 +317,18 @@
       "name": "XAxis",
       "pbrMetallicRoughness": {
         "baseColorFactor": [
-          0.19120168274079138,
-          0.2831487404299921,
-          0.39157247774972326,
+          0.5133,
+          0.2982,
+          1.0,
           1.0
         ],
         "metallicFactor": 0.0,
         "roughnessFactor": 0.35
       },
       "emissiveFactor": [
-        0.05736050482223741,
-        0.08494462212899763,
-        0.11747174332491697
+        0.15,
+        0.08,
+        0.35
       ],
       "alphaMode": "OPAQUE",
       "doubleSided": true
@@ -337,18 +337,18 @@
       "name": "YAxis",
       "pbrMetallicRoughness": {
         "baseColorFactor": [
-          0.05780543019106723,
-          0.14126329114027164,
-          0.22696587351009836,
+          0.3752,
+          0.1542,
+          1.0,
           1.0
         ],
         "metallicFactor": 0.0,
         "roughnessFactor": 0.35
       },
       "emissiveFactor": [
-        0.017341629057320167,
-        0.04237898734208149,
-        0.06808976205302951
+        0.12,
+        0.05,
+        0.3
       ],
       "alphaMode": "OPAQUE",
       "doubleSided": true
@@ -366,9 +366,9 @@
         "roughnessFactor": 0.3
       },
       "emissiveFactor": [
-        0.45,
-        0.45,
-        0.45
+        0.5,
+        0.5,
+        0.5
       ],
       "alphaMode": "OPAQUE",
       "doubleSided": true
@@ -377,18 +377,18 @@
       "name": "Origin",
       "pbrMetallicRoughness": {
         "baseColorFactor": [
-          0.19120168274079138,
-          0.2831487404299921,
-          0.39157247774972326,
+          0.1384,
+          0.0212,
+          0.5457,
           1.0
         ],
         "metallicFactor": 0.0,
         "roughnessFactor": 0.35
       },
       "emissiveFactor": [
-        0.03824033654815828,
-        0.056629748085998424,
-        0.07831449554994466
+        0.08,
+        0.015,
+        0.3
       ],
       "alphaMode": "OPAQUE",
       "doubleSided": true
@@ -397,18 +397,18 @@
       "name": "StateVector",
       "pbrMetallicRoughness": {
         "baseColorFactor": [
-          0.05780543019106723,
-          0.14126329114027164,
-          0.22696587351009836,
+          0.252,
+          0.0478,
+          0.973,
           1.0
         ],
         "metallicFactor": 0.0,
         "roughnessFactor": 0.25
       },
       "emissiveFactor": [
-        0.031792986605086976,
-        0.0776948101271494,
-        0.12483123043055411
+        0.25,
+        0.05,
+        0.95
       ],
       "alphaMode": "OPAQUE",
       "doubleSided": true
@@ -426,9 +426,9 @@
         "roughnessFactor": 0.2
       },
       "emissiveFactor": [
-        0.040463801133747056,
-        0.09888430379819015,
-        0.15887611145706884
+        0.9,
+        0.9,
+        0.9
       ],
       "alphaMode": "OPAQUE",
       "doubleSided": true
@@ -440,15 +440,15 @@
           1.0,
           1.0,
           1.0,
-          0.85
+          0.9
         ],
         "metallicFactor": 0.0,
         "roughnessFactor": 0.3
       },
       "emissiveFactor": [
-        0.35,
-        0.35,
-        0.35
+        0.4,
+        0.4,
+        0.4
       ],
       "alphaMode": "BLEND",
       "doubleSided": true
@@ -460,15 +460,15 @@
           1.0,
           1.0,
           1.0,
-          0.85
+          0.9
         ],
         "metallicFactor": 0.0,
         "roughnessFactor": 0.3
       },
       "emissiveFactor": [
-        0.35,
-        0.35,
-        0.35
+        0.4,
+        0.4,
+        0.4
       ],
       "alphaMode": "BLEND",
       "doubleSided": true
@@ -477,18 +477,18 @@
       "name": "Halo",
       "pbrMetallicRoughness": {
         "baseColorFactor": [
-          0.05780543019106723,
-          0.14126329114027164,
-          0.22696587351009836,
-          0.05
+          0.1384,
+          0.0212,
+          0.5457,
+          0.08
         ],
         "metallicFactor": 0.0,
         "roughnessFactor": 0.4
       },
       "emissiveFactor": [
-        0.028902715095533615,
-        0.07063164557013582,
-        0.11348293675504918
+        0.05,
+        0.01,
+        0.18
       ],
       "alphaMode": "BLEND",
       "doubleSided": true

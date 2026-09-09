@@ -1,5 +1,4 @@
 import React from 'react';
-import { motion } from 'framer-motion';
 import { useQuantumStore } from '../store';
 import { QuantumPanel } from '../components/shared/QuantumPanel';
 import { BlochSphere } from '../components/bloch/BlochSphere';
@@ -30,21 +29,22 @@ export const GateVisualizer: React.FC = () => {
   const availableGates: SingleQubitGateId[] = ['H', 'X', 'Y', 'Z', 'S', 'T'];
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
+    <div
       className="page-container"
-      style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 'var(--space-8)' }}
+      style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 'var(--space-6)', maxWidth: '1120px', margin: '0 auto', padding: '0 var(--space-6)' }}
     >
-      <div style={{ marginBottom: 'var(--space-8)' }}>
-        <h1 style={{ fontSize: 'var(--text-h1)', marginBottom: 'var(--space-2)' }}>Gate Visualizer</h1>
-        <p style={{ color: 'var(--color-arctic)' }}>Watch how quantum gates manipulate a qubit's state vector on the Bloch sphere in real-time.</p>
+      <div>
+        <h1 style={{ fontSize: 'var(--text-h1)', marginBottom: 'var(--space-2)', color: 'var(--text-primary, #181126)' }}>
+          Quantum Gate Visualizer
+        </h1>
+        <p style={{ color: 'var(--text-secondary, #4D3E6B)', fontSize: 'var(--text-body)', margin: 0 }}>
+          Observe how single-qubit unitary gates rotate the state vector on the Bloch sphere and deterministically shift measurement probabilities.
+        </p>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 'var(--space-8)' }}>
-        {/* Left Column: Bloch Sphere */}
-        <QuantumPanel variant="deep" className="animate-slide-up" style={{ height: '600px', display: 'flex', flexDirection: 'column', position: 'relative' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: 'var(--space-6)' }}>
+        {/* Left Column: 3D Bloch Sphere */}
+        <QuantumPanel variant="default" hoverable={false} style={{ height: '540px', display: 'flex', flexDirection: 'column', position: 'relative', background: 'var(--color-white, #FFFFFF)', border: '1px solid var(--border-default, #D4BBFF)' }}>
           <div style={{ position: 'absolute', top: '16px', left: '16px', zIndex: 10 }}>
             <DiracNotation stateLabel={stateLabel} size="xl" />
           </div>
@@ -63,12 +63,15 @@ export const GateVisualizer: React.FC = () => {
           )}
         </QuantumPanel>
 
-        {/* Right Column: Controls */}
+        {/* Right Column: Gate Controls & Probability */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-6)' }}>
-          <QuantumPanel className="animate-slide-up" style={{ animationDelay: '100ms' }}>
-            <div style={{ padding: 'var(--space-6)' }}>
-              <h3 style={{ marginBottom: 'var(--space-4)' }}>Apply Gates</h3>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 'var(--space-4)', justifyItems: 'center' }}>
+          {/* Gate Selection Matrix */}
+          <QuantumPanel>
+            <div style={{ padding: 'var(--space-5)' }}>
+              <h3 style={{ marginBottom: 'var(--space-3)', color: 'var(--text-primary, #181126)', fontSize: 'var(--text-h3)' }}>
+                Unitary Gate Selection
+              </h3>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 'var(--space-3)', justifyItems: 'center' }}>
                 {availableGates.map(gate => (
                   <GateButton 
                     key={gate} 
@@ -81,70 +84,78 @@ export const GateVisualizer: React.FC = () => {
             </div>
           </QuantumPanel>
 
-          <QuantumPanel className="animate-slide-up" style={{ animationDelay: '200ms' }}>
-            <div style={{ padding: 'var(--space-6)' }}>
-              <h3 style={{ marginBottom: 'var(--space-4)' }}>Measurement Probabilities</h3>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
+          {/* Probability Distribution */}
+          <QuantumPanel>
+            <div style={{ padding: 'var(--space-5)' }}>
+              <h3 style={{ marginBottom: 'var(--space-3)', color: 'var(--text-primary, #181126)', fontSize: 'var(--text-h3)' }}>
+                Measurement Probabilities
+              </h3>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
                 <ProbabilityBar label="|0⟩" probability={probabilities.p0} />
                 <ProbabilityBar label="|1⟩" probability={probabilities.p1} colorBasis="1" />
               </div>
               <button 
+                type="button"
+                className="qynx-btn"
                 onClick={measure}
                 disabled={isAnimating || isMeasured}
                 style={{ 
-                  marginTop: 'var(--space-6)', 
+                  marginTop: 'var(--space-5)', 
                   width: '100%', 
-                  padding: '12px', 
-                  background: (isAnimating || isMeasured) ? 'var(--color-midnight)' : 'var(--gradient-gate-button)',
-                  border: `1px solid ${(isAnimating || isMeasured) ? 'rgba(56,80,106,0.3)' : 'var(--color-icicle)'}`,
-                  color: (isAnimating || isMeasured) ? 'var(--color-polar)' : 'var(--color-white)',
-                  borderRadius: 'var(--radius-lg)',
+                  padding: '11px',
+                  background: (isAnimating || isMeasured) ? 'var(--color-purple-20, #E8DAFF)' : 'var(--color-purple-60, #8A3FFC)',
+                  border: `1px solid ${(isAnimating || isMeasured) ? 'var(--border-default, #D4BBFF)' : 'var(--color-purple-60, #8A3FFC)'}`,
+                  color: (isAnimating || isMeasured) ? 'var(--text-secondary, #4D3E6B)' : 'var(--color-white)',
                   cursor: (isAnimating || isMeasured) ? 'not-allowed' : 'pointer',
-                  fontWeight: 600,
-                  transition: 'all 0.3s ease'
+                  fontWeight: 600
                 }}
               >
-                Measure Qubit
+                {isMeasured ? 'Qubit Measured' : 'Measure Qubit'}
               </button>
             </div>
           </QuantumPanel>
 
+          {/* Reset System */}
           <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 'auto' }}>
              <button 
+                type="button"
+                className="qynx-btn qynx-btn-secondary"
                 onClick={resetGateVisualizer}
                 disabled={isAnimating}
                 style={{ 
-                  padding: '12px 24px', 
-                  background: 'transparent',
-                  border: '1px solid var(--color-polar)',
-                  color: 'var(--color-white)',
-                  borderRadius: 'var(--radius-lg)',
+                  padding: '8px 18px', 
                   cursor: isAnimating ? 'not-allowed' : 'pointer',
                   opacity: isAnimating ? 0.5 : 1
                 }}
               >
-                Reset System
+                Reset System State
               </button>
           </div>
         </div>
       </div>
       
-      {/* Gate History */}
+      {/* Operation History */}
       {gateHistory.length > 0 && (
-        <QuantumPanel className="animate-slide-up" style={{ animationDelay: '300ms', marginTop: 'var(--space-8)' }}>
-          <div style={{ padding: 'var(--space-6)' }}>
-            <h3 style={{ marginBottom: 'var(--space-4)' }}>Operation History</h3>
-            <div style={{ display: 'flex', gap: 'var(--space-4)', overflowX: 'auto', paddingBottom: 'var(--space-2)' }}>
+        <QuantumPanel style={{ marginTop: 'var(--space-2)' }}>
+          <div style={{ padding: 'var(--space-5)' }}>
+            <h3 style={{ marginBottom: 'var(--space-3)', color: 'var(--text-primary, #181126)', fontSize: 'var(--text-h3)' }}>
+              Operation History
+            </h3>
+            <div style={{ display: 'flex', gap: 'var(--space-3)', overflowX: 'auto', paddingBottom: 'var(--space-2)' }}>
               {gateHistory.map((entry, idx) => (
-                <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-4)', minWidth: 'max-content' }}>
-                  <div style={{ fontFamily: 'var(--font-mono)' }}>{entry.labelBefore}</div>
-                  <div style={{ color: 'var(--color-icicle)' }}>→</div>
+                <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)', minWidth: 'max-content' }}>
+                  <div style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-primary, #181126)', fontSize: 'var(--text-body-sm)' }}>
+                    {entry.labelBefore}
+                  </div>
+                  <div style={{ color: 'var(--color-purple-60, #8A3FFC)' }}>→</div>
                   <GateButton gateId={entry.gate} onClick={() => {}} disabled />
-                  <div style={{ color: 'var(--color-icicle)' }}>→</div>
-                  <div style={{ fontFamily: 'var(--font-mono)' }}>{entry.labelAfter}</div>
+                  <div style={{ color: 'var(--color-purple-60, #8A3FFC)' }}>→</div>
+                  <div style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-primary, #181126)', fontSize: 'var(--text-body-sm)' }}>
+                    {entry.labelAfter}
+                  </div>
                   
                   {idx < gateHistory.length - 1 && (
-                    <div style={{ margin: '0 var(--space-4)', color: 'var(--color-polar)' }}>|</div>
+                    <div style={{ margin: '0 var(--space-3)', color: 'var(--border-default, #D4BBFF)' }}>|</div>
                   )}
                 </div>
               ))}
@@ -152,6 +163,6 @@ export const GateVisualizer: React.FC = () => {
           </div>
         </QuantumPanel>
       )}
-    </motion.div>
+    </div>
   );
 };

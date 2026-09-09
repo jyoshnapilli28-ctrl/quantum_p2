@@ -1,324 +1,95 @@
-# PAGE 2 — GATE VISUALIZER
+# PAGE 2 — QUANTUM GATE VISUALIZER — SPECIFICATION — QYNX
 
 ---
 
-## 1. Purpose
+## 1. Purpose & Educational Role
 
-The Gate Visualizer is an **interactive single-qubit quantum simulator**. The user selects quantum gates and immediately sees how the qubit state changes on a real 3D Bloch sphere, state label, and probability bars.
+**QUANTUM GATE VISUALIZER** is Page 2 of **QYNX**, providing an interactive, mathematically grounded single-qubit simulator. Users apply elementary unitary operators ($X, Y, Z, H, S, T$) and witness immediate, synchronized responses across a real 3D state-driven Bloch Sphere, Dirac state notation, and Born-rule probability distributions.
 
-This page is the primary demonstration of single-qubit quantum computation.
+### Invariant Architectural Principles:
+1. **Mathematical Precedence**: Visualization never fabricates quantum coordinates. The shared quantum engine computes the state vector $[\alpha, \beta]^T$; the UI and 3D viewport passively derive and reflect those coordinates.
+2. **Real 3D Bloch Sphere**: The Bloch Sphere is an interactive Three.js WebGL visualization. It is never replaced with static images, fake renders, or pre-rendered videos.
+3. **Continuous Geodesic Trajectories**: Gate applications animate the state vector along spherical arcs between the initial and target quantum states.
+4. **Human-Designed UI**: Structured with restrained surfaces in the QYNX Purple scale, ensuring optimal contrast and scientific legibility.
 
 ---
 
-## 2. Route and Component
+## 2. Route & Component Architecture
 
 ```
 Route: /gate-visualizer
-Component: GateVisualizer.tsx
-State slice: gateVisualizerSlice
-Engine calls: engine.applyGate, engine.measureSingle, engine.getBlochCoordinates
+Component: src/pages/GateVisualizer.tsx
+State Slice: src/store/gateVisualizerSlice.ts
+Engine Contracts: engine.applyGate, engine.getBlochCoordinates, engine.measureSingle
 ```
 
 ---
 
-## 3. Page Layout
+## 3. Visual Layout & Information Hierarchy
 
 ```
-┌──────────────────────────────────────────────────────────────────┐
-│ GATE VISUALIZER                  [Reset] [History Toggle]        │
-├──────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  ┌─────────────────────────┐  ┌──────────────────────────────┐  │
-│  │                         │  │                              │  │
-│  │     3D BLOCH SPHERE     │  │   STATE: |+⟩                │  │
-│  │                         │  │                              │  │
-│  │   (WebGL / Three.js)    │  │   PROBABILITY               │  │
-│  │                         │  │   |0⟩ ████████████ 50.0%   │  │
-│  │                         │  │   |1⟩ ████████████ 50.0%   │  │
-│  │                         │  │                              │  │
-│  └─────────────────────────┘  │   GATES                     │  │
-│                                │   [H] [X] [Y] [Z] [S] [T]  │  │
-│                                │                              │  │
-│                                │   [MEASURE]                 │  │
-│                                │                              │  │
-│                                │   EXPLANATION               │  │
-│                                │   "The H gate created       │  │
-│                                │    superposition..."        │  │
-│                                └──────────────────────────────┘  │
-├──────────────────────────────────────────────────────────────────┤
-│  GATE HISTORY                                                    │
-│  #3  H   |0⟩ → |+⟩                                             │
-│  #2  X   |1⟩ → |0⟩                                             │
-└──────────────────────────────────────────────────────────────────┘
-```
-
-**Desktop (>1024px):** Two-column layout: Bloch sphere left, controls right.
-**Tablet (768–1024px):** Bloch sphere full width top; controls below.
-**Mobile (<768px):** Single column; Bloch sphere at reduced size (280×280px); controls below.
-
----
-
-## 4. 3D Bloch Sphere
-
-See `18_3D_BLOCH_SPHERE.md` for the complete specification of the Bloch sphere component.
-
-**Summary of requirements for this page:**
-
-- The Bloch sphere renders the current qubit state as a 3D normalized vector (the state point sits on the sphere surface).
-- When a gate is applied, the state vector smoothly animates (SLERP interpolation) from the previous state to the new state over 600ms.
-- The Bloch sphere canvas occupies a fixed area: 420×420px on desktop, 320×320px on tablet, 280×280px on mobile.
-- The user can rotate the camera (click+drag on desktop, swipe on mobile).
-- The Bloch sphere is enclosed in a `.quantum-panel--deep` glass panel.
-- If WebGL is unavailable, show the fallback state: "3D visualization not available. See state and probabilities below."
-
-**Bloch sphere connection to state:**
-
-```typescript
-// GateVisualizer.tsx receives:
-const { blochCoordinates, isAnimating, previousState, currentState } = useQuantumStore(...)
-
-// Pass to BlochSphere:
-<BlochSphere
-  coordinates={blochCoordinates}
-  previousCoordinates={previousCoordinates}
-  isAnimating={isAnimating}
-  onAnimationComplete={() => store.setAnimationComplete()}
-/>
+┌────────────────────────────────────────────────────────────────────────┐
+│ 02 QUANTUM GATE VISUALIZER                    [ Reset Qubit ] [ Undo ] │
+├────────────────────────────────────────────────────────────────────────┤
+│                                                                        │
+│  ┌──────────────────────────────┐  ┌────────────────────────────────┐  │
+│  │                              │  │ STATE: |+⟩                     │  │
+│  │       3D BLOCH SPHERE        │  │ α = 0.707 + 0.000i             │  │
+│  │      (Three.js Canvas)       │  │ β = 0.707 + 0.000i             │  │
+│  │                              │  ├────────────────────────────────┤  │
+│  │   +Z |0⟩ (North Pole)        │  │ PROBABILITY DISTRIBUTION       │  │
+│  │     ▲                        │  │ |0⟩ [████████████      ] 50.0% │  │
+│  │     │   ● State Point        │  │ |1⟩ [████████████      ] 50.0% │  │
+│  │     └───► +X |+⟩             │  ├────────────────────────────────┤  │
+│  │    /                         │  │ UNITARY GATES                  │  │
+│  │  ▼ +Y |+i⟩                   │  │ [ H ] [ X ] [ Y ] [ Z ] [S] [T]│  │
+│  │                              │  ├────────────────────────────────┤  │
+│  │   [ Orbit / Pan Controls ]   │  │ [ TRIGGER MEASUREMENT ]        │  │
+│  └──────────────────────────────┘  └────────────────────────────────┘  │
+├────────────────────────────────────────────────────────────────────────┤
+│  GATE APPLICATION HISTORY                                              │
+│  #3  H   |0⟩ ──► |+⟩   (θ: 90.0°, φ: 0.0°)                             │
+│  #2  X   |1⟩ ──► |0⟩   (θ: 0.0°,  φ: 0.0°)                             │
+└────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## 5. State Display Panel
+## 4. 3D Bloch Sphere Specifications
 
-### 5.1 State Label
-
-Displays the current quantum state in Dirac notation.
-
-```
-┌──────────────────────┐
-│  STATE               │
-│                      │
-│  |+⟩                 │
-└──────────────────────┘
-```
-
-**Specification:**
-
-```
-Label "STATE": --text-label, --color-arctic, uppercase, letter-spacing 0.1em
-State value "|+⟩": --font-mono, --text-display (3.5rem), --color-white, centered
-Container: quantum-panel; padding --space-6
-```
-
-When state updates after gate application:
-1. The old label fades out (`opacity 1→0`, 150ms).
-2. The new label fades in (`opacity 0→1`, 150ms after fade-out completes).
-
-**State name lookup table** (from engine's `getStateName`):
-
-| State Vector | Label |
-|-------------|-------|
-| [1, 0] | |0⟩ |
-| [0, 1] | |1⟩ |
-| [1/√2, 1/√2] | |+⟩ |
-| [1/√2, -1/√2] | |-⟩ |
-| [1/√2, i/√2] | |i⟩ |
-| [1/√2, -i/√2] | |-i⟩ |
-| other | α|0⟩ + β|1⟩ |
-
-For the generic case, format α and β as rounded 2-decimal complex numbers.
-
-### 5.2 Probability Bars
-
-```
-PROBABILITY
-
-|0⟩  ████████████████████  50.0%
-|1⟩  ████████████████████  50.0%
-```
-
-Uses the shared `ProbabilityBar` component (see `05_DESIGN_SYSTEM.md` Section 9).
-
-Data source: `store.gateVisualizer.probabilities.p0` and `.p1`.
-
-The bar widths animate smoothly (400ms transition) whenever probabilities change.
+- **Container Viewport**: Rendered in `Purple 90 #31135E` canvas with `Purple 80` structural border.
+- **Surface Mesh**: Transparent sphere with wireframe meridians in `Purple 80` (opacity $0.35$).
+- **Equator Ring**: Solid ring outline in `Purple 70 #6929C4`.
+- **Orthogonal Axes ($X, Y, Z$)**: $2\text{px}$ lines in `Purple 40 #BE95FF` with crisp pole labels:
+  - North Pole ($+Z$): $|0\rangle$ (`White #FFFFFF`).
+  - South Pole ($-Z$): $|1\rangle$ (`White #FFFFFF`).
+  - Front Axis ($+X$): $|+\rangle$.
+  - Back Axis ($-X$): $|-\rangle$.
+  - Right Axis ($+Y$): $|+i\rangle$.
+  - Left Axis ($-Y$): $|-i\rangle$.
+- **State Vector Arrow**: 3D cylinder and cone rendered in `Purple 60 #8A3FFC` with luminous `White` apex point.
+- **Camera Controls**: Three.js `OrbitControls` with rotation limits, smooth damping, and touch pinch-to-zoom.
 
 ---
 
-## 6. Gate Panel
+## 5. Gate Execution & State Trajectory Lifecycle
 
-**Position:** Below the probability bars.
+When the user selects an elementary unitary gate ($X, Y, Z, H, S, T$):
 
-**Specification:**
-```
-GATES
+$$\text{User Click} \longrightarrow \text{Validation} \longrightarrow \text{Engine Matrix Multiply} \longrightarrow \text{Spherical Derivation} \longrightarrow \text{SLERP Trajectory} \longrightarrow \text{UI Settling}$$
 
-[ H ] [ X ] [ Y ] [ Z ] [ S ] [ T ]
-```
-
-- Uses the shared `GateButton` component.
-- Gate order: H, X, Y, Z, S, T (always in this order).
-- Each button has a tooltip on hover (see `06_UI_UX.md` Section 7).
-- Clicking a gate:
-  1. The button shows active press state (scale: 0.95, 100ms).
-  2. If `isMeasured = true`: show warning, do not apply gate.
-  3. Otherwise: dispatch `store.applyGate(gateId)`.
-  4. The Bloch sphere begins animating.
-- When `isMeasured = true`: all gate buttons are visually disabled.
-
-**Keyboard:** Each gate button is focusable via Tab. Enter or Space applies the gate.
+1. **Gate Selection**: User clicks `[ H ]`. Button scales to $0.95$ in `Purple 70`.
+2. **Engine Execution**: `engine.applyGate(currentState, 'H')` produces new state vector $[1/\sqrt{2}, 1/\sqrt{2}]^T$.
+3. **Bloch Coordinate Computation**: `engine.getBlochCoordinates` yields $\theta = \pi/2, \phi = 0 \implies (x=1, y=0, z=0)$.
+4. **Trajectory Interpolation**: The 3D state vector animates smoothly along the spherical arc from $(0, 0, 1)$ to $(1, 0, 0)$ over a $600\text{ms}$ duration using Spherical Linear Interpolation (SLERP).
+5. **UI Synchronization**: In parallel, Dirac labels transition to $|+\rangle$ and probability bars animate smoothly to $50.0\% / 50.0\%$.
 
 ---
 
-## 7. Measure Button
+## 6. Projective Measurement & Collapse
 
-```
-[ MEASURE ]
-```
-
-**Specification:**
-
-```
-Width: full width of the control panel
-Style: Primary button (see 05_DESIGN_SYSTEM.md)
-```
-
-**Behavior:**
-1. Clicking "MEASURE":
-   - If `isMeasured = true`: button is disabled, no action.
-   - Otherwise: dispatch `store.measure()`.
-   - The measurement outcome is shown (see `11_MEASUREMENT_SYSTEM.md` Section 5.1).
-   - Gate buttons become disabled.
-   - Bloch sphere vector snaps to north pole (|0⟩) or south pole (|1⟩), no smooth animation — measurement collapse should feel instantaneous.
-   - State label updates.
-   - Probability bars snap to 100%/0% or 0%/100%.
-
-**State after measurement:**
-```
-STATE
-
-|0⟩                  (or |1⟩)
-
-Measured. Reset to apply gates.
-```
-
-The reset reminder text: `--font-primary, --text-body-sm, --color-arctic`.
-
----
-
-## 8. Explanation Panel
-
-Below the Measure button, show a contextual plain-language explanation.
-
-**Initial:** "Select a gate to transform the qubit."
-
-**After H applied to |0⟩:** "The Hadamard gate created superposition. The qubit now has a 50% chance of being measured as |0⟩ or |1⟩."
-
-**After X applied:** "The Pauli-X gate flipped the qubit. It acts like a classical NOT gate."
-
-**After Z applied to |+⟩:** "The Pauli-Z gate flipped the phase. |+⟩ became |-⟩. On the Bloch sphere, the vector moved to the opposite X-axis side."
-
-**After measurement:** "The quantum state collapsed. The qubit is now definitively [|0⟩ or |1⟩] and cannot be further manipulated without reset."
-
-**Specification:**
-```
-Container: quantum-panel at lower opacity (rgba(28,43,56,0.5))
-Border-left: 3px solid rgba(68,105,131,0.6)
-Font: --font-primary, --text-body-sm, --color-arctic
-Update animation: cross-fade (opacity 1→0→1) over 300ms when explanation changes
-```
-
----
-
-## 9. Gate History Panel
-
-See `10_GATE_SYSTEM.md` Section 7 for full specification.
-
-**Position:** Below the control panel (full width of page, collapsed by default).
-
-Toggle with a "History ▼" button in the page header.
-
-**Behavior on mobile:** History panel is always below the controls (not toggled).
-
----
-
-## 10. Reset Button
-
-**Position:** Top right of page header.
-
-**Label:** "Reset" with a refresh icon.
-
-**Behavior:**
-1. Resets `gateVisualizerSlice` to initial state (|0⟩, empty history).
-2. Bloch sphere vector snaps to north pole.
-3. State label shows |0⟩.
-4. Probability bars: p0=100%, p1=0%.
-5. All gate buttons re-enabled.
-6. History panel cleared.
-
----
-
-## 11. Complete Gate Application Animation Sequence
-
-```
-USER clicks gate button [H]
-         │
-         ▼ (immediate, < 16ms)
-Button press state (scale: 0.95, 100ms)
-         │
-         ▼ (synchronous)
-store.applyGate('H') called
-  1. Capture previousState
-  2. Calculate newState = engine.applyGate(currentState, 'H')
-  3. Calculate newBlochCoordinates = engine.getBlochCoordinates(newState)
-  4. Update store: currentState, blochCoordinates, probabilities, stateLabel
-  5. Append to gateHistory
-  6. Set isAnimating = true
-         │
-         ▼ (React re-render, < 16ms)
-React components update:
-  - DiracNotation: starts cross-fade to new label
-  - ProbabilityBar: starts width transition (400ms)
-  - GateHistory: prepends new entry
-  - BlochSphere: receives new coordinates, starts SLERP animation (600ms)
-  - ExplanationPanel: starts cross-fade to new explanation (300ms)
-         │
-         ▼ (at 600ms)
-BlochSphere animation completes
-  - Calls store.setAnimationComplete()
-  - isAnimating = false
-         │
-         ▼ (all done)
-All visual elements settled at new state
-```
-
----
-
-## 12. Interaction Rules
-
-| Condition | Gate Buttons | Measure Button | Reset Button |
-|-----------|-------------|----------------|-------------|
-| Normal | Enabled | Enabled | Enabled |
-| `isAnimating = true` | Disabled (pointer-events: none) | Disabled | Disabled |
-| `isMeasured = true` | Disabled | Disabled | Enabled |
-
-Disabling during animation prevents the user from applying multiple gates while the Bloch sphere is still moving, which would produce incorrect intermediate states.
-
----
-
-## 13. Performance Considerations
-
-- Three.js is lazy-loaded when this route activates.
-- The Bloch sphere renders at 60fps only during animations. When idle, pause the render loop.
-- Use `IntersectionObserver` to pause Three.js rendering when the Bloch sphere is scrolled out of view.
-- Probability bar CSS transitions are GPU-accelerated (use `transform: scaleX()` rather than `width` for the bar fill if performance is a concern).
-
----
-
-## 14. Accessibility
-
-- The Bloch sphere canvas has `role="img"` and `aria-label` that updates with the state: `aria-label="Bloch sphere showing qubit state |+⟩. X: 1.0, Y: 0.0, Z: 0.0"`.
-- Gate buttons: `aria-label="Apply Hadamard gate"`.
-- Measure button: `aria-label="Measure the qubit state"`.
-- After gate application, announce to screen readers via `aria-live="polite"`: "Gate [H] applied. New state: |+⟩. Probability of 0: 50%. Probability of 1: 50%."
-- All controls navigable by keyboard (Tab, Enter/Space).
+- Clicking **[ TRIGGER MEASUREMENT ]**:
+  1. Invokes `engine.measureSingle(currentState)`.
+  2. The state vector instantly snaps to the observed pole ($+Z$ for $|0\rangle$, $-Z$ for $|1\rangle$) without smooth trajectory, reflecting instantaneous wave-function collapse.
+  3. Probability bars snap to $100.0\% / 0.0\%$ or $0.0\% / 100.0\%$.
+  4. Unitary gate buttons are locked (opacity 0.45) with an inline diagnostic: *"State collapsed. Click Reset Qubit to resume gate operations."*

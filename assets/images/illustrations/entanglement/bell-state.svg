@@ -1,71 +1,27 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="400" height="220"  fill="none">
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="220" viewBox="0 0 400 220" fill="none">
+  <!-- Outer Card Frame -->
+  <rect x="6" y="6" width="388" height="208" rx="14" fill="#1C0F30" stroke="#491D8B" stroke-width="2"/>
+  
+  <!-- Title Badge -->
+  <text x="200" y="34" font-family="'Inter', system-ui, sans-serif" font-size="12" font-weight="700" fill="#BE95FF" text-anchor="middle" letter-spacing="1">BELL STATE |Φ⁺⟩ = 1/√2 (|00⟩ + |11⟩)</text>
 
-    <defs>
-        <!-- Glassmorphism filter -->
-        <filter id="glass" x="-20%" y="-20%" width="140%" height="140%">
-            <feGaussianBlur stdDeviation="8" result="blur" />
-            <feComposite in="SourceGraphic" in2="blur" operator="over" />
-        </filter>
-        
-        <!-- Subtle Glow -->
-        <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
-            <feGaussianBlur stdDeviation="4" result="blur" />
-            <feMerge>
-                <feMergeNode in="blur" />
-                <feMergeNode in="SourceGraphic" />
-            </feMerge>
-        </filter>
-        
-        <!-- Strong Glow -->
-        <filter id="strong-glow" x="-50%" y="-50%" width="200%" height="200%">
-            <feGaussianBlur stdDeviation="8" result="blur" />
-            <feMerge>
-                <feMergeNode in="blur" />
-                <feMergeNode in="SourceGraphic" />
-            </feMerge>
-        </filter>
+  <!-- State |00⟩ Card -->
+  <g transform="translate(30, 52)">
+    <rect x="0" y="0" width="160" height="110" rx="10" fill="#31135E" stroke="#8A3FFC" stroke-width="2"/>
+    <text x="80" y="52" font-family="'JetBrains Mono', monospace" font-size="32" font-weight="700" fill="#FFFFFF" text-anchor="middle">|00⟩</text>
+    <rect x="25" y="70" width="110" height="24" rx="6" fill="#1C0F30" stroke="#6929C4" stroke-width="1.2"/>
+    <text x="80" y="86" font-family="'JetBrains Mono', monospace" font-size="13" font-weight="600" fill="#BE95FF" text-anchor="middle">50% Prob</text>
+  </g>
 
-        <!-- Linear Gradients -->
-        <linearGradient id="bg-grad-1" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="#071018" />
-            <stop offset="100%" stop-color="#0B132B" />
-        </linearGradient>
-        
-        <linearGradient id="surface-grad" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stop-color="#1C2B38" stop-opacity="0.8"/>
-            <stop offset="100%" stop-color="#071018" stop-opacity="0.9"/>
-        </linearGradient>
+  <!-- State |11⟩ Card -->
+  <g transform="translate(210, 52)">
+    <rect x="0" y="0" width="160" height="110" rx="10" fill="#31135E" stroke="#BE95FF" stroke-width="2"/>
+    <text x="80" y="52" font-family="'JetBrains Mono', monospace" font-size="32" font-weight="700" fill="#FFFFFF" text-anchor="middle">|11⟩</text>
+    <rect x="25" y="70" width="110" height="24" rx="6" fill="#1C0F30" stroke="#6929C4" stroke-width="1.2"/>
+    <text x="80" y="86" font-family="'JetBrains Mono', monospace" font-size="13" font-weight="600" fill="#BE95FF" text-anchor="middle">50% Prob</text>
+  </g>
 
-        <linearGradient id="accent-grad" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stop-color="#446983" />
-            <stop offset="100%" stop-color="#7991A8" />
-        </linearGradient>
-
-        <radialGradient id="radial-glow" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stop-color="#38506A" stop-opacity="0.3"/>
-            <stop offset="100%" stop-color="#071018" stop-opacity="0"/>
-        </radialGradient>
-        
-        <!-- Grid Pattern -->
-        <pattern id="quantum-grid-pattern" width="40" height="40" patternUnits="userSpaceOnUse">
-            <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1C2B38" stroke-width="1"/>
-            <circle cx="40" cy="40" r="1" fill="#38506A" />
-        </pattern>
-        
-        <!-- Small Grid Pattern -->
-        <pattern id="small-grid" width="20" height="20" patternUnits="userSpaceOnUse">
-            <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#0B132B" stroke-width="0.5"/>
-        </pattern>
-    </defs>
-
-
-
-    <rect x="50" y="50" width="120" height="120" rx="10" fill="url(#surface-grad)" stroke="#446983" stroke-width="2" filter="url(#glow)"/>
-    <text x="110" y="115" font-family="'Inter', sans-serif" font-size="32" fill="#FFFFFF" text-anchor="middle">|00⟩</text>
-    <text x="110" y="145" font-family="'Inter', sans-serif" font-size="16" fill="#7991A8" text-anchor="middle">≈ 50%</text>
-
-    <rect x="230" y="50" width="120" height="120" rx="10" fill="url(#surface-grad)" stroke="#446983" stroke-width="2" filter="url(#glow)"/>
-    <text x="290" y="115" font-family="'Inter', sans-serif" font-size="32" fill="#FFFFFF" text-anchor="middle">|11⟩</text>
-    <text x="290" y="145" font-family="'Inter', sans-serif" font-size="16" fill="#7991A8" text-anchor="middle">≈ 50%</text>
-    
+  <!-- Footer / Perfect Correlation Note -->
+  <rect x="30" y="174" width="340" height="26" rx="6" fill="#31135E" stroke="#6929C4" stroke-width="1"/>
+  <text x="200" y="191" font-family="'Inter', sans-serif" font-size="10.5" font-weight="600" fill="#D4BBFF" text-anchor="middle">Perfect Correlation: P(|01⟩) = 0%  •  P(|10⟩) = 0%</text>
 </svg>

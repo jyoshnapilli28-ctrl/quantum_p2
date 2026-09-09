@@ -1,81 +1,40 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400"  fill="none">
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 400 400" fill="none">
+  <defs>
+    <marker id="exp-bf-arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#BE95FF"/>
+    </marker>
+  </defs>
 
-    <defs>
-        <!-- Glassmorphism filter -->
-        <filter id="glass" x="-20%" y="-20%" width="140%" height="140%">
-            <feGaussianBlur stdDeviation="8" result="blur" />
-            <feComposite in="SourceGraphic" in2="blur" operator="over" />
-        </filter>
-        
-        <!-- Subtle Glow -->
-        <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
-            <feGaussianBlur stdDeviation="4" result="blur" />
-            <feMerge>
-                <feMergeNode in="blur" />
-                <feMergeNode in="SourceGraphic" />
-            </feMerge>
-        </filter>
-        
-        <!-- Strong Glow -->
-        <filter id="strong-glow" x="-50%" y="-50%" width="200%" height="200%">
-            <feGaussianBlur stdDeviation="8" result="blur" />
-            <feMerge>
-                <feMergeNode in="blur" />
-                <feMergeNode in="SourceGraphic" />
-            </feMerge>
-        </filter>
+  <!-- Background Frame -->
+  <rect x="10" y="10" width="380" height="380" rx="16" fill="#1C0F30" stroke="#491D8B" stroke-width="2"/>
+  
+  <!-- Title Badge -->
+  <text x="200" y="44" font-family="'Inter', system-ui, sans-serif" font-size="12" font-weight="700" fill="#BE95FF" text-anchor="middle" letter-spacing="1">BIT-FLIP EXPERIMENT</text>
 
-        <!-- Linear Gradients -->
-        <linearGradient id="bg-grad-1" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="#071018" />
-            <stop offset="100%" stop-color="#0B132B" />
-        </linearGradient>
-        
-        <linearGradient id="surface-grad" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stop-color="#1C2B38" stop-opacity="0.8"/>
-            <stop offset="100%" stop-color="#071018" stop-opacity="0.9"/>
-        </linearGradient>
+  <!-- Step 1: Initial State |0⟩ -->
+  <g transform="translate(150, 68)">
+    <circle cx="50" cy="40" r="36" fill="#31135E" stroke="#8A3FFC" stroke-width="2.5"/>
+    <text x="50" y="46" font-family="'JetBrains Mono', monospace" font-size="20" font-weight="700" fill="#FFFFFF" text-anchor="middle">|0⟩</text>
+    <text x="50" y="94" font-family="'Inter', sans-serif" font-size="11" font-weight="500" fill="#D4BBFF" text-anchor="middle">Initial Ground State</text>
+  </g>
 
-        <linearGradient id="accent-grad" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stop-color="#446983" />
-            <stop offset="100%" stop-color="#7991A8" />
-        </linearGradient>
+  <!-- Arrow 1 -->
+  <path d="M 200 172 L 200 198" stroke="#BE95FF" stroke-width="2.5" marker-end="url(#exp-bf-arrow)"/>
 
-        <radialGradient id="radial-glow" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stop-color="#38506A" stop-opacity="0.3"/>
-            <stop offset="100%" stop-color="#071018" stop-opacity="0"/>
-        </radialGradient>
-        
-        <!-- Grid Pattern -->
-        <pattern id="quantum-grid-pattern" width="40" height="40" patternUnits="userSpaceOnUse">
-            <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1C2B38" stroke-width="1"/>
-            <circle cx="40" cy="40" r="1" fill="#38506A" />
-        </pattern>
-        
-        <!-- Small Grid Pattern -->
-        <pattern id="small-grid" width="20" height="20" patternUnits="userSpaceOnUse">
-            <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#0B132B" stroke-width="0.5"/>
-        </pattern>
-    </defs>
+  <!-- Step 2: Pauli-X Operation -->
+  <g transform="translate(165, 206)">
+    <rect x="0" y="0" width="70" height="52" rx="10" fill="#31135E" stroke="#A56EFF" stroke-width="2.5"/>
+    <text x="35" y="32" font-family="'JetBrains Mono', monospace" font-size="22" font-weight="800" fill="#FFFFFF" text-anchor="middle">X</text>
+    <text x="35" y="46" font-family="'Inter', sans-serif" font-size="8.5" font-weight="600" fill="#BE95FF" text-anchor="middle">PAULI-X</text>
+  </g>
 
+  <!-- Arrow 2 -->
+  <path d="M 200 266 L 200 292" stroke="#BE95FF" stroke-width="2.5" marker-end="url(#exp-bf-arrow)"/>
 
-
-    <circle cx="200" cy="80" r="30" fill="url(#surface-grad)" stroke="#38506A"/>
-    <text x="200" y="86" font-family="'Inter', sans-serif" font-size="16" fill="#FFFFFF" text-anchor="middle">|0⟩</text>
-    
-    <path d="M 200 120 L 200 160" stroke="#38506A" stroke-width="2" marker-end="url(#arrow)"/>
-    
-    <rect x="175" y="170" width="50" height="50" rx="8" fill="#1C2B38" stroke="#7991A8" stroke-width="2"/>
-    <text x="200" y="201" font-family="'Inter', sans-serif" font-size="18" fill="#FFFFFF" text-anchor="middle">X</text>
-    
-    <path d="M 200 230 L 200 270" stroke="#38506A" stroke-width="2" marker-end="url(#arrow)"/>
-    
-    <circle cx="200" cy="310" r="30" fill="url(#surface-grad)" stroke="#38506A"/>
-    <text x="200" y="316" font-family="'Inter', sans-serif" font-size="16" fill="#FFFFFF" text-anchor="middle">|1⟩</text>
-    <defs>
-        <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-            <path d="M 0 0 L 10 5 L 0 10 z" fill="#446983"/>
-        </marker>
-    </defs>
-    
+  <!-- Step 3: Flipped State |1⟩ -->
+  <g transform="translate(150, 300)">
+    <circle cx="50" cy="36" r="36" fill="#31135E" stroke="#BE95FF" stroke-width="2.5"/>
+    <text x="50" y="42" font-family="'JetBrains Mono', monospace" font-size="20" font-weight="700" fill="#FFFFFF" text-anchor="middle">|1⟩</text>
+    <text x="50" y="88" font-family="'Inter', sans-serif" font-size="11" font-weight="500" fill="#D4BBFF" text-anchor="middle">Inverted Excited State</text>
+  </g>
 </svg>

@@ -1,462 +1,116 @@
-# QUANTUM MATHEMATICS — SPECIFICATION
+# QUANTUM MATHEMATICS — SPECIFICATION — QYNX
 
 ---
 
-## 1. Purpose
+## 1. Purpose & Mathematical Scope
 
-This document defines the **exact mathematical formulations** used in the Quantum Engine. Every formula in this document must be implemented precisely as written. The engine's correctness depends on faithful implementation of these equations.
-
-This is a **frontend simulator**. The mathematics model ideal, noise-free quantum computation.
+This specification defines the **exact mathematical formulations** implemented within the shared Quantum Engine of **QYNX**. The browser simulator performs idealized, noise-free state-vector simulations based on standard linear algebra over the field of complex numbers $\mathbb{C}$.
 
 ---
 
-## 2. Qubit and State Vector
+## 2. State Vectors & Normalization
 
-### 2.1 Qubit Definition
+### 2.1 Single-Qubit Representation
+A single-qubit state $|\psi\rangle$ is represented as a unit vector in a 2-dimensional Hilbert space $\mathcal{H}_2 \cong \mathbb{C}^2$:
 
-A qubit is a two-level quantum system. Its state is described by a state vector in a two-dimensional complex Hilbert space.
+$$|\psi\rangle = \alpha|0\rangle + \beta|1\rangle = \begin{bmatrix} \alpha \\ \beta \end{bmatrix}, \quad \alpha, \beta \in \mathbb{C}$$
 
-General single-qubit state:
-```
-|ψ⟩ = α|0⟩ + β|1⟩
+Subject to the normalization condition:
+$$|\alpha|^2 + |\beta|^2 = 1$$
 
-where:
-  α, β ∈ ℂ (complex numbers)
-  |α|² + |β|² = 1 (normalization condition)
-```
+### 2.2 Standard Computational Basis States
+$$|0\rangle = \begin{bmatrix} 1 \\ 0 \end{bmatrix}, \quad |1\rangle = \begin{bmatrix} 0 \\ 1 \end{bmatrix}$$
 
-In column vector form:
-```
-|ψ⟩ = [ α ]
-      [ β ]
-```
-
-### 2.2 Computational Basis States
-
-```
-|0⟩ = [ 1 ]    |1⟩ = [ 0 ]
-      [ 0 ]          [ 1 ]
-```
-
-Implementation:
-```
-|0⟩: alpha = { re: 1, im: 0 }, beta = { re: 0, im: 0 }
-|1⟩: alpha = { re: 0, im: 0 }, beta = { re: 1, im: 0 }
-```
-
-### 2.3 Common Named States
-
-```
-|+⟩ = (|0⟩ + |1⟩) / √2 = [ 1/√2 ]
-                           [ 1/√2 ]
-alpha = { re: 0.7071067811865476, im: 0 }
-beta  = { re: 0.7071067811865476, im: 0 }
-
-|-⟩ = (|0⟩ - |1⟩) / √2 = [  1/√2 ]
-                           [ -1/√2 ]
-alpha = { re:  0.7071067811865476, im: 0 }
-beta  = { re: -0.7071067811865476, im: 0 }
-
-|i⟩ = (|0⟩ + i|1⟩) / √2 = [ 1/√2 ]
-                            [i/√2  ]
-alpha = { re: 0.7071067811865476, im: 0 }
-beta  = { re: 0,                  im: 0.7071067811865476 }
-
-|-i⟩ = (|0⟩ - i|1⟩) / √2 = [  1/√2 ]
-                              [ -i/√2 ]
-alpha = { re: 0.7071067811865476, im: 0 }
-beta  = { re: 0,                  im: -0.7071067811865476 }
-```
+### 2.3 Named Superposition States
+- **Plus state $|+\rangle$**: $\frac{1}{\sqrt{2}}(|0\rangle + |1\rangle) = \begin{bmatrix} 1/\sqrt{2} \\ 1/\sqrt{2} \end{bmatrix}$
+- **Minus state $|-\rangle$**: $\frac{1}{\sqrt{2}}(|0\rangle - |1\rangle) = \begin{bmatrix} 1/\sqrt{2} \\ -1/\sqrt{2} \end{bmatrix}$
+- **Phase state $|+i\rangle$**: $\frac{1}{\sqrt{2}}(|0\rangle + i|1\rangle) = \begin{bmatrix} 1/\sqrt{2} \\ i/\sqrt{2} \end{bmatrix}$
+- **Phase state $|-i\rangle$**: $\frac{1}{\sqrt{2}}(|0\rangle - i|1\rangle) = \begin{bmatrix} 1/\sqrt{2} \\ -i/\sqrt{2} \end{bmatrix}$
 
 ---
 
-## 3. Gate Matrices
+## 3. Elementary Unitary Gate Matrices
 
-All single-qubit gates are 2×2 unitary matrices. Gate application is matrix-vector multiplication.
+All quantum gates are represented by unitary matrices $U$ such that $U^\dagger U = I$.
 
-### 3.1 Pauli-X Gate
+### 3.1 Pauli-X (NOT / Bit-Flip)
+$$X = \begin{bmatrix} 0 & 1 \\ 1 & 0 \end{bmatrix}, \quad X|0\rangle = |1\rangle, \quad X|1\rangle = |0\rangle$$
 
-```
-X = [ 0  1 ]
-    [ 1  0 ]
+### 3.2 Pauli-Y (Bit-and-Phase Flip)
+$$Y = \begin{bmatrix} 0 & -i \\ i & 0 \end{bmatrix}, \quad Y|0\rangle = i|1\rangle, \quad Y|1\rangle = -i|0\rangle$$
 
-Effect: |0⟩ → |1⟩, |1⟩ → |0⟩
-```
+### 3.3 Pauli-Z (Phase-Flip)
+$$Z = \begin{bmatrix} 1 & 0 \\ 0 & -1 \end{bmatrix}, \quad Z|0\rangle = |0\rangle, \quad Z|1\rangle = -|1\rangle$$
 
-### 3.2 Pauli-Y Gate
+### 3.4 Hadamard ($H$ — Superposition)
+$$H = \frac{1}{\sqrt{2}}\begin{bmatrix} 1 & 1 \\ 1 & -1 \end{bmatrix}, \quad H|0\rangle = |+\rangle, \quad H|1\rangle = |-\rangle$$
 
-```
-Y = [ 0   -i ]
-    [ i    0 ]
+### 3.5 Phase Gate ($S = \sqrt{Z}$)
+$$S = \begin{bmatrix} 1 & 0 \\ 0 & i \end{bmatrix}, \quad S|0\rangle = |0\rangle, \quad S|1\rangle = i|1\rangle$$
 
-where i = √(-1)
-
-Effect: |0⟩ → i|1⟩, |1⟩ → -i|0⟩
-```
-
-### 3.3 Pauli-Z Gate
-
-```
-Z = [ 1   0 ]
-    [ 0  -1 ]
-
-Effect: |0⟩ → |0⟩, |1⟩ → -|1⟩
-```
-
-### 3.4 Hadamard Gate
-
-```
-H = (1/√2) * [ 1   1 ]
-              [ 1  -1 ]
-
-= [ 1/√2   1/√2 ]
-  [ 1/√2  -1/√2 ]
-
-Effect: |0⟩ → |+⟩, |1⟩ → |-⟩
-```
-
-### 3.5 Phase Gate (S)
-
-```
-S = [ 1   0 ]
-    [ 0   i ]
-
-Effect: |0⟩ → |0⟩, |1⟩ → i|1⟩
-Note: S = √Z (S² = Z)
-```
-
-### 3.6 T Gate
-
-```
-T = [ 1   0         ]
-    [ 0   e^(iπ/4)  ]
-
-= [ 1   0                              ]
-  [ 0   cos(π/4) + i*sin(π/4)         ]
-
-= [ 1   0                              ]
-  [ 0   (1/√2) + i*(1/√2)            ]
-
-Effect: |0⟩ → |0⟩, |1⟩ → e^(iπ/4)|1⟩
-Note: T = √S (T² = S)
-```
-
-### 3.7 Identity Gate (for circuit padding)
-
-```
-I = [ 1   0 ]
-    [ 0   1 ]
-
-Effect: No change to state
-```
+### 3.6 T Gate ($T = \sqrt{S}$)
+$$T = \begin{bmatrix} 1 & 0 \\ 0 & e^{i\pi/4} \end{bmatrix} = \begin{bmatrix} 1 & 0 \\ 0 & \frac{1+i}{\sqrt{2}} \end{bmatrix}$$
 
 ---
 
-## 4. Gate Application (Matrix-Vector Multiplication)
+## 4. Bloch Sphere Spherical Coordinates
 
-Given state |ψ⟩ = [α, β]ᵀ and gate matrix M = [[a,b],[c,d]]:
+Any pure single-qubit state $|\psi\rangle$ can be expressed parameterized by polar angle $\theta \in [0, \pi]$ and azimuthal phase angle $\phi \in [0, 2\pi)$:
 
-```
-M|ψ⟩ = [ a*α + b*β ]
-        [ c*α + d*β ]
-```
+$$|\psi\rangle = \cos(\theta/2)|0\rangle + e^{i\phi}\sin(\theta/2)|1\rangle$$
 
-Where multiplication is complex multiplication:
-```
-(a + ib)(x + iy) = (ax - by) + i(ay + bx)
-```
-
-**Implementation in `matrix.ts`:**
-
-```
-function applyMatrix2x2(matrix: Matrix2x2, state: StateVector1Q): StateVector1Q:
-  [alpha, beta] = state
-  [row0, row1] = matrix
-
-  new_alpha = add(multiply(row0[0], alpha), multiply(row0[1], beta))
-  new_beta  = add(multiply(row1[0], alpha), multiply(row1[1], beta))
-
-  return [new_alpha, new_beta]
-```
-
-After application, always normalize the result (see Section 8).
+### Extraction Algorithm from State Vector $[\alpha, \beta]^T$:
+1. Normalize amplitudes: $|\alpha|^2 + |\beta|^2 = 1$.
+2. Compute polar angle: $\theta = 2 \arccos(|\alpha|)$.
+3. Compute azimuthal angle:
+   $$\text{If } |\beta| < 10^{-10} \implies \phi = 0, \quad \text{Else } \phi = \text{atan2}(\text{Im}(\beta), \text{Re}(\beta)) - \text{atan2}(\text{Im}(\alpha), \text{Re}(\alpha))$$
+4. Convert to Cartesian 3D coordinates $(x, y, z)$ on the unit sphere ($r = 1$):
+   $$x = \sin\theta \cos\phi, \quad y = \sin\theta \sin\phi, \quad z = \cos\theta$$
 
 ---
 
-## 5. Probability Calculation
+## 5. Multi-Qubit Systems & Entanglement
 
-### 5.1 Born Rule
+### 5.1 Kronecker Tensor Product
+For two independent qubits $|\psi_0\rangle = [\alpha_0, \beta_0]^T$ and $|\psi_1\rangle = [\alpha_1, \beta_1]^T$:
 
-The probability of measuring outcome |k⟩ is the squared magnitude of its amplitude:
+$$|\psi\rangle = |\psi_0\rangle \otimes |\psi_1\rangle = \begin{bmatrix} \alpha_0\alpha_1 \\ \alpha_0\beta_1 \\ \beta_0\alpha_1 \\ \beta_0\beta_1 \end{bmatrix} = c_{00}|00\rangle + c_{01}|01\rangle + c_{10}|10\rangle + c_{11}|11\rangle$$
 
-```
-P(|0⟩) = |α|² = α.re² + α.im²
-P(|1⟩) = |β|² = β.re² + β.im²
-```
+### 5.2 Controlled-NOT (CNOT) Operator
+With qubit 0 as control and qubit 1 as target:
+$$\text{CNOT} = \begin{bmatrix} 1 & 0 & 0 & 0 \\ 0 & 1 & 0 & 0 \\ 0 & 0 & 0 & 1 \\ 0 & 0 & 1 & 0 \end{bmatrix}$$
 
-Guarantee: `P(|0⟩) + P(|1⟩) = 1`
+$$\text{CNOT}|00\rangle = |00\rangle, \quad \text{CNOT}|01\rangle = |01\rangle, \quad \text{CNOT}|10\rangle = |11\rangle, \quad \text{CNOT}|11\rangle = |10\rangle$$
 
-**Never** use `Math.sqrt` for probability — use `magnitudeSquared` directly.
+### 5.3 Bell-State Generation ($|\Phi^+\rangle$)
+1. Initialize register: $|\psi_0\rangle = |00\rangle$.
+2. Apply $H$ to qubit 0: $(H \otimes I)|00\rangle = \frac{1}{\sqrt{2}}(|00\rangle + |10\rangle)$.
+3. Apply $\text{CNOT}_{0 \to 1}$: $\text{CNOT}\left(\frac{|00\rangle + |10\rangle}{\sqrt{2}}\right) = \frac{|00\rangle + |11\rangle}{\sqrt{2}} = |\Phi^+\rangle$.
 
-### 5.2 Two-Qubit Probabilities
+State vector: $[1/\sqrt{2}, 0, 0, 1/\sqrt{2}]^T$. Measurement yields $00$ ($50\%$) and $11$ ($50\%$).
 
-For state vector [c00, c01, c10, c11]:
-```
-P(|00⟩) = |c00|²
-P(|01⟩) = |c01|²
-P(|10⟩) = |c10|²
-P(|11⟩) = |c11|²
-```
+### 5.4 SWAP Gate Operator
+$$\text{SWAP} = \begin{bmatrix} 1 & 0 & 0 & 0 \\ 0 & 0 & 1 & 0 \\ 0 & 1 & 0 & 0 \\ 0 & 0 & 0 & 1 \end{bmatrix}, \quad \text{SWAP}|01\rangle = |10\rangle, \quad \text{SWAP}|10\rangle = |01\rangle$$
 
----
-
-## 6. Bloch Sphere Mapping
-
-A pure single-qubit state can be written using spherical angles θ and φ:
-
-```
-|ψ⟩ = cos(θ/2)|0⟩ + e^(iφ)sin(θ/2)|1⟩
-```
-
-The Bloch sphere coordinates are:
-```
-x = sin(θ) * cos(φ)
-y = sin(θ) * sin(φ)
-z = cos(θ)
-```
-
-### Derivation from State Vector [α, β]:
-
-```
-Given α = a_r + i*a_i,  β = b_r + i*b_i
-
-Step 1: Ensure normalization: |α|² + |β|² = 1
-
-Step 2: Compute θ
-  θ = 2 * arccos(|α|)
-  where |α| = sqrt(α.re² + α.im²)
-  Note: θ ∈ [0, π]
-
-Step 3: Compute φ
-  If |β| < 1e-10 (beta is effectively zero): φ = 0
-  Else: φ = atan2(β.im, β.re) - atan2(α.im, α.re)
-  Normalize φ to [-π, π] range
-
-Step 4: Compute Cartesian coordinates
-  x = sin(θ) * cos(φ)
-  y = sin(θ) * sin(φ)
-  z = cos(θ)
-```
-
-**Verification of known states:**
-```
-|0⟩: α=1, β=0 → θ=0 → x=0, y=0, z=1    (north pole)
-|1⟩: α=0, β=1 → θ=π → x=0, y=0, z=-1   (south pole)
-|+⟩: α=1/√2, β=1/√2 → θ=π/2, φ=0 → x=1, y=0, z=0
-|-⟩: α=1/√2, β=-1/√2 → θ=π/2, φ=π → x=-1, y=0, z=0
-|i⟩: α=1/√2, β=i/√2 → θ=π/2, φ=π/2 → x=0, y=1, z=0
-```
+### 5.5 Schmidt Rank Separability Test
+A two-qubit state $|\psi\rangle = \sum_{j,k} c_{jk}|jk\rangle$ is **separable** (not entangled) if and only if the determinant of its coefficient matrix vanishes:
+$$c_{00}c_{11} - c_{01}c_{10} \approx 0 \quad (\text{tolerance } \epsilon = 10^{-10})$$
+If $|c_{00}c_{11} - c_{01}c_{10}| > 10^{-10}$, the state is non-separable (entangled).
 
 ---
 
-## 7. Two-Qubit Tensor Product
+## 6. Measurement Statistics & Wave-Function Collapse
 
-### 7.1 Tensor Product Definition
+### 6.1 Born Rule
+The probability $P(k)$ of observing basis state $|k\rangle$ upon measurement is:
+$$P(k) = |\langle k | \psi \rangle|^2 = |c_k|^2 = \text{Re}(c_k)^2 + \text{Im}(c_k)^2$$
 
-For single-qubit states |ψ_A⟩ = [α, β] and |ψ_B⟩ = [γ, δ]:
+### 6.2 Single Projective Measurement Collapse
+When a measurement is executed on $|\psi\rangle$:
+1. Compute cumulative probability interval $I_k = [\sum_{j=0}^{k-1} P(j), \sum_{j=0}^k P(j))$.
+2. Draw uniform pseudo-random value $r \in [0, 1)$.
+3. Select outcome $m$ such that $r \in I_m$.
+4. **State Collapse**: Immediately set the post-measurement state vector to basis ket $|m\rangle$.
 
-```
-|ψ_A⟩ ⊗ |ψ_B⟩ = [ α*γ ]   = c00|00⟩ + c01|01⟩ + c10|10⟩ + c11|11⟩
-                  [ α*δ ]
-                  [ β*γ ]
-                  [ β*δ ]
-```
-
-Index mapping:
-```
-Index 0 → |00⟩: c00 = α*γ
-Index 1 → |01⟩: c01 = α*δ
-Index 2 → |10⟩: c10 = β*γ
-Index 3 → |11⟩: c11 = β*δ
-```
-
-### 7.2 CNOT Gate Matrix
-
-```
-CNOT (control=qubit0, target=qubit1):
-
-      |00⟩  |01⟩  |10⟩  |11⟩
-|00⟩ [  1    0    0    0  ]
-|01⟩ [  0    1    0    0  ]
-|10⟩ [  0    0    0    1  ]
-|11⟩ [  0    0    1    0  ]
-```
-
-Effect: if control qubit is |1⟩, flip the target qubit.
-```
-|00⟩ → |00⟩
-|01⟩ → |01⟩
-|10⟩ → |11⟩
-|11⟩ → |10⟩
-```
-
-**Bell state creation:**
-```
-Start:  |00⟩
-Apply H to qubit 0: (|0⟩+|1⟩)/√2 ⊗ |0⟩ = (|00⟩ + |10⟩)/√2
-Apply CNOT: (|00⟩ + |11⟩)/√2
-
-→ State vector: [1/√2, 0, 0, 1/√2]
-→ P(|00⟩) = 0.5, P(|11⟩) = 0.5
-```
-
-### 7.3 SWAP Gate Matrix
-
-```
-SWAP:
-
-      |00⟩  |01⟩  |10⟩  |11⟩
-|00⟩ [  1    0    0    0  ]
-|01⟩ [  0    0    1    0  ]
-|10⟩ [  0    1    0    0  ]
-|11⟩ [  0    0    0    1  ]
-```
-
-Effect:
-```
-|00⟩ → |00⟩
-|01⟩ → |10⟩
-|10⟩ → |01⟩
-|11⟩ → |11⟩
-```
-
-### 7.4 Single-Qubit Gate in Two-Qubit Space
-
-To apply a single-qubit gate G to qubit 0 of a two-qubit state, compute the 4×4 matrix:
-```
-G ⊗ I = [ g00*I   g01*I ]  (where I is the 2×2 identity matrix)
-        [ g10*I   g11*I ]
-```
-
-To apply G to qubit 1:
-```
-I ⊗ G = [ I*g00   I*g01 ]
-        [ I*g10   I*g11 ]
-```
-
-The engine must compute these Kronecker products explicitly and apply the resulting 4×4 matrix.
-
----
-
-## 8. State Normalization
-
-After every gate application, renormalize the state vector to correct floating-point drift.
-
-```
-For [alpha, beta]:
-  norm = sqrt(magnitudeSquared(alpha) + magnitudeSquared(beta))
-  if (norm < 1e-10):
-    log warning: "State vector has near-zero norm — resetting to |0⟩"
-    return |0⟩
-  return [
-    { re: alpha.re / norm, im: alpha.im / norm },
-    { re: beta.re  / norm, im: beta.im  / norm }
-  ]
-```
-
-For N-qubit state vectors, sum `magnitudeSquared` over all amplitudes.
-
----
-
-## 9. Measurement Mathematics
-
-### 9.1 Single Shot Measurement
-
-```
-Given state [alpha, beta]:
-  p0 = magnitudeSquared(alpha)
-  p1 = magnitudeSquared(beta)
-  r = Math.random()  // uniform in [0, 1)
-  if r < p0: outcome = '0'
-  else: outcome = '1'
-```
-
-After measurement, the state collapses:
-```
-If measured '0': new state = |0⟩ = [{ re:1, im:0 }, { re:0, im:0 }]
-If measured '1': new state = |1⟩ = [{ re:0, im:0 }, { re:1, im:0 }]
-```
-
-The store must update the current state to the collapsed state after measurement.
-
-### 9.2 Multi-Shot Measurement
-
-```
-function measureMultiShot(state, shots):
-  counts = { '0': 0, '1': 0 }
-  for i in range(shots):
-    outcome = measureSingle(state)
-    counts[outcome]++
-  return counts
-```
-
-**Important:** The state does not collapse between shots in multi-shot simulation. Each shot measures the **same pre-measurement state independently**. This simulates running the same preparation + measurement experiment multiple times.
-
-### 9.3 Two-Qubit Multi-Shot
-
-```
-function measureMultiShot2Q(state, shots):
-  counts = { '00': 0, '01': 0, '10': 0, '11': 0 }
-  for i in range(shots):
-    outcome = measureTwoQubit(state)
-    counts[outcome]++
-  return counts
-```
-
-Two-qubit measurement: use cumulative probability walkthrough:
-```
-p00 = magnitudeSquared(state[0])
-p01 = magnitudeSquared(state[1])
-p10 = magnitudeSquared(state[2])
-p11 = magnitudeSquared(state[3])
-r = Math.random()
-if r < p00: return '00'
-else if r < p00+p01: return '01'
-else if r < p00+p01+p10: return '10'
-else: return '11'
-```
-
----
-
-## 10. Schmidt Rank (Entanglement Test)
-
-To test if a two-qubit state [c00, c01, c10, c11] is entangled:
-
-Form the coefficient matrix:
-```
-M = [ c00  c01 ]
-    [ c10  c11 ]
-```
-
-The state is **separable** (not entangled) if and only if:
-```
-c00 * c11 ≈ c01 * c10
-```
-(where multiplication is complex multiplication, and ≈ means within tolerance 1e-10)
-
-The state is **entangled** if this equality does not hold.
-
-This is equivalent to checking that the Schmidt rank is 1 (separable) vs > 1 (entangled).
-
----
-
-## 11. Floating-Point Tolerances
-
-| Check | Tolerance |
-|-------|-----------|
-| Normalization check | ε = 1e-10 |
-| Entanglement test | ε = 1e-10 |
-| "Effectively zero" amplitude | ε = 1e-10 |
-| Bloch sphere φ angle (no beta) | |β| < 1e-10 → φ = 0 |
-
-Use `Math.abs(value) < EPSILON` for all near-zero checks. Never use exact equality on floating-point quantum values.
+### 6.3 Multi-Shot Statistical Sampling
+In multi-shot mode (e.g. 100 or 1,000 shots), each shot evaluates the identical pre-measurement probability distribution independently without state degradation, generating an empirical histogram.

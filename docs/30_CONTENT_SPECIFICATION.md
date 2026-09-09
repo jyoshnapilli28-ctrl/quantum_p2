@@ -1,39 +1,71 @@
-# 30. CONTENT SPECIFICATION
+# 30. CONTENT SPECIFICATION — QYNX
 
-This document dictates the educational copy and conceptual flow for the 5 interactive pages of Quantum Universe. The tone must remain scientifically accurate, concise, and accessible to a curious audience.
+This document dictates the authoritative educational copy, conceptual progression, and scientific rigor standards for the 5 interactive pages of **QYNX**. The editorial voice is precise, human, credible, and grounded in standard quantum mechanical formalism (bra-ket notation, unitary evolution, Born rule probabilities).
 
-## PAGE 1: Quantum Universe (Introduction)
-* **Classical Bit vs Qubit:** A classical bit represents deterministic states—exactly 0 or exactly 1. A quantum bit (qubit) exists as a state vector in a complex vector space, allowing it to explore continuous probabilities.
-* **Superposition:** The defining feature of quantum mechanics. A qubit isn't "both 0 and 1 at the same time"; rather, it exists in a linear combination of states until measured. Mathematically: `|ψ⟩ = α|0⟩ + β|1⟩`.
-* **Measurement:** The act of observing a quantum system forces it to collapse into a single classical state (0 or 1). The probability of landing on a specific state is determined by the square of its amplitude (`|α|²` or `|β|²`).
-* **Quantum Gates:** Unlike classical logic gates (AND, OR), quantum gates are reversible, unitary matrices that rotate a qubit's state vector around the Bloch sphere without collapsing it.
-* **Entanglement:** When multiple qubits interact, their states become mathematically inseparable. Measuring one qubit instantaneously determines the state of the other, regardless of distance.
-* **Quantum Circuits:** A sequence of quantum gates applied to wires (qubits), culminating in a measurement layer to extract classical data.
+---
+
+## PAGE 1: Quantum Universe (Foundational Educational Hub)
+
+The 9 foundational educational topics must adhere to the 3-second comprehension rule: high-contrast diagrams with concise explanatory prose:
+
+1. **Classical Bit vs. Qubit:**
+   - *Core Narrative:* A classical bit is strictly deterministic ($0$ or $1$, low or high voltage). A quantum bit (qubit) is a normalized vector in a two-dimensional complex Hilbert space $\mathbb{C}^2$, allowing continuous phase and amplitude superpositions prior to observation.
+2. **Superposition Principle:**
+   - *Core Narrative:* A qubit is never "both 0 and 1 at the same time" (a frequent layman misconception). Rather, it resides in a definitive linear combination $|\psi\rangle = \alpha|0\rangle + \beta|1\rangle$, where complex coefficients $\alpha, \beta \in \mathbb{C}$ satisfy the probability conservation constraint $|\alpha|^2 + |\beta|^2 = 1$.
+3. **Bloch Sphere Geometry:**
+   - *Core Narrative:* A pure single-qubit state maps uniquely to the surface of a three-dimensional unit sphere $\mathbb{R}^3$. The North pole represents $|0\rangle$, the South pole $|1\rangle$, and equatorial points signify equal-probability superpositions distinguished by relative quantum phase $\phi$.
+4. **Quantum Measurement & State Collapse:**
+   - *Core Narrative:* Physical observation in the computational basis $\{|0\rangle, |1\rangle\}$ interrupts unitary evolution. According to the Born rule, the system non-reversibly projects into eigenstate $|0\rangle$ with probability $|\alpha|^2$ or $|1\rangle$ with probability $|\beta|^2$.
+5. **Unitary Logic Gates:**
+   - *Core Narrative:* Quantum logic gates are represented by norm-preserving unitary operators ($U^\dagger U = I$). They perform continuous, reversible geometric rotations of the state vector on the Bloch sphere without extracting intermediate state information.
+6. **Entanglement & Non-Locality:**
+   - *Core Narrative:* When two or more qubits interact, their composite state vector cannot be factored into independent single-qubit states ($|\psi_{AB}\rangle \neq |\psi_A\rangle \otimes |\psi_B\rangle$). Measurement of one qubit instantaneously determines the state of its entangled partner regardless of spatial separation.
+7. **Quantum Circuit Paradigm:**
+   - *Core Narrative:* Computation is structured as a discrete network where horizontal wires represent quantum register evolution over time, and matrix operators are sequentially applied from left to right prior to terminal readout.
+8. **Decoherence & Environmental Coupling:**
+   - *Core Narrative:* Real physical qubits interact with thermal and electromagnetic ambient environments, degrading fragile quantum phases ($T_2$ dephasing) and relaxing excited states to ground equilibrium ($T_1$ relaxation).
+9. **Quantum Advantage & Applications:**
+   - *Core Narrative:* Exploiting constructive and destructive quantum interference yields super-polynomial speedups for specialized mathematical problems, including integer factorization (Shor's algorithm), database searching (Grover's algorithm), and molecular simulation.
+
+---
 
 ## PAGE 2: Quantum Gate Visualizer
-* **X Gate (Pauli-X):** The quantum equivalent of a classical NOT gate. It rotates the state by π radians around the X-axis, flipping `|0⟩` to `|1⟩` and vice versa.
-* **Y Gate (Pauli-Y):** Rotates the state by π around the Y-axis. It introduces a complex phase, mapping `|0⟩` to `i|1⟩`.
-* **Z Gate (Pauli-Z):** A phase-flip gate. It leaves `|0⟩` unchanged but flips the sign of `|1⟩`, rotating the state by π around the Z-axis.
-* **H Gate (Hadamard):** Creates superposition. It maps the computational basis states (`|0⟩`, `|1⟩`) to the equatorial superposition states (`|+⟩`, `|-⟩`), rotating around the X+Z diagonal.
-* **S Gate (Phase):** A rotation of π/2 around the Z-axis. It is the square root of the Z gate and introduces a 90-degree phase shift.
-* **T Gate:** A rotation of π/4 around the Z-axis. The square root of the S gate, essential for universal quantum computation.
-* **Bloch Sphere & Visualization:** The Bloch sphere is a geometric representation of a pure state qubit. The north pole is `|0⟩`, the south pole is `|1⟩`, and the equator represents equal superpositions with varying phases.
 
-## PAGE 3: Quantum Experimental Lab
-* **Experiment Definitions:** Pre-configured scenarios demonstrating core quantum concepts (e.g., "The Coin Flip", "Phase Kickback").
-* **Experiment Steps:** Users progress linearly. 1) Initialization 2) Gate Application 3) Evolution 4) Measurement.
-* **State Changes:** Textual and visual tracking of the state vector `[α, β]` as it passes through the experiment.
-* **Measurement & Results:** A visualization of the probabilistic outcome, reinforcing that quantum experiments require multi-shot execution to approximate the true probability distribution.
+### Single-Qubit Operators
+- **Pauli-X Gate (Bit-Flip):** $\pi$ rotation around the $X$-axis. Swaps basis states: $X|0\rangle = |1\rangle$ and $X|1\rangle = |0\rangle$.
+- **Pauli-Y Gate (Bit & Phase-Flip):** $\pi$ rotation around the $Y$-axis. Maps $Y|0\rangle = i|1\rangle$ and $Y|1\rangle = -i|0\rangle$.
+- **Pauli-Z Gate (Phase-Flip):** $\pi$ rotation around the $Z$-axis. Preserves $|0\rangle$ while inverting the sign of $|1\rangle$: $Z|0\rangle = |0\rangle$, $Z|1\rangle = -|1\rangle$.
+- **Hadamard Gate (H):** Rotation by $\pi$ around the diagonal $(X+Z)/\sqrt{2}$ axis. Maps computational basis states into symmetric superposition: $H|0\rangle = |+\rangle = \frac{|0\rangle + |1\rangle}{\sqrt{2}}$, $H|1\rangle = |-\rangle = \frac{|0\rangle - |1\rangle}{\sqrt{2}}$.
+- **Phase Gate (S):** Rotation by $\pi/2$ around the $Z$-axis. $S|0\rangle = |0\rangle$, $S|1\rangle = i|1\rangle$. Satisfies $S^2 = Z$.
+- **$\pi/8$ Gate (T):** Rotation by $\pi/4$ around the $Z$-axis. $T|0\rangle = |0\rangle$, $T|1\rangle = e^{i\pi/4}|1\rangle$. Satisfies $T^2 = S$. Universal computation requires non-Clifford gates like $T$.
+
+---
+
+## PAGE 3: Quantum Expo Lab
+
+### Pre-Configured Educational Protocols
+- **Protocol 1: Superposition Synthesis & Sampling**
+  - *Sequence:* Initialize $|0\rangle \to$ Apply $H \to$ Inspect $|\psi\rangle = |+\rangle \to$ Multi-shot measurement sampling ($N = 1000$).
+  - *Key Takeaway:* Individual single-shot measurements yield unpredictable binary outcomes ($0$ or $1$); aggregate large-sample distributions converge toward the theoretical $50\%$ Born limit.
+- **Protocol 2: Deterministic Bit-Flip Protocol**
+  - *Sequence:* Initialize $|0\rangle \to$ Apply $X \to$ Inspect $|\psi\rangle = |1\rangle \to$ Multi-shot measurement sampling.
+  - *Key Takeaway:* A unitary transformation can act deterministically, proving quantum systems encompass classical logic as a strict subset.
+
+---
 
 ## PAGE 4: Quantum Entanglement Simulator
-* **Two-Qubit States:** Moving beyond a single Bloch sphere. The state space expands to four dimensions (`|00⟩, |01⟩, |10⟩, |11⟩`).
-* **Creating Entanglement:** Apply an H gate to Qubit 0 (creating superposition), followed by a CNOT gate controlled by Qubit 0 targeting Qubit 1.
-* **The Bell State:** The resulting state `(|00⟩ + |11⟩) / √2`. The qubits are now perfectly correlated.
-* **Correlated Measurement:** When Qubit 0 is measured as `0`, Qubit 1 will definitively be `0`. If Qubit 0 is `1`, Qubit 1 is definitively `1`.
+
+- **Two-Qubit State Space:** Product Hilbert space $\mathbb{C}^4$ with computational basis $\{|00\rangle, |01\rangle, |10\rangle, |11\rangle\}$.
+- **Canonical Bell State $|\Phi^+\rangle$:** Synthesized via $H$ on Qubit A followed by $\text{CNOT}$ with control A and target B:
+  $$|00\rangle \xrightarrow{H \otimes I} \frac{|00\rangle + |10\rangle}{\sqrt{2}} \xrightarrow{\text{CNOT}} \frac{|00\rangle + |11\rangle}{\sqrt{2}} = |\Phi^+\rangle$$
+- **Measurement Correlations:** Evaluating Qubit A projects the entangled wave function. If Qubit A registers $0$, Qubit B is guaranteed to register $0$ with $100\%$ conditional probability ($P(B=0 | A=0) = 1$).
+
+---
 
 ## PAGE 5: Quantum Circuit Builder
-* **Circuit Grid & Wires:** Horizontal lines represent individual qubits initializing at `|0⟩` and evolving through time from left to right.
-* **Gate Placement:** Users construct arbitrary unitary matrices by placing single-qubit gates (X, H, Z, etc.) onto the wires.
-* **Controlled Gates:** The CNOT (Controlled-NOT) gate flips the target qubit ONLY if the control qubit is in the state `|1⟩`. It creates entanglement.
-* **SWAP Gate:** Exchanges the states of two qubits.
-* **Execution & Results:** The mathematical engine calculates the final tensor product of the circuit and simulates multi-shot measurement to generate a classical probability histogram.
+
+- **Register Timeline:** Horizontal wires represent discrete qubit channels propagating from left (initialization $|0\rangle$) to right (terminal measurement).
+- **Multi-Qubit Operators:** 
+  - $\text{CNOT}$ (Controlled-NOT): Flips the target qubit state if and only if the control qubit evaluates to $|1\rangle$.
+  - $\text{SWAP}$: Interchanges quantum states between two designated wires ($\text{SWAP}|jk\rangle = |kj\rangle$).
+- **Multi-Shot Empirical Verification:** Executing user-constructed circuits evaluates state evolution via pure matrix algebra and samples terminal probabilities over 1,000 simulated shots.

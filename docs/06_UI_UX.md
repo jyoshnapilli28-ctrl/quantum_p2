@@ -1,323 +1,138 @@
-# UI / UX SPECIFICATION — QUANTUM UNIVERSE
+# UI / UX SPECIFICATION — QYNX
 
 ---
 
-## 1. Navigation
+## 1. Application Identity & Opening Experience
 
-### 1.1 Top Navigation Bar
-
-The navigation bar is **persistent** across all five pages. It does not re-render on page transition — only the active page indicator updates.
-
-**Layout:**
-```
-┌──────────────────────────────────────────────────────────────────────────┐
-│  ⬡ QUANTUM UNIVERSE │ Universe │ Gate Visualizer │ Experiment │ Entangle │ Circuit │
-└──────────────────────────────────────────────────────────────────────────┘
-```
-
-**Specification:**
+When a user launches **QYNX**, a restrained, professional entrance experience introduces the product brand without overwhelming the user or delaying access to educational tools:
 
 ```
-Height: 64px (desktop), 56px (mobile)
-Background: rgba(7,16,24,0.95) with backdrop-filter: blur(16px)
-Border-bottom: 1px solid rgba(56,80,106,0.3)
-Position: fixed; top: 0; width: 100%; z-index: var(--z-navigation)
+┌─────────────────────────────────────────────────────────────┐
+│                                                             │
+│                         ❖ QYNX                              │
+│               QUANTUM INTERACTIVE PLATFORM                  │
+│                                                             │
+│              [ Initializing Quantum Engine... ]             │
+└─────────────────────────────────────────────────────────────┘
 ```
 
-**Logo (left side):**
-- SVG hexagon atom icon
-- Text: "QUANTUM UNIVERSE" in `--font-primary`, weight 600, `--color-white`
-- Clicking the logo navigates to `/` (Page 1)
-
-**Nav items:**
-- Labels: "Universe", "Gate Visualizer", "Experiment Lab", "Entanglement", "Circuit Builder"
-- Font: `--font-primary`, weight 500, `--text-body-sm`
-- Default color: `--color-arctic`
-- Hover color: `--color-white`; hover transition: 150ms
-- Active (current page): `--color-white` with a 2px underline in `--color-icicle`; underline animated with `scaleX` from 0 to 1 on mount
-
-**Mobile collapse (< 768px):**
-- Nav items hidden behind a hamburger icon (three horizontal lines, `--color-arctic`)
-- Tap hamburger → slide-down menu from top (height: auto, background: `rgba(7,16,24,0.98)`)
-- Each menu item is a full-width tap target (min-height: 48px)
-- Active page shown with left border: `3px solid --color-icicle`
-- Tapping a menu item navigates and closes the menu
-
-### 1.2 Page Transition
-
-When navigating between pages:
-1. Current page fades out: `opacity 1 → 0`, duration 200ms.
-2. Route changes.
-3. New page fades in: `opacity 0 → 1`, duration 300ms.
-
-Use Framer Motion `AnimatePresence` on the router outlet.
-
-No slide, scale, or complex transition — only opacity. This ensures quantum visualizations re-initialize cleanly.
+### 1.1 Opening Sequence Specifications
+1. **Brand Mark Appearance**: The QYNX geometric logo mark and wordmark render in `White #FFFFFF` with `Purple 60 #8A3FFC` accents against `Purple 100 #1C0F30`.
+2. **Restrained Entrance Motion**: 300ms subtle opacity fade with 8px vertical ease-in. Zero bombastic particle vortexes or cinematic cutscenes.
+3. **Application Shell Transition**: Direct cross-fade (200ms) into the application layout with Page 1 (`QUANTUM UNIVERSE`) active.
+4. **Reduced-Motion Compliance**: When `prefers-reduced-motion: reduce` is detected, the brand introduction is bypassed completely, loading the main application shell immediately.
+5. **Instant Fallback**: If browser WebGL initialization takes longer than 150ms, the UI does not block; 2D elements load immediately while 3D viewports initialize asynchronously in the background.
 
 ---
 
-## 2. Page Layout Structure
+## 2. Global Navigation Architecture
 
-Each page uses the same layout shell:
+A persistent, responsive navigation bar establishes QYNX as **one cohesive application** composed of five sequential modules:
 
 ```
-┌──────────────────────────────────────┐
-│          NAVIGATION (fixed)          │
-├──────────────────────────────────────┤
-│                                      │
-│          PAGE HERO SECTION           │  (optional: page title, subtitle)
-│                                      │
-├──────────────────────────────────────┤
-│                                      │
-│          MAIN CONTENT AREA           │
-│                                      │
-└──────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────────────────────────────┐
+│ ❖ QYNX  │ 01 UNIVERSE │ 02 GATE VISUALIZER │ 03 EXPO LAB │ 04 ENTANGLEMENT │ 05 CIRCUITS │
+└──────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-Content area starts at 64px from the top (navigation height). No horizontal overflow.
+### 2.1 Navigation Bar Specifications
+- **Dimensions**: Height 64px (desktop), 56px (mobile).
+- **Background**: `Purple 80 #491D8B` (opaque, restrained surface; `rgba(73, 29, 139, 0.95)` with 8px backdrop blur).
+- **Border-Bottom**: 1px solid `Purple 70 #6929C4`.
+- **Z-Index**: `var(--z-navigation, 100)` — fixed at top of viewport.
 
-**Max content width:** 1280px, centered with `margin: 0 auto`.
+### 2.2 Navigation Item States
+- **Module Numbers**: Prefix `01`, `02`, `03`, `04`, `05` rendered in `Purple 40 #BE95FF` font-mono.
+- **Default State**: Text in `Purple 20 #E8DAFF`, weight 500, 14px.
+- **Hover State**: Text transition to `White #FFFFFF` (150ms ease).
+- **Active Module**: `White #FFFFFF` with a 3px solid underline in `Purple 60 #8A3FFC`.
+- **Keyboard Focus**: High-contrast outline `2px solid Purple 40` with 2px offset.
 
-**Page padding:**
-- Desktop: `--space-8` (32px) horizontal
-- Tablet: `--space-6` (24px) horizontal
-- Mobile: `--space-4` (16px) horizontal
+### 2.3 Mobile Navigation Drawer (< 768px)
+- The header displays the QYNX logo and a standard accessible hamburger icon (`Purple 20`).
+- Tapping opens a slide-down or side-drawer menu in `Purple 100 #1C0F30` with `Purple 70` dividers.
+- Tap targets have a minimum height of 48px to accommodate finger navigation.
+- Active route is indicated by a prominent left border: `4px solid Purple 60`.
 
 ---
 
-## 3. User Journey
+## 3. The Five Module Journey
 
-### First-Visit Flow
+The intended learning and operational progression is strictly linear yet flexibly accessible:
+
+$$\text{01 LEARN} \longrightarrow \text{02 VISUALIZE} \longrightarrow \text{03 EXPERIMENT} \longrightarrow \text{04 UNDERSTAND} \longrightarrow \text{05 BUILD}$$
 
 ```
-User arrives at /
-         ↓
-Page 1: Quantum Universe
-         ↓
-Reads "Classical Bit vs Qubit" section
-         ↓
-Scrolls through all six educational sections
-         ↓
-Sees [Go to Gate Visualizer] CTA button
-         ↓
-Navigates to /gate-visualizer
-         ↓
-Applies H gate → sees Bloch sphere move
-         ↓
-Reads tooltip: "Superposition: equal probability of |0⟩ and |1⟩"
-         ↓
-Navigates to /experiment-lab
-         ↓
-Runs "Superposition" experiment
-         ↓
-...and so on
-```
-
-### Returning User Flow
-
-User navigates directly to a specific page. Their last session state is preserved (within the same browser session). If state is empty, the page shows the initial zero state with a subtle "welcome back" hint.
-
----
-
-## 4. Interaction Hierarchy
-
-Every page's interactive elements are organized in this priority order:
-
-1. **Primary action** — the most important thing the user can do (e.g., "Apply Gate", "Run Circuit", "Measure")
-2. **Quantum visualization** — the visual output of the primary action
-3. **State information** — current quantum state label and probability values
-4. **Secondary controls** — gate selection, experiment selection, qubit count
-5. **Tertiary controls** — reset, history, settings
-
-Primary action buttons must be visually dominant (larger, centrally placed, or clearly highlighted).
-
----
-
-## 5. Loading States
-
-### 5.1 Initial Page Load
-
-When a page component is lazy-loaded for the first time:
-- Show a centered loading indicator: a pulsing hexagonal atom SVG animation
-- Background: `--color-midnight`
-- Duration: until the chunk and any async data resolves
-- Do not show a blank white flash
-
-### 5.2 Three.js Loading (Bloch Sphere)
-
-When the Gate Visualizer loads Three.js for the first time:
-- Bloch sphere canvas shows: "Initializing 3D visualization..." in `--color-arctic`
-- A single rotating Polar-colored ring indicates loading
-- Three.js is not heavy once cached; this state should last < 1 second on broadband
-
-### 5.3 Circuit Execution
-
-When "Run Circuit" is pressed:
-- The result panel shows a brief "Simulating..." state with a quantum-themed spinner (orbiting dots)
-- Duration: < 50ms (calculation is instant); spinner is purely UX — minimum 300ms display
-- Results appear after the spinner with a slide-up animation
-
-### 5.4 Experiment Execution
-
-Each step plays sequentially with a 600ms delay between steps. During execution:
-- The "Execute" button is disabled and shows "Running..."
-- Steps animate in sequence with visual highlighting
-- User cannot press gate buttons during experiment execution
-
----
-
-## 6. Empty States
-
-| Scenario | Display |
-|----------|---------|
-| Gate history (no gates applied) | "No gates applied yet. Select a gate to begin." |
-| Experiment history (no experiments run) | "Your experiment history will appear here." |
-| Circuit grid (no gates placed) | Dashed wire lines with subtle "Drag gates here" label |
-| Measurement result (not yet measured) | "Press Measure to collapse the quantum state." |
-
-Empty states use `--color-arctic` text, `--text-body-sm`, centered in the container.
-
----
-
-## 7. Tooltips
-
-Gate buttons display tooltips on hover (desktop) and on tap-hold (mobile).
-
-**Tooltip content per gate:**
-
-| Gate | Tooltip |
-|------|---------|
-| X | "Pauli-X (NOT) Gate: Flips |0⟩ to |1⟩ and vice versa. Analogous to a classical NOT gate." |
-| Y | "Pauli-Y Gate: Applies a rotation of π around the Y-axis. Combines bit-flip and phase-flip." |
-| Z | "Pauli-Z Gate: Flips the phase of |1⟩. |0⟩ is unchanged; |1⟩ gains a -1 phase factor." |
-| H | "Hadamard Gate: Creates superposition. |0⟩ becomes (|0⟩ + |1⟩)/√2 (equal probability of 0 and 1)." |
-| S | "Phase Gate (S): Adds a 90° phase rotation (i) to |1⟩. Also called √Z gate." |
-| T | "T Gate: Adds a 45° phase rotation (π/4) to |1⟩. Important for universal quantum computation." |
-| CNOT | "Controlled-NOT Gate: Flips the target qubit if the control qubit is |1⟩. Creates entanglement." |
-| SWAP | "SWAP Gate: Exchanges the states of two qubits." |
-
-**Tooltip style:**
-```
-Background: rgba(28,43,56,0.95)
-Border: 1px solid rgba(56,80,106,0.5)
-Border-radius: --radius-md
-Padding: --space-3 --space-4
-Max-width: 280px
-Font: --font-primary, --text-body-sm, --color-arctic
-Heading: --color-white, --text-label, uppercase
-Arrow: CSS triangle pointing to the trigger element
-z-index: var(--z-tooltip)
-Animation: fade in 150ms
+[01 QUANTUM UNIVERSE]
+Foundational principles: Bits vs Qubits, Superposition, Born rule, Gate definitions.
+          │
+          ▼
+[02 QUANTUM GATE VISUALIZER]
+Single-qubit unitary manipulation: X, Y, Z, H, S, T with dynamic 3D Bloch sphere.
+          │
+          ▼
+[03 QUANTUM EXPO LAB]
+Structured experimental verification: Superposition & Bit-Flip tests with shot counts.
+          │
+          ▼
+[04 QUANTUM ENTANGLEMENT SIMULATOR]
+Two-qubit Bell states (|Φ⁺⟩), non-classical correlations, joint measurement.
+          │
+          ▼
+[05 QUANTUM CIRCUIT BUILDER]
+Multi-qubit circuit grid, drag-and-drop & tap-to-place gates, full execution.
 ```
 
 ---
 
-## 8. Error States
+## 4. Interaction Hierarchy & Principles
 
-### 8.1 Gate Validation Error
+Every view inside QYNX prioritizes scientific clarity over decorative clutter:
 
-Context: User tries to apply CNOT to a single-qubit circuit.
+1. **Content First**: High-contrast state notation, readable scientific copy, and visible diagrams.
+2. **Interaction Second**: Explicit, tactile controls with visible hover, active, and focus states.
+3. **Decoration Last**: Restrained surface borders and shadows provide structural separation without distracting from the data.
 
-Display:
-- The gate button shakes (horizontal keyframe animation, 400ms)
-- A red-tinted inline message appears below the gate panel: "CNOT requires two qubits. Add a second qubit to the circuit."
-- Message auto-dismisses after 4 seconds
-
-### 8.2 WebGL Not Supported
-
-Context: User's browser does not support WebGL for Bloch sphere.
-
-Display:
-- Bloch sphere canvas shows: "3D visualization requires WebGL support. Your browser may not support it."
-- Below that: "Mathematical state and probability information are fully available below."
-- The rest of the Gate Visualizer (probability bars, state notation, gate history) functions normally
-
-### 8.3 Quantum Engine Error
-
-Context: An unexpected error in quantum calculation (should not happen, but guarded).
-
-Display:
-- Error boundary catches the error
-- Panel shows: "An error occurred in the quantum simulation. Please reset and try again."
-- Reset button visible
-- Error details logged to console (not shown to user)
+### Standard Module Layout Pattern
+- **Top Header**: Module index (`02`), Module Title (`QUANTUM GATE VISUALIZER`), and 1-sentence pedagogical objective.
+- **Primary Workspace**: Central visual viewport (Bloch sphere, experiment bench, or circuit grid) framed in `Purple 90`.
+- **Analytical Readout**: High-contrast state readout ($|\psi\rangle$), amplitude breakdown, and probability bars.
+- **Control Strip**: Unitary gate palette, measurement triggers, and reset button.
 
 ---
 
-## 9. Educational Explanations
+## 5. Diagram Visibility & Readability Standards
 
-On the Gate Visualizer and Experiment Lab, every state change must be accompanied by a brief explanation in plain language.
-
-**Explanation panel specification:**
-
-```
-Position: Below the state visualization, above the gate history
-Background: rgba(28,43,56,0.5) (slightly lighter than deep panels)
-Border-left: 3px solid rgba(68,105,131,0.6)
-Padding: --space-4
-Border-radius: --radius-md
-Font: --font-primary, --text-body-sm, --color-arctic
-```
-
-**Example explanations:**
-
-- After applying H to |0⟩: "The Hadamard gate put the qubit in superposition. It now has an equal 50% chance of being measured as |0⟩ or |1⟩."
-- After measuring a qubit: "The quantum state has collapsed. The qubit is now definitively |0⟩ and will remain so until reset."
-- After CNOT in entanglement: "CNOT has entangled the two qubits. Measuring one qubit will instantly determine the other's state."
+In accordance with the QYNX Diagram Visibility Rule:
+- **Immediate Comprehension**: Users must understand diagram input, transformation, and output within 3 seconds.
+- **High-Contrast Stroke Weights**: All quantum wires and vector trajectories must have a minimum stroke weight of $2\text{px}$ in `Purple 70` or `Purple 60`.
+- **Text & Notation**: Dirac kets and numerical values rendered in `JetBrains Mono` and `White #FFFFFF` with minimum contrast ratio of $4.5:1$ against underlying surfaces.
+- **Zero Ambiguous Symbols**: Gate symbols ($X, Y, Z, H, S, T, \text{CNOT}, \text{SWAP}$) are rendered with crisp vector geometry inside dedicated high-contrast tiles.
 
 ---
 
-## 10. Keyboard Navigation
+## 6. Touch & Mobile Alternative Patterns
 
-All interactive elements are reachable via Tab key. Tab order follows visual reading order (top-left to bottom-right).
+Desktop drag-and-drop interactions in Page 5 (`QUANTUM CIRCUIT BUILDER`) are supplemented with a first-class mobile alternative:
 
-| Element | Keyboard Behavior |
-|---------|------------------|
-| Navigation links | Tab to focus, Enter to navigate |
-| Gate buttons | Tab to focus, Enter or Space to apply gate |
-| Run Circuit | Tab to focus, Enter to execute |
-| Measure button | Tab to focus, Enter to measure |
-| Reset button | Tab to focus, Enter to reset |
-| Experiment selector | Tab to focus, Arrow keys to cycle, Enter to select |
-| Circuit grid cells | Arrow keys to navigate grid, Enter to place selected gate, Delete to remove gate |
-| Bloch sphere | Tab to focus container; no keyboard camera control required |
-
-See `22_ACCESSIBILITY.md` for full keyboard specification.
+| Action | Desktop Pattern | Mobile / Touch Pattern |
+|:---|:---|:---|
+| **Select Gate** | Click or drag gate token | Tap gate in horizontal carousel to activate selection |
+| **Place Gate** | Drag and drop into wire slot | Tap desired target wire & column slot |
+| **Inspect Gate** | Hover to view tooltip | Tap gate token to open bottom inspector sheet |
+| **Remove Gate** | Drag to trash or press Delete | Tap gate token and select "Remove" from sheet |
+| **Bloch Sphere View**| Click + drag to orbit | One-finger swipe to orbit, pinch to zoom |
+| **Camera Reset** | Double-click or reset button | Tap floating "Reset View" icon button |
 
 ---
 
-## 11. Mobile Interaction
+## 7. State Feedback & Deterministic Responses
 
-### Touch-Specific Patterns
+Every user action produces immediate visual and structural feedback within 100ms:
 
-| Feature | Desktop Behavior | Mobile Behavior |
-|---------|-----------------|-----------------|
-| Gate buttons | Click to apply | Tap to apply |
-| Gate tooltips | Hover to show | Tap-hold 500ms to show; tap outside to dismiss |
-| Bloch sphere camera | Click+drag to rotate | Pinch to zoom, swipe to rotate |
-| Circuit gate placement | Drag-and-drop | Tap gate in panel to select, tap grid cell to place |
-| Experiment steps | Auto-plays | Tap "Next Step" button for manual control |
-
-### Mobile-Specific UI
-
-- Gate panel becomes a horizontally scrollable row of gate buttons (no wrapping)
-- Probability bars are full-width (single column)
-- Bloch sphere viewport is reduced to 280×280px on small screens
-- Circuit builder uses a simplified tap-to-place interaction instead of drag-and-drop
-
----
-
-## 12. Feedback Principles
-
-Every user action must result in immediate visual feedback:
-
-| Action | Immediate Feedback | Delayed Feedback |
-|--------|-------------------|-----------------|
-| Click gate button | Button depresses (scale 0.95, 100ms) | Bloch sphere animates (600ms) |
-| Click Measure | Button disabled, spinner | Result appears |
-| Place circuit gate | Gate token appears at grid position | — |
-| Remove circuit gate | Gate token disappears | — |
-| Click Reset | Brief flash, state resets | — |
-| Run Circuit | Button shows "Running..." | Results histogram appears |
-
-Feedback must never be delayed by more than 100ms from the interaction. If calculation takes time, show immediate loading state.
+| Trigger | Immediate Response (< 50ms) | Animation Phase (200–600ms) |
+|:---|:---|:---|
+| **Apply Unitary Gate** | Button depresses to `Purple 70` active state | State vector traces geodesic arc on Bloch sphere; probability bars transition |
+| **Trigger Measurement** | Button shows "Measuring..." spinner | Wave-function collapses; probability bar snaps to 0% or 100% |
+| **Run Circuit** | "Simulating..." indicator in header | State amplitudes update; statistical histogram populates |
+| **Reset State** | Visual flash on state indicator | State vector returns to $|0\rangle$; history resets |

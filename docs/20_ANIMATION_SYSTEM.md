@@ -1,133 +1,81 @@
-# 20. ANIMATION SYSTEM
-
-This document defines the complete animation and micro-interaction system for the **QUANTUM UNIVERSE** web application, ensuring a premium, scientific, and coherent visual experience.
-
-## 1. Animation Philosophy
-
-The animation system must communicate: **PRECISION**, **SCIENCE**, **QUANTUM STATE**, **FLOW**, and **INTERACTION**.
-
-It must **NOT** communicate: GAMING, FLASHINESS, EXCESSIVE NEON, or DISTRACTION.
-
-Every animation must have a purpose. Motion is used to explain quantum state changes and provide user interaction feedback, not for decoration alone.
+# 20. ANIMATION SYSTEM — SPECIFICATION — QYNX
 
 ---
 
-## 2. Global Color Constraints
+## 1. Animation Philosophy & Guiding Principles
 
-The animation system (including glows, highlights, and borders) must strictly use the approved palette. **Do not introduce additional colors.**
+The **QYNX Animation System** governs all transitions, state changes, and micro-interactions across the application. Motion is employed strictly as an educational and explanatory instrument designed to answer one question:
 
-| Color | Hex | Usage |
-| :--- | :--- | :--- |
-| **Midnight** | `#071018` | Deepest backgrounds |
-| **Deep Navy** | `#0B132B` | Primary backgrounds |
-| **Solstice** | `#1C2B38` | Base surfaces |
-| **Polar** | `#38506A` | Hover states, borders |
-| **Icicle** | `#446983` | Primary interaction glow / selection |
-| **Arctic** | `#7991A8` | Secondary highlights / Cursor ring |
-| **Light Blue** | `#3A506B` | Subtle accents |
-| **White** | `#FFFFFF` | Important highlights / Cursor dot |
+> **"What changed in the quantum system?"**
+
+### Core Motion Principles:
+- **Precision & Purpose**: Animations visualize mathematical transformations (state vector rotations, wave-function collapses, entangling correlations).
+- **Zero Decorative Gimmicks**: Prohibits ambient particle clouds, continuous pulsing halos, full-screen neon sweeps, and gaming-style HUD effects.
+- **Scientific Credibility**: Easing and timing reflect physical determinism and smooth unitary rotations ($U$).
+- **Performance First**: Motion is GPU-accelerated (`transform`, `opacity`) ensuring a locked 60 FPS without taxing WebGL rendering.
 
 ---
 
-## 3. Custom Cursor System
+## 2. Official QYNX Color Tokens in Motion
 
-A premium, minimal custom cursor replaces the default OS pointer to enhance immersion.
+All animation highlights, glows, and surface transitions strictly adhere to the QYNX Purple palette:
 
-### 3.1 Default State
-* **Center Dot:** Small, elegant `White (#FFFFFF)` dot that tracks the pointer precisely without delay.
-* **Outer Ring:** Thin `Arctic (#7991A8)` ring with a very soft glow.
-* **Movement:** The outer ring smoothly follows the center dot with a slight elastic delay (smooth interpolation/spring physics), feeling lightweight and responsive.
-
-### 3.2 Hover Interactions
-When hovering over interactive elements (buttons, cards, quantum gates, navigation links, interactive diagrams, circuit elements):
-* **Outer Ring:** Expands slightly.
-* **Glow/Border:** Becomes slightly more visible, using `White`, `Arctic`, or `Icicle`.
-* **Center Dot:** Remains stable and precise.
-
-### 3.3 Specific Contexts
-* **Quantum Gates (`[X]`, `[H]`, etc.):** Cursor expands subtly. Clicking/selecting a gate triggers a soft `Icicle` glow, a subtle scale increase, and a thin highlight ring. It should feel like operating a precision scientific instrument.
-* **Circuit Builder (Drag & Drop):** Cursor changes to a "drag" state. The dragged gate follows the cursor smoothly. Valid drop zones receive a subtle highlight; invalid zones receive a neutral visual response (No red error colors—stay within the palette).
-* **Bloch Sphere (3D):** Cursor indicates interactive rotation. Hovering over the state vector or state point displays a subtle highlight. Cursor interactions must not interfere with or occlude the 3D visualization. Camera and sphere rotations must use smooth easing.
+| Token | Hex Value | Motion & Transition Role |
+|:---|:---|:---|
+| **Purple 100** | `#1C0F30` | Root background resting state |
+| **Purple 90** | `#31135E` | Visualization canvas resting state |
+| **Purple 80** | `#491D8B` | Interactive panel base surface |
+| **Purple 70** | `#6929C4` | Active control press and structural boundary transitions |
+| **Purple 60** | `#8A3FFC` | Primary state change accent, state vector path, measurement highlight |
+| **Purple 50** | `#A56EFF` | Hover transitions and secondary emphasis indicators |
+| **Purple 40** | `#BE95FF` | Muted supporting axes and cursor ring indicators |
+| **White** | `#FFFFFF` | Collapsed state flash, state vector apex point, primary Dirac readouts |
 
 ---
 
-## 4. Global Page Animations
+## 3. Global Motion Timings & Curves
 
-Page-level animations must feel like one coherent system. Avoid excessive or dramatic transitions.
-
-### 4.1 Page Load Sequence
-Elements enter sequentially with a subtle fade + upward movement (duration: 400–700ms, smooth easing). Do not animate every single element independently.
-1. Background
-2. Main heading
-3. Supporting content
-4. Interactive visualization
-5. Controls
-
-### 4.2 Scroll Reveal (Section Entry)
-As the user scrolls down, sections gently fade in and move upward.
-* **Initial State:** `opacity: 0`, slight downward vertical offset.
-* **Final State:** `opacity: 1`, normal position.
-* **Feel:** Small movement, sophisticated and subtle.
-
-### 4.3 Component Micro-Interactions
-* **Cards (Educational):** Slight elevation, subtle border highlight, very small scale increase, soft background transition (e.g., `Solstice #1C2B38` to `Polar #38506A`). Avoid large transformations.
-* **Buttons:** Smooth background transition, subtle border glow, slight movement on hover, clear pressed (`:active`) state. Interaction colors: `Icicle #446983`, `Arctic #7991A8`, `White #FFFFFF`.
-* **Quantum State Transitions:** Between important interactive states, use a subtle quantum-inspired transition: small particles + thin wave + soft radial glow. It must communicate "STATE CHANGING" rather than just a generic UI animation.
+| Animation Class | Duration | Timing Function | Usage |
+|:---|:---|:---|:---|
+| **Micro-Interaction** | 100–150ms | `cubic-bezier(0.4, 0, 0.2, 1)` | Button press, gate token hover/active states |
+| **State Collapse** | 150ms | `cubic-bezier(0, 0, 0.2, 1)` | Projective measurement wave-function snap |
+| **Label Cross-Fade** | 200–300ms | `ease-in-out` | Dirac notation and mathematical readouts |
+| **Probability Transition**| 400ms | `cubic-bezier(0.4, 0, 0.2, 1)` | Linear probability bar adjustments |
+| **Bloch SLERP Trajectory**| 600ms | `cubic-bezier(0.4, 0, 0.2, 1)` | Unitary geodesic arc on 3D Bloch sphere |
+| **Module Cross-Fade** | 200–300ms | `ease-out` | Route transitions between modules 01–05 |
 
 ---
 
-## 5. Page-Specific Micro-Animations
+## 4. Module-Specific Motion Specifications
 
-### 5.1 Page 1: Quantum Universe
-Subtly animate educational illustrations when they enter the viewport:
-* **Bit vs Qubit:** Small state transition visualization.
-* **Superposition:** Subtle wave movement.
-* **Measurement:** State visualization collapses definitively into a result.
-* **Quantum Gates:** Gate block receives a subtle pulse.
-* **Entanglement:** Two connected nodes gently pulse together in sync.
-* **Quantum Circuit:** A signal travels along the circuit line.
+### 4.1 Page 1: QUANTUM UNIVERSE
+- **Section Entry**: Subtle vertical settle (`8px` upward translateY with opacity $0 \to 1$) triggered via `IntersectionObserver`.
+- **Bits vs. Qubits**: Toggle snap ($150\text{ms}$) for classical switch vs. smooth continuous circular rotation for qubit state vector.
+- **Wave Interference**: Restrained sinusoidal amplitude modulation explaining constructive/destructive interference.
 
-### 5.2 Page 2: Quantum Gate Visualizer
-This page features the strongest animation system to emphasize state changes.
-* **Sequence:** Gate selected → Quantum calculation → State update → Bloch Sphere movement → Probability update.
-* **Bloch Sphere Vector:** The state vector **must smoothly animate (interpolate)** to its new quantum state on the sphere. *Do NOT instantly teleport the vector.* (e.g., applying `H` to `|0⟩` smoothly animates the vector from +Z toward +X).
+### 4.2 Page 2: QUANTUM GATE VISUALIZER
+- **State Vector Geodesic Arc**: When a gate ($X, Y, Z, H, S, T$) is dispatched, the state vector animates along the spherical geodesic path via SLERP ($600\text{ms}$).
+- **Instant Collapse**: Upon measurement, the vector snaps instantaneously to north pole ($|0\rangle$) or south pole ($|1\rangle$).
+- **Locking**: Gate buttons are disabled during active vector animation to prevent frame drops or invalid intermediate computations.
 
-### 5.3 Page 3: Quantum Experiment Lab
-Use guided, sequential step animations.
-* **Flow:** STEP 1 (Initial State) → STEP 2 (Apply Gate) → STEP 3 (Measurement) → RESULT. Each step appears progressively.
-* **Measurement Results:** Probability bars animate from `0%` → calculation phase → final values (e.g., ~50% / 50%).
+### 4.3 Page 3: QUANTUM EXPO LAB
+- **Step Sequencing**: Progressive advancement: Step 1 $\to$ Step 2 $\to$ Step 3 with sequential element entry.
+- **Sampling Histogram**: Bars expand smoothly from zero to their empirical tally over $400\text{ms}$.
 
-### 5.4 Page 4: Entanglement Simulator
-Focus on the correlation between Qubit A and Qubit B.
-* **Connection Arc:** `Qubit A ●────────● Qubit B`. The connecting line features a subtle traveling light or pulse.
-* **State Sync:** After the CNOT gate is applied, show a synchronized state animation between both qubits.
-* **Measurement:** Both qubit results must appear simultaneously to emphasize entanglement. Avoid dramatic effects.
+### 4.4 Page 4: QUANTUM ENTANGLEMENT SIMULATOR
+- **Entanglement Link**: Subtle SVG dashed arc illuminates in `Purple 60 #8A3FFC` upon CNOT application.
+- **Correlated Collapse**: Simultaneous appearance of joint measurement outcomes ($|00\rangle$ or $|11\rangle$) without staggered delays, visually reinforcing non-local correlation.
 
-### 5.5 Page 5: Circuit Builder
-Smooth interaction animations for the drag-and-drop workspace:
-* Dragging, placing, and removing gates.
-* Connecting controlled gates (e.g., CNOT control and target lines).
-* **Run Circuit Sequence:** When "RUN CIRCUIT" is pressed, display a subtle progress/processing animation transitioning through: Circuit → Processing → Quantum Simulation → Measurement → Results.
+### 4.5 Page 5: QUANTUM CIRCUIT BUILDER
+- **Drop Docking**: Placed gate tokens settle cleanly into wire slots with a subtle $100\text{ms}$ scale settlement.
+- **Execution Pipeline**: Visual progress scan line sweeps across circuit columns from left to right during simulation.
 
 ---
 
-## 6. Performance Requirements
+## 5. Accessibility & Reduced-Motion (`prefers-reduced-motion`)
 
-Animations must be highly optimized to ensure 60fps browser performance. The **3D Bloch Sphere** is the highest-priority interactive visualization and must never drop frames due to UI animations.
-
-* **Prefer:** CSS transforms (`translate`, `scale`), CSS `opacity`, GPU-accelerated properties, and `requestAnimationFrame` (for canvas/custom JS).
-* **Avoid:** Unnecessary large blur effects, continuous heavy particle simulations, expensive DOM layout animations (e.g., animating `width`/`height`/`top`/`left`), and excessive drop-shadows during movement.
-
----
-
-## 7. Accessibility (Reduced Motion)
-
-The animation system must respect the user's OS-level motion preferences.
-
-If `prefers-reduced-motion: reduce` is detected:
-* Disable cursor trailing/elasticity (cursor tracks instantly).
-* Minimize or eliminate page entry/scroll transitions (fade-in only, no vertical offset).
-* Remove unnecessary continuous movement (e.g., background particles).
-* Preserve important state-change feedback (e.g., probability bars snap instantly to results).
-
-The website must remain fully usable and visually coherent without any animations.
+When `prefers-reduced-motion: reduce` is enabled in the user's OS:
+- **Instant Updates**: Bloch sphere vector teleports immediately to the target coordinate without SLERP interpolation.
+- **Static Diagrams**: Background particle drift, dashed marching-ants effects, and pulse animations are completely disabled.
+- **Zero Viewport Shifts**: Page transitions and scroll reveals occur via simple instantaneous opacity changes with zero vertical translation.
+- **Full Operational Integrity**: All calculations, state updates, and measurement functions operate identically.

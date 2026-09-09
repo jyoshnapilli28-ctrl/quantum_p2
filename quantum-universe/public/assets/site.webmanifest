@@ -1,11 +1,11 @@
 {
-  "name": "Quantum Universe",
-  "short_name": "Quantum",
-  "description": "An interactive educational quantum computing laboratory.",
+  "name": "QYNX — Quantum Computing Simulation",
+  "short_name": "QYNX",
+  "description": "An interactive educational quantum computing simulation platform.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#071018",
-  "theme_color": "#0B132B",
+  "background_color": "#1C0F30",
+  "theme_color": "#1C0F30",
   "icons": [
     {
       "src": "/favicon.ico",

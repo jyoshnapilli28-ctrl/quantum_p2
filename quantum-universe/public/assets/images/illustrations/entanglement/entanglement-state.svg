@@ -1,87 +1,69 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="500" height="350"  fill="none">
+<svg xmlns="http://www.w3.org/2000/svg" width="500" height="350" viewBox="0 0 500 350" fill="none">
+  <defs>
+    <marker id="ent-flow-arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#BE95FF"/>
+    </marker>
+  </defs>
 
-    <defs>
-        <!-- Glassmorphism filter -->
-        <filter id="glass" x="-20%" y="-20%" width="140%" height="140%">
-            <feGaussianBlur stdDeviation="8" result="blur" />
-            <feComposite in="SourceGraphic" in2="blur" operator="over" />
-        </filter>
-        
-        <!-- Subtle Glow -->
-        <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
-            <feGaussianBlur stdDeviation="4" result="blur" />
-            <feMerge>
-                <feMergeNode in="blur" />
-                <feMergeNode in="SourceGraphic" />
-            </feMerge>
-        </filter>
-        
-        <!-- Strong Glow -->
-        <filter id="strong-glow" x="-50%" y="-50%" width="200%" height="200%">
-            <feGaussianBlur stdDeviation="8" result="blur" />
-            <feMerge>
-                <feMergeNode in="blur" />
-                <feMergeNode in="SourceGraphic" />
-            </feMerge>
-        </filter>
+  <!-- Frame Background -->
+  <rect x="8" y="8" width="484" height="334" rx="16" fill="#1C0F30" stroke="#491D8B" stroke-width="2"/>
+  
+  <!-- Header Title -->
+  <text x="250" y="34" font-family="'Inter', system-ui, sans-serif" font-size="12" font-weight="700" fill="#BE95FF" text-anchor="middle" letter-spacing="1">BELL STATE GENERATION &amp; CORRELATION</text>
 
-        <!-- Linear Gradients -->
-        <linearGradient id="bg-grad-1" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="#071018" />
-            <stop offset="100%" stop-color="#0B132B" />
-        </linearGradient>
-        
-        <linearGradient id="surface-grad" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stop-color="#1C2B38" stop-opacity="0.8"/>
-            <stop offset="100%" stop-color="#071018" stop-opacity="0.9"/>
-        </linearGradient>
+  <!-- Top: Two Initial Qubits -->
+  <g transform="translate(100, 48)">
+    <rect x="0" y="0" width="100" height="42" rx="8" fill="#31135E" stroke="#8A3FFC" stroke-width="2"/>
+    <text x="50" y="26" font-family="'JetBrains Mono', monospace" font-size="16" font-weight="700" fill="#FFFFFF" text-anchor="middle">|0⟩_A</text>
+    <text x="50" y="54" font-family="'Inter', sans-serif" font-size="9.5" fill="#D4BBFF" text-anchor="middle">Qubit A</text>
+  </g>
 
-        <linearGradient id="accent-grad" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stop-color="#446983" />
-            <stop offset="100%" stop-color="#7991A8" />
-        </linearGradient>
+  <g transform="translate(300, 48)">
+    <rect x="0" y="0" width="100" height="42" rx="8" fill="#31135E" stroke="#8A3FFC" stroke-width="2"/>
+    <text x="50" y="26" font-family="'JetBrains Mono', monospace" font-size="16" font-weight="700" fill="#FFFFFF" text-anchor="middle">|0⟩_B</text>
+    <text x="50" y="54" font-family="'Inter', sans-serif" font-size="9.5" fill="#D4BBFF" text-anchor="middle">Qubit B</text>
+  </g>
 
-        <radialGradient id="radial-glow" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stop-color="#38506A" stop-opacity="0.3"/>
-            <stop offset="100%" stop-color="#071018" stop-opacity="0"/>
-        </radialGradient>
-        
-        <!-- Grid Pattern -->
-        <pattern id="quantum-grid-pattern" width="40" height="40" patternUnits="userSpaceOnUse">
-            <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1C2B38" stroke-width="1"/>
-            <circle cx="40" cy="40" r="1" fill="#38506A" />
-        </pattern>
-        
-        <!-- Small Grid Pattern -->
-        <pattern id="small-grid" width="20" height="20" patternUnits="userSpaceOnUse">
-            <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#0B132B" stroke-width="0.5"/>
-        </pattern>
-    </defs>
+  <!-- Downward Arrows into Gate Step -->
+  <path d="M 150 96 L 150 120" stroke="#BE95FF" stroke-width="2" marker-end="url(#ent-flow-arrow)"/>
+  <path d="M 350 96 L 350 120" stroke="#BE95FF" stroke-width="2" marker-end="url(#ent-flow-arrow)"/>
 
-
-
-    <text x="150" y="50" font-family="'Inter', sans-serif" font-size="14" fill="#7991A8" text-anchor="middle">QUBIT A</text>
-    <circle cx="150" cy="100" r="30" fill="url(#surface-grad)" stroke="#38506A"/>
-    <text x="150" y="106" font-family="'Inter', sans-serif" font-size="16" fill="#FFFFFF" text-anchor="middle">|0⟩</text>
+  <!-- Operations: H on A, Wire on B -> CNOT -->
+  <g transform="translate(70, 126)">
+    <rect x="0" y="0" width="360" height="54" rx="10" fill="#31135E" stroke="#6929C4" stroke-width="1.5"/>
+    <!-- Qubit A: H Gate -->
+    <rect x="55" y="10" width="50" height="34" rx="6" fill="#1C0F30" stroke="#8A3FFC" stroke-width="2"/>
+    <text x="80" y="32" font-family="'JetBrains Mono', monospace" font-size="16" font-weight="800" fill="#FFFFFF" text-anchor="middle">H</text>
     
-    <text x="350" y="50" font-family="'Inter', sans-serif" font-size="14" fill="#7991A8" text-anchor="middle">QUBIT B</text>
-    <circle cx="350" cy="100" r="30" fill="url(#surface-grad)" stroke="#38506A"/>
-    <text x="350" y="106" font-family="'Inter', sans-serif" font-size="16" fill="#FFFFFF" text-anchor="middle">|0⟩</text>
+    <!-- CNOT Interaction -->
+    <text x="210" y="32" font-family="'Inter', sans-serif" font-size="12" font-weight="700" fill="#BE95FF" text-anchor="middle">CNOT (A → B)</text>
+    
+    <line x1="280" y1="27" x2="310" y2="27" stroke="#BE95FF" stroke-width="2"/>
+    <circle cx="280" cy="27" r="4" fill="#8A3FFC"/>
+    <circle cx="310" cy="27" r="8" fill="#1C0F30" stroke="#8A3FFC" stroke-width="1.8"/>
+    <line x1="310" y1="21" x2="310" y2="33" stroke="#FFFFFF" stroke-width="1.5"/>
+    <line x1="304" y1="27" x2="316" y2="27" stroke="#FFFFFF" stroke-width="1.5"/>
+  </g>
 
-    <path d="M 170 120 L 220 180" stroke="#446983" stroke-width="2" opacity="0.6"/>
-    <path d="M 330 120 L 280 180" stroke="#446983" stroke-width="2" opacity="0.6"/>
-    
-    <rect x="180" y="180" width="140" height="40" rx="20" fill="#1C2B38" stroke="#7991A8" stroke-width="2" filter="url(#glow)"/>
-    <text x="250" y="205" font-family="'Inter', sans-serif" font-size="14" fill="#FFFFFF" text-anchor="middle" letter-spacing="2">ENTANGLED</text>
-    
-    <path d="M 250 230 L 250 270" stroke="#38506A" stroke-width="2" marker-end="url(#arrow)"/>
-    <rect x="200" y="280" width="100" height="30" rx="4" fill="#0B132B" stroke="#38506A"/>
-    <text x="250" y="300" font-family="'Inter', sans-serif" font-size="12" fill="#FFFFFF" text-anchor="middle">Measurement</text>
+  <!-- Downward Arrow into Entangled State -->
+  <path d="M 250 186 L 250 208" stroke="#BE95FF" stroke-width="2" marker-end="url(#ent-flow-arrow)"/>
 
-    <defs>
-        <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-            <path d="M 0 0 L 10 5 L 0 10 z" fill="#446983"/>
-        </marker>
-    </defs>
-    
+  <!-- Entangled State Badge (Abstract Correlation) -->
+  <g transform="translate(110, 214)">
+    <rect x="0" y="0" width="280" height="46" rx="10" fill="#31135E" stroke="#8A3FFC" stroke-width="2"/>
+    <!-- Abstract non-local symmetry rings -->
+    <circle cx="35" cy="23" r="12" stroke="#BE95FF" stroke-width="1.5" stroke-dasharray="3 2" fill="none"/>
+    <circle cx="245" cy="23" r="12" stroke="#BE95FF" stroke-width="1.5" stroke-dasharray="3 2" fill="none"/>
+    <text x="140" y="24" font-family="'JetBrains Mono', monospace" font-size="14" font-weight="700" fill="#FFFFFF" text-anchor="middle">|Φ⁺⟩ = 1/√2 (|00⟩ + |11⟩)</text>
+    <text x="140" y="38" font-family="'Inter', sans-serif" font-size="9" fill="#D4BBFF" text-anchor="middle">Non-local Quantum Entanglement</text>
+  </g>
+
+  <!-- Downward Arrow to Measurement -->
+  <path d="M 250 266 L 250 286" stroke="#BE95FF" stroke-width="2" marker-end="url(#ent-flow-arrow)"/>
+
+  <!-- Measurement Outcome -->
+  <g transform="translate(100, 292)">
+    <rect x="0" y="0" width="300" height="34" rx="8" fill="#1C0F30" stroke="#6929C4" stroke-width="1.5"/>
+    <text x="150" y="21" font-family="'Inter', sans-serif" font-size="11" font-weight="600" fill="#BE95FF" text-anchor="middle">Measurement: 50% |00⟩  •  50% |11⟩ (Correlated)</text>
+  </g>
 </svg>
